@@ -1,24 +1,45 @@
-# Show Me What This Is
+![Show Me What This Is](https://raw.githubusercontent.com/ItMeCasey/SMWTI/main/branding/banners/banner.png)
 
-Point at a block or a creature and see what it is, which mod it comes from and what state it is in, in a small panel at the top of your screen.
+**Point at anything in your world and SMWTI tells you what it is, where it came from and what it's up to, from crop growth to chest contents.**
 
-It is for Forge 26.1.2, where Jade and The One Probe have no Forge build and WTHIT was the only choice. SMWTI shares no code with them.
+Show Me What This Is (SMWTI) is a look-at overlay for Minecraft Forge. Point at a block or a creature and a small panel tells you what it is, which mod it comes from and what state it's in. It's inspired by Jade and The One Probe and shares no code with them.
 
-## What you see
+📖 **Full guide:** [itmecasey.com/wiki/smwti](https://itmecasey.com/wiki/smwti/)
 
-- The block's icon and name, the mod it comes from, and a small tool icon beside the name: a green check when you hold the right tool, a red cross when the block would drop nothing.
-- Crop growth, redstone power, how full a composter, cauldron or hive is, furnace and brewing progress, a spawner's countdown, enchanting power around an enchanting table, what is written on a sign, what is in a chest or on a shelf (as icons with counts), tanks, stored energy.
-- For creatures: health, armor, active effects with the time left, what they wear, riders, a horse's speed and jump, a villager's job, a pet's owner, how long a young animal takes to grow up, the next egg a chicken lays.
-- Sneak for more: the registry id, the block's state, the tool tier it needs, its hardness, and longer item lists.
+![Features](https://raw.githubusercontent.com/ItMeCasey/SMWTI/main/branding/banners/h_features.png)
 
-## Make it yours
+- **Every target:** its icon, name and mod, plus a tool badge beside the name: a green check when you hold the right tool, a red cross when the block would drop nothing without it. Water and lava count too.
+- **Blocks:** crop growth, redstone power, composter, cauldron, hive and respawn anchor levels, furnace and brewing progress, a spawner's mob and countdown, a beacon's level and effects, enchanting power, sign text, lecterns, campfires, jukeboxes, flower pots, heads, locked hoppers, unstable TNT and waxed blocks.
+- **Containers and machines:** what's inside as item icons with counts, fluid tanks and stored energy, sent live by the server.
+- **Creatures:** health, armor, equipment, active effects with time left, riders and mounts, a horse's speed and jump, a villager's job and level, a pet's owner, how long a baby takes to grow up, and the next egg a chicken lays.
+- **Long form:** sneak to see more, such as the registry id, the block's state, the tool tier it needs and its hardness.
 
-Press **Control+F10** for the settings. Pick a theme (dark, light, vanilla, clear or modern), set the size and backdrop, **drag the panel anywhere** (it snaps to centers and corners and stays off your hotbar), switch on compact mode or hold-to-show, or hide anything you do not want shown. **F10** switches the overlay on and off.
+![Themes](https://raw.githubusercontent.com/ItMeCasey/SMWTI/main/branding/banners/h_themes.png)
 
-Resource packs can add themes and hide, rename or add lines. Servers can cut how far away lines are sent, keep chests private and list things that are never shown.
+![The five themes](https://raw.githubusercontent.com/ItMeCasey/SMWTI/main/branding/banners/themes_strip.png)
 
-## For mod authors
+Five built-in themes (modern, dark, light, vanilla and clear), an adjustable backdrop, and **your own themes from a resource pack**. [How to make one](https://itmecasey.com/wiki/smwti/?p=themes#make-your-own-theme).
 
-SMWTI has a small API and a plugin system: mark a class `@SmwtiPlugin` and it is found automatically, with no hard dependency. See the README on GitHub.
+![For players](https://raw.githubusercontent.com/ItMeCasey/SMWTI/main/branding/banners/h_players.png)
 
-Source and issues: https://github.com/ItMeCasey/SMWTI
+- **F10** turns the overlay on and off. **Ctrl+F10** opens the settings. **Shift+F10** hides whatever you're looking at, with a list in the settings to bring things back.
+- **Drag the panel anywhere.** It snaps to centers and corners and stays clear of your hotbar.
+- Compact mode, hold-to-show (Left Alt), size, and a long form that shows while sneaking, always or never.
+- Resource packs can hide, rename or add lines to any block or creature.
+- Install it on the client and it works on any server. Install it on the server too for container contents, tanks, energy and machine progress. Server owners can shorten the reach, keep inventories private and block things from being shown.
+
+![For mod authors](https://raw.githubusercontent.com/ItMeCasey/SMWTI/main/branding/banners/h_authors.png)
+
+Add your own lines with a **plugin**: mark a class `@SmwtiPlugin` and SMWTI finds it on its own, with no hard dependency. Show bars, item grids, progress, custom names and icons, redirects for multiblocks, and your own settings. It's shaped like Jade's API, so porting is mostly renaming.
+
+[Make your own plugin](https://itmecasey.com/wiki/smwti/?p=make-a-plugin) · [Plugin reference](https://itmecasey.com/wiki/smwti/?p=plugin-reference)
+
+![FAQ](https://raw.githubusercontent.com/ItMeCasey/SMWTI/main/branding/banners/h_faq.png)
+
+**Does it need to be on the server?** No. Without it on the server you still get names, mods, growth, health and everything the client can see.
+
+**Does it load Jade or The One Probe plugins?** No. Mods add support through SMWTI's own plugins.
+
+**Can I use it in my modpack?** Yes. It's MIT licensed.
+
+Source and issues on [GitHub](https://github.com/ItMeCasey/SMWTI).

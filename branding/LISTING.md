@@ -105,7 +105,7 @@ Add your own lines through `SmwtiApi`: client and server providers for blocks an
 
 ## Description (CurseForge)
 
-CurseForge's description editor accepts Markdown (pick **Markdown** as the description type). Paste the same text as Modrinth. If you use the WYSIWYG editor instead, paste it into a Markdown viewer first and copy the rendered result.
+The current CurseForge description is in [`curseforge/DESCRIPTION.md`](../curseforge/DESCRIPTION.md). It's newer than the Modrinth text above: it adds the hide key, compact mode, hold-to-show, pack themes, plugins and wiki links. Paste it with the description type set to **Markdown**.
 
 ---
 
