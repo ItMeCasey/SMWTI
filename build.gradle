@@ -42,6 +42,15 @@ repositories {
 dependencies {
     implementation minecraft.dependency("net.minecraftforge:forge:${minecraft_version}-${forge_version}")
     annotationProcessor 'net.minecraftforge:eventbus-validator:7.0.5'
+
+    // Unit tests for the parts that do not need the game running.
+    testImplementation platform('org.junit:junit-bom:5.10.2')
+    testImplementation 'org.junit.jupiter:junit-jupiter'
+    testRuntimeOnly 'org.junit.platform:junit-platform-launcher'
+}
+
+test {
+    useJUnitPlatform()
 }
 
 // mods.toml and pack.mcmeta are templates: this fills in their ${} values from gradle.properties

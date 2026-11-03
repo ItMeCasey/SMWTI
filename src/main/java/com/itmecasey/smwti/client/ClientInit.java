@@ -12,11 +12,13 @@ import net.minecraft.client.Minecraft;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.network.chat.Component;
 import net.minecraftforge.api.distmarker.Dist;
+import net.minecraftforge.client.ConfigScreenHandler;
 import net.minecraftforge.client.event.RegisterKeyMappingsEvent;
 import net.minecraftforge.client.settings.KeyConflictContext;
 import net.minecraftforge.client.settings.KeyModifier;
 import net.minecraftforge.event.TickEvent;
 import net.minecraftforge.eventbus.api.listener.SubscribeEvent;
+import net.minecraftforge.fml.ModList;
 import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.event.lifecycle.FMLClientSetupEvent;
 import org.lwjgl.glfw.GLFW;
@@ -54,6 +56,10 @@ public final class ClientInit {
         PackRules.register();
         // Plugins registered their common parts during common setup, which runs first on the client too.
         event.enqueueWork(PluginLoader::loadClient);
+        // The mod list's config button opens the settings screen.
+        ModList.getModContainerById(Smwti.MODID).ifPresent(container -> container.registerExtensionPoint(
+                ConfigScreenHandler.ConfigScreenFactory.class,
+                () -> new ConfigScreenHandler.ConfigScreenFactory((game, parent) -> new SettingsScreen(parent))));
         event.enqueueWork(OptionsFile::load);
         event.enqueueWork(UserHidden::load);
     }

@@ -92,11 +92,16 @@ What a plugin can do:
 | `overrideBlock`, `overrideEntity` | Another name or icon for a target. |
 | `redirect` | Show another block than the one under the crosshair (a multiblock part showing its controller). |
 | `renderCallback` | Run before and after the overlay is drawn; answer `false` from `before` to skip a frame. |
+| `progress` (common) | A progress bar for a machine type: give it a block entity class and a function returning the fraction done (`Progress.fromData` reads a `ContainerData`). |
 | `option`, `intSetting`, `choice` | A switch, a slider or a cycling choice in the settings screen, saved for the player. Name them with `smwti.option.<namespace>.<path>`. |
 
 Lines go to the badge (right of the name, same row), the head (under the name), the body or the tail. `tooltip.add` adds text, `bar` a bar under a line, `item` a small icon before text, `stack` an icon with its count in the corner and no name (stacks added one after another form a grid), and `element(position, element)` something you draw yourself (client side only). A plugin that throws is logged and skipped. Server providers run only for targets within the reach the server allows (12 blocks by default) and only if the server has SMWTI.
 
 You can also register without a plugin class, by calling the static methods of `SmwtiApi` while your mod loads.
+
+## Translating
+
+See `TRANSLATING.md`.
 
 ## Building
 

@@ -44,6 +44,7 @@
   "smwti.command": "Command: %s",
   "smwti.spawner.next": "Next spawn in %s",
   "smwti.egg.next": "Next egg in %s",
+  "smwti.progress": "Progress: %s%%",
   "smwti.items.more": "and %s more",
   "smwti.settings.title": "Show Me What This Is",
   "smwti.settings.enabled": "Overlay",

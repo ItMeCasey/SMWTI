@@ -12,6 +12,7 @@ import com.itmecasey.smwti.api.EntityView;
 import com.itmecasey.smwti.api.ISmwtiPlugin;
 import com.itmecasey.smwti.api.IntSetting;
 import com.itmecasey.smwti.api.Option;
+import com.itmecasey.smwti.api.ProgressSource;
 import com.itmecasey.smwti.api.RenderCallback;
 import com.itmecasey.smwti.api.ServerBlockProvider;
 import com.itmecasey.smwti.api.ServerEntityProvider;
@@ -20,7 +21,9 @@ import com.itmecasey.smwti.api.SmwtiPlugin;
 import com.itmecasey.smwti.api.TargetOverride;
 import java.util.ArrayList;
 import java.util.List;
+import net.minecraft.network.chat.Component;
 import net.minecraft.resources.Identifier;
+import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraftforge.fml.ModList;
 import net.minecraftforge.forgespi.language.ModFileScanData;
 import org.objectweb.asm.Type;
@@ -102,6 +105,16 @@ public final class PluginLoader {
         @Override
         public void serverEntity(ServerEntityProvider provider) {
             SmwtiApi.registerServerEntity(provider);
+        }
+
+        @Override
+        public <T extends BlockEntity> void progress(Class<T> type, ProgressSource<T> source, int color) {
+            SmwtiApi.registerServerBlock((tooltip, level, pos, entity, detailed) -> {
+                if (type.isInstance(entity)) {
+                    source.progress(type.cast(entity)).ifPresent(fraction -> tooltip.bar(
+                            Component.translatable("smwti.progress", Math.round(fraction * 100)), fraction, color));
+                }
+            });
         }
     };
 
