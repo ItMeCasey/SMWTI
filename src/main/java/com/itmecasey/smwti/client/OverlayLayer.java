@@ -105,8 +105,17 @@ public final class OverlayLayer {
         }
         graphics.pose().pushMatrix();
         graphics.pose().scale(scale, scale);
-        graphics.fill(x, y, x + width, y + height, palette.edge());
-        graphics.fill(x + 1, y + 1, x + width - 1, y + height - 1, palette.panel());
+        if (palette.rounded()) {
+            // Two overlapping rectangles leave the four corner pixels out, which reads as rounded.
+            graphics.fill(x + 1, y, x + width - 1, y + height, palette.panel());
+            graphics.fill(x, y + 1, x + width, y + height - 1, palette.panel());
+        } else {
+            graphics.fill(x, y, x + width, y + height, palette.edge());
+            graphics.fill(x + 1, y + 1, x + width - 1, y + height - 1, palette.panel());
+        }
+        if (palette.accent() != 0) {
+            graphics.fill(x + 1, y, x + width - 1, y + 2, palette.accent());
+        }
         content.draw(graphics, font, x + PADDING, y + PADDING, width - 2 * PADDING);
         for (RenderCallback callback : SmwtiApi.renderCallbacks()) {
             run(() -> callback.after(graphics, panel));

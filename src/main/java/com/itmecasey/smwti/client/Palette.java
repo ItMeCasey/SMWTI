@@ -12,20 +12,24 @@ import com.itmecasey.smwti.SmwtiConfig;
  * @param sub     the quieter text, such as the mod name
  * @param barBack the empty part of a bar
  * @param shadow  whether text gets a drop shadow (it does on dark backdrops, not on light ones)
+ * @param accent  the color of a thin line along the top, or 0 for none
+ * @param rounded whether the backdrop has its corners cut, drawn with no outline
  */
-public record Palette(int panel, int edge, int text, int sub, int barBack, boolean shadow) {
+public record Palette(int panel, int edge, int text, int sub, int barBack, boolean shadow, int accent, boolean rounded) {
     /** The palette for the theme and opacity the player chose. */
     public static Palette current() {
         float opacity = SmwtiConfig.opacity();
         return switch (SmwtiConfig.theme()) {
             case DARK -> new Palette(withAlpha(0xC0, opacity, 0x101018), withAlpha(0xFF, opacity, 0x3A3A4C), 0xFFFFFFFF,
-                    0xFF8E8EA6, 0xFF2A2A34, true);
+                    0xFF8E8EA6, 0xFF2A2A34, true, 0, false);
             case LIGHT -> new Palette(withAlpha(0xE0, opacity, 0xF0F0F4), withAlpha(0xFF, opacity, 0x9A9AAA), 0xFF202028,
-                    0xFF6A6A7A, 0xFFC8C8D4, false);
+                    0xFF6A6A7A, 0xFFC8C8D4, false, 0, false);
             case VANILLA -> new Palette(withAlpha(0xF0, opacity, 0x100010), withAlpha(0xF0, opacity, 0x5000FF), 0xFFFFFFFF,
-                    0xFFAAAAAA, 0xFF2A1A3A, true);
+                    0xFFAAAAAA, 0xFF2A1A3A, true, 0, false);
             case CLEAR -> new Palette(withAlpha(0x50, opacity, 0x000000), 0x00000000, 0xFFFFFFFF, 0xFFCCCCCC, 0x80000000,
-                    true);
+                    true, 0, false);
+            case MODERN -> new Palette(withAlpha(0xE8, opacity, 0x141821), 0x00000000, 0xFFEAF0FA, 0xFF7C8AA5, 0xFF222A38,
+                    true, withAlpha(0xFF, 1.0F, 0x4DA3FF), true);
         };
     }
 

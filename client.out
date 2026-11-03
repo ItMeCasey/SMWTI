@@ -102,3 +102,8 @@ Transformer Audit:
     REASON: classloading
   com.mojang.realmsclient.client.RealmsClient
     REASON: classloading
+[04:53:45] [Render thread/INFO] [minecraft/Minecraft]: Stopping!
+
+BUILD SUCCESSFUL in 7m 50s
+5 actionable tasks: 1 executed, 4 up-to-date
+Configuration cache entry reused.
