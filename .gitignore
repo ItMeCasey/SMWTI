@@ -45,3 +45,5 @@ run-data/
 PROJECT_STATUS.md
 server.out
 server.err
+*.out
+*.err
