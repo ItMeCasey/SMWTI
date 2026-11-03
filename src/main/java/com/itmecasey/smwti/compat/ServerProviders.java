@@ -1,5 +1,6 @@
 package com.itmecasey.smwti.compat;
 
+import com.itmecasey.smwti.SmwtiServerConfig;
 import com.itmecasey.smwti.api.Position;
 import com.itmecasey.smwti.api.SmwtiApi;
 import com.itmecasey.smwti.api.Tooltip;
@@ -40,7 +41,9 @@ public final class ServerProviders {
     private static void collect(Tooltip tooltip, ServerLevel level, BlockPos pos, BlockEntity entity, boolean detailed) {
         entity.getCapability(ForgeCapabilities.ENERGY, null).ifPresent(energy -> energy(tooltip, energy));
         entity.getCapability(ForgeCapabilities.FLUID_HANDLER, null).ifPresent(fluids -> fluids(tooltip, fluids));
-        entity.getCapability(ForgeCapabilities.ITEM_HANDLER, null).ifPresent(items -> items(tooltip, items, detailed));
+        if (SmwtiServerConfig.showInventories()) {
+            entity.getCapability(ForgeCapabilities.ITEM_HANDLER, null).ifPresent(items -> items(tooltip, items, detailed));
+        }
     }
 
     private static void energy(Tooltip tooltip, IEnergyStorage energy) {

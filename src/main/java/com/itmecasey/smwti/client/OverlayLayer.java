@@ -49,6 +49,7 @@ public final class OverlayLayer {
     private static final Identifier LAYER = Smwti.id("look_at");
 
     private static final int PADDING = 5;
+    private static final int PADDING_COMPACT = 3;
     private static final int ICON = 16;
     /** Side of the small icon before an item line; the item is drawn at 16 and scaled to this. */
     private static final int SMALL_ICON = 12;
@@ -62,10 +63,21 @@ public final class OverlayLayer {
     /** Space between the name and the badge. */
     private static final int BADGE_GAP = 8;
     private static final int LINE_GAP = 2;
+    private static final int LINE_GAP_COMPACT = 1;
     private static final int BAR_HEIGHT = 3;
 
     /** The colors in use this frame; set at the start of each draw. */
     private static Palette palette = Palette.current();
+
+    /** Room around the panel's contents; the compact overlay uses less. */
+    private static int padding() {
+        return SmwtiConfig.compact() ? PADDING_COMPACT : PADDING;
+    }
+
+    /** Space between rows. */
+    private static int lineGap() {
+        return SmwtiConfig.compact() ? LINE_GAP_COMPACT : LINE_GAP;
+    }
 
     private OverlayLayer() {
     }
@@ -78,7 +90,7 @@ public final class OverlayLayer {
 
     private static void extract(GuiGraphicsExtractor graphics, DeltaTracker delta) {
         Minecraft game = Minecraft.getInstance();
-        if (!SmwtiConfig.enabled() || game.level == null || game.player == null || game.options.hideGui
+        if (!SmwtiConfig.enabled() || (SmwtiConfig.holdToShow() && !ClientInit.holdKeyDown()) || game.level == null || game.player == null || game.options.hideGui
                 || game.screen != null || (SmwtiConfig.hideWhileSneaking() && game.player.isShiftKeyDown())) {
             return;
         }
@@ -142,7 +154,7 @@ public final class OverlayLayer {
         if (palette.accent() != 0) {
             graphics.fill(x, y, x + width, y + 2, palette.accent());
         }
-        content.draw(graphics, font, x + PADDING, y + PADDING, width - 2 * PADDING);
+        content.draw(graphics, font, x + padding(), y + padding(), width - 2 * padding());
     }
 
     /**
@@ -253,7 +265,7 @@ public final class OverlayLayer {
 
     /** The display name of a mod, or the namespace itself when the mod is not known. */
     private static Component modName(String namespace) {
-        if (!SmwtiConfig.showModName()) {
+        if (!SmwtiConfig.showModName() || SmwtiConfig.compact()) {
             return Component.empty();
         }
         String name = "minecraft".equals(namespace) ? "Minecraft"
@@ -268,7 +280,7 @@ public final class OverlayLayer {
         }
 
         private int textLeft() {
-            return icon.isEmpty() ? 0 : ICON + PADDING;
+            return icon.isEmpty() ? 0 : ICON + padding();
         }
 
         /** The badge to the right of the name: the first badge line, if any provider added one. */
@@ -280,7 +292,8 @@ public final class OverlayLayer {
         /** The lines under the header in drawing order (head, body, tail), neighboring item stacks gathered into grid rows. */
         private List<Row> rows() {
             List<Row> rows = new ArrayList<>();
-            for (Position position : List.of(Position.HEAD, Position.BODY, Position.TAIL)) {
+            // The compact overlay keeps only the body.
+            for (Position position : SmwtiConfig.compact() ? List.of(Position.BODY) : List.of(Position.HEAD, Position.BODY, Position.TAIL)) {
                 List<Line> run = new ArrayList<>();
                 for (Line line : tooltip.lines(position)) {
                     if (line.isStack()) {
@@ -336,7 +349,7 @@ public final class OverlayLayer {
             for (Row row : rows()) {
                 widest = Math.max(widest, rowWidth(font, row));
             }
-            return Math.max(widest, 60) + 2 * PADDING;
+            return Math.max(widest, 60) + 2 * padding();
         }
 
         /** A badge that is only an item stack is drawn small, so it stays a mark beside the name. */
@@ -358,9 +371,9 @@ public final class OverlayLayer {
         int height(Font font) {
             int total = 0;
             for (Row row : rows()) {
-                total += rowHeight(font, row) + LINE_GAP;
+                total += rowHeight(font, row) + lineGap();
             }
-            return 2 * PADDING + headerHeight(font) + total;
+            return 2 * padding() + headerHeight(font) + total;
         }
 
         void draw(GuiGraphicsExtractor graphics, Font font, int x, int y, int innerWidth) {
@@ -389,14 +402,14 @@ public final class OverlayLayer {
                     drawLine(graphics, font, badge, badgeX, y + (top - Math.max(font.lineHeight, SMALL_ICON)) / 2, 0);
                 }
             }
-            int rowY = y + headerHeight(font) + LINE_GAP;
+            int rowY = y + headerHeight(font) + lineGap();
             for (Row row : rows()) {
                 if (row.element() != null) {
                     row.element().draw(graphics, font, x, rowY, innerWidth);
-                    rowY += row.element().height(font) + LINE_GAP;
+                    rowY += row.element().height(font) + lineGap();
                 } else if (row.grid()) {
                     drawStacks(graphics, font, row, x, rowY);
-                    rowY += SLOT + LINE_GAP;
+                    rowY += SLOT + lineGap();
                 } else {
                     rowY = drawLine(graphics, font, row.lines().get(0), x, rowY, innerWidth);
                 }
@@ -463,7 +476,7 @@ public final class OverlayLayer {
                         0xFF000000 | line.color());
                 bottom += BAR_HEIGHT + 1;
             }
-            return bottom + LINE_GAP;
+            return bottom + lineGap();
         }
     }
 }

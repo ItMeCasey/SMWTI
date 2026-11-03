@@ -12,11 +12,6 @@ public final class SmwtiConfig {
         TOP_LEFT, TOP_CENTER, TOP_RIGHT, CUSTOM
     }
 
-    /** The overlay's colors. */
-    public enum Theme {
-        DARK, LIGHT, VANILLA, CLEAR, MODERN
-    }
-
     /** When the long form of the overlay is shown. */
     public enum Detail {
         WHILE_SNEAKING, ALWAYS, NEVER
@@ -24,9 +19,9 @@ public final class SmwtiConfig {
 
     private static final ForgeConfigSpec.Builder BUILDER = new ForgeConfigSpec.Builder();
 
-    private static final ForgeConfigSpec.EnumValue<Theme> THEME = BUILDER
-            .comment("Colors of the overlay: dark, light, vanilla (like a tooltip), clear (a faint backdrop) or modern (flat and square with an orange line on top).")
-            .defineEnum("theme", Theme.MODERN);
+    private static final ForgeConfigSpec.ConfigValue<String> THEME = BUILDER
+            .comment("Colors of the overlay: dark, light, vanilla (like a tooltip), clear (a faint backdrop), modern (flat and square with an orange line on top), or the id of a theme a resource pack adds, such as mypack:neon.")
+            .define("theme", "modern");
 
     private static final ForgeConfigSpec.DoubleValue OPACITY = BUILDER
             .comment("How solid the overlay's backdrop is, from 0.2 (faint) to 1.")
@@ -35,6 +30,14 @@ public final class SmwtiConfig {
     private static final ForgeConfigSpec.EnumValue<Detail> DETAIL = BUILDER
             .comment("When providers may show their longer lines: only while sneaking, always, or never.")
             .defineEnum("detail", Detail.WHILE_SNEAKING);
+
+    private static final ForgeConfigSpec.BooleanValue HOLD_TO_SHOW = BUILDER
+            .comment("Show the overlay only while the hold key is down (Left Alt by default, changeable in Controls).")
+            .define("holdToShow", false);
+
+    private static final ForgeConfigSpec.BooleanValue COMPACT = BUILDER
+            .comment("A smaller overlay: no mod name, no head or tail lines, tighter spacing.")
+            .define("compact", false);
 
     private static final ForgeConfigSpec.BooleanValue SHOW_FLUIDS = BUILDER
             .comment("Whether looking at water or lava shows it. Turn off to look through fluids at what is under them.")
@@ -95,12 +98,20 @@ public final class SmwtiConfig {
 
     // The settings screen changes values through these and then writes the file.
 
-    public static void setTheme(Theme value) {
-        THEME.set(value);
+    public static void setTheme(String name) {
+        THEME.set(name);
     }
 
     public static void setOpacity(double value) {
         OPACITY.set(value);
+    }
+
+    public static void setHoldToShow(boolean value) {
+        HOLD_TO_SHOW.set(value);
+    }
+
+    public static void setCompact(boolean value) {
+        COMPACT.set(value);
     }
 
     public static void setEnabled(boolean value) {
@@ -149,8 +160,8 @@ public final class SmwtiConfig {
     }
 
     /** The overlay's colors. */
-    public static Theme theme() {
-        return SPEC.isLoaded() ? THEME.get() : Theme.MODERN;
+    public static String theme() {
+        return SPEC.isLoaded() ? THEME.get() : "modern";
     }
 
     /** How solid the backdrop is. */
@@ -177,6 +188,16 @@ public final class SmwtiConfig {
             case NEVER -> false;
             case WHILE_SNEAKING -> sneaking;
         };
+    }
+
+    /** Whether the overlay shows only while the hold key is down. */
+    public static boolean holdToShow() {
+        return SPEC.isLoaded() && HOLD_TO_SHOW.get();
+    }
+
+    /** Whether the smaller overlay is used. */
+    public static boolean compact() {
+        return SPEC.isLoaded() && COMPACT.get();
     }
 
     /** Whether fluids can be the target. */

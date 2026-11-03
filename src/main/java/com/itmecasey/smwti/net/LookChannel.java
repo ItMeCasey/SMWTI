@@ -1,6 +1,7 @@
 package com.itmecasey.smwti.net;
 
 import com.itmecasey.smwti.Smwti;
+import com.itmecasey.smwti.SmwtiServerConfig;
 import com.itmecasey.smwti.api.Line;
 import com.itmecasey.smwti.api.ServerBlockProvider;
 import com.itmecasey.smwti.api.ServerEntityProvider;
@@ -9,6 +10,7 @@ import com.itmecasey.smwti.api.Tooltip;
 import com.itmecasey.smwti.client.LookTracker;
 import java.util.List;
 import net.minecraft.core.BlockPos;
+import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.NbtOps;
 import net.minecraft.nbt.Tag;
@@ -28,9 +30,6 @@ import net.minecraftforge.network.SimpleChannel;
  * never answers, which the overlay shows as no extra lines.
  */
 public final class LookChannel {
-    /** Farthest a player may be from a target and still ask about it, in blocks. */
-    private static final double REACH = 12.0;
-
     private static SimpleChannel channel;
 
     private LookChannel() {
@@ -93,14 +92,16 @@ public final class LookChannel {
 
     /** Runs the server providers for the target and sends the player what they said. */
     private static void answer(ServerPlayer player, LookTarget target, boolean detailed) {
-        if (player == null) {
+        if (player == null || !SmwtiServerConfig.answer()) {
             return;
         }
+        double reach = SmwtiServerConfig.reach();
         ServerLevel level = player.level();
         Tooltip tooltip = new Tooltip();
         if (target.entity()) {
             Entity entity = level.getEntity(target.entityId());
-            if (entity == null || player.distanceToSqr(entity) > REACH * REACH) {
+            if (entity == null || player.distanceToSqr(entity) > reach * reach
+                    || SmwtiServerConfig.blacklisted(BuiltInRegistries.ENTITY_TYPE.getKey(entity.getType()).toString())) {
                 return;
             }
             for (ServerEntityProvider provider : SmwtiApi.serverEntityProviders()) {
@@ -114,11 +115,12 @@ public final class LookChannel {
         } else {
             // Only blocks near the player that are actually loaded: a request is just numbers from the network.
             BlockPos pos = target.pos();
-            if (!level.isLoaded(pos) || player.distanceToSqr(pos.getX() + 0.5, pos.getY() + 0.5, pos.getZ() + 0.5) > REACH * REACH) {
+            if (!level.isLoaded(pos) || player.distanceToSqr(pos.getX() + 0.5, pos.getY() + 0.5, pos.getZ() + 0.5) > reach * reach) {
                 return;
             }
             BlockEntity entity = level.getBlockEntity(pos);
-            if (entity == null) {
+            if (entity == null || SmwtiServerConfig.blacklisted(BuiltInRegistries.BLOCK.getKey(level.getBlockState(pos).getBlock()).toString())
+                    || SmwtiServerConfig.blacklisted(BuiltInRegistries.BLOCK_ENTITY_TYPE.getKey(entity.getType()).toString())) {
                 return;
             }
             for (ServerBlockProvider provider : SmwtiApi.serverBlockProviders()) {

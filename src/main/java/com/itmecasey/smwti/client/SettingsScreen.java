@@ -50,8 +50,9 @@ public final class SettingsScreen extends Screen {
         placed++;
         addControl(CycleButton.builder((Double scale) -> Component.literal(scale + "x"), nearest(SCALES, SmwtiConfig.scale()))
                 .withValues(SCALES), "smwti.settings.scale", (button, value) -> SmwtiConfig.setScale(value));
-        addControl(CycleButton.builder(SettingsScreen::themeName, SmwtiConfig.theme())
-                .withValues(SmwtiConfig.Theme.values()), "smwti.settings.theme",
+        addControl(CycleButton.builder(SettingsScreen::themeName, Themes.names().contains(SmwtiConfig.theme())
+                        ? SmwtiConfig.theme() : "modern")
+                .withValues(Themes.names()), "smwti.settings.theme",
                 (button, value) -> SmwtiConfig.setTheme(value));
         addRenderableWidget(new OpacitySlider(columnX(placed), rowY(placed)));
         placed++;
@@ -60,10 +61,18 @@ public final class SettingsScreen extends Screen {
                 (button, value) -> SmwtiConfig.setDetail(value));
         addControl(CycleButton.onOffBuilder(SmwtiConfig.showModName()), "smwti.settings.mod_name",
                 (button, value) -> SmwtiConfig.setShowModName(value));
+        addControl(CycleButton.onOffBuilder(SmwtiConfig.holdToShow()), "smwti.settings.hold",
+                (button, value) -> SmwtiConfig.setHoldToShow(value));
+        addControl(CycleButton.onOffBuilder(SmwtiConfig.compact()), "smwti.settings.compact",
+                (button, value) -> SmwtiConfig.setCompact(value));
         addControl(CycleButton.onOffBuilder(SmwtiConfig.showFluids()), "smwti.settings.fluids",
                 (button, value) -> SmwtiConfig.setShowFluids(value));
         addControl(CycleButton.onOffBuilder(SmwtiConfig.hideWhileSneaking()), "smwti.settings.hide_sneaking",
                 (button, value) -> SmwtiConfig.setHideWhileSneaking(value));
+
+        addRenderableWidget(Button.builder(Component.translatable("smwti.settings.hidden"),
+                button -> minecraft.setScreen(new HiddenScreen(this))).bounds(columnX(placed), rowY(placed), COLUMN, 20).build());
+        placed++;
 
         for (Setting setting : SmwtiApi.settings()) {
             switch (setting) {
@@ -107,8 +116,8 @@ public final class SettingsScreen extends Screen {
         return Component.translatable("smwti.settings.anchor." + anchor.name().toLowerCase(Locale.ROOT));
     }
 
-    private static Component themeName(SmwtiConfig.Theme theme) {
-        return Component.translatable("smwti.settings.theme." + theme.name().toLowerCase(Locale.ROOT));
+    private static Component themeName(String theme) {
+        return Themes.BUILT_IN.contains(theme) ? Component.translatable("smwti.settings.theme." + theme) : Component.literal(theme);
     }
 
     private static Component detailName(SmwtiConfig.Detail detail) {

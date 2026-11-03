@@ -18,16 +18,22 @@ public record Palette(int panel, int edge, int text, int sub, int barBack, boole
     /** The palette for the theme and opacity the player chose. */
     public static Palette current() {
         float opacity = SmwtiConfig.opacity();
-        return switch (SmwtiConfig.theme()) {
-            case DARK -> new Palette(withAlpha(0xC0, opacity, 0x101018), withAlpha(0xFF, opacity, 0x3A3A4C), 0xFFFFFFFF,
-                    0xFF8E8EA6, 0xFF2A2A34, true, 0);
-            case LIGHT -> new Palette(withAlpha(0xE0, opacity, 0xF0F0F4), withAlpha(0xFF, opacity, 0x9A9AAA), 0xFF202028,
+        String name = SmwtiConfig.theme();
+        Palette custom = Themes.custom(name, opacity);
+        if (custom != null) {
+            return custom;
+        }
+        return switch (name.toLowerCase(java.util.Locale.ROOT)) {
+            case "light" -> new Palette(withAlpha(0xE0, opacity, 0xF0F0F4), withAlpha(0xFF, opacity, 0x9A9AAA), 0xFF202028,
                     0xFF6A6A7A, 0xFFC8C8D4, false, 0);
-            case VANILLA -> new Palette(withAlpha(0xF0, opacity, 0x100010), withAlpha(0xF0, opacity, 0x5000FF), 0xFFFFFFFF,
+            case "vanilla" -> new Palette(withAlpha(0xF0, opacity, 0x100010), withAlpha(0xF0, opacity, 0x5000FF), 0xFFFFFFFF,
                     0xFFAAAAAA, 0xFF2A1A3A, true, 0);
-            case CLEAR -> new Palette(withAlpha(0x50, opacity, 0x000000), 0x00000000, 0xFFFFFFFF, 0xFFCCCCCC, 0x80000000,
+            case "clear" -> new Palette(withAlpha(0x50, opacity, 0x000000), 0x00000000, 0xFFFFFFFF, 0xFFCCCCCC, 0x80000000,
                     true, 0);
-            case MODERN -> new Palette(withAlpha(0xE8, opacity, 0x141821), 0x00000000, 0xFFEAF0FA, 0xFF7C8AA5, 0xFF222A38,
+            case "dark" -> new Palette(withAlpha(0xC0, opacity, 0x101018), withAlpha(0xFF, opacity, 0x3A3A4C), 0xFFFFFFFF,
+                    0xFF8E8EA6, 0xFF2A2A34, true, 0);
+            // Anything else, including a pack theme that is no longer installed, falls back to the default.
+            default -> new Palette(withAlpha(0xE8, opacity, 0x141821), 0x00000000, 0xFFEAF0FA, 0xFF7C8AA5, 0xFF222A38,
                     true, withAlpha(0xFF, 1.0F, 0xFF8A1F));
         };
     }
