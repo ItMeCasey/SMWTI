@@ -1,0 +1,50 @@
+name: API request (mod authors)
+description: You're adding SMWTI support to your mod and the API is missing something or behaves unexpectedly.
+title: "[API] "
+labels: ["api"]
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Check the [examples in the README](https://github.com/ItMeCasey/SMWTI#for-mod-authors) first. The API is shaped like Jade's, so most Jade plugins port over with renames.
+  - type: input
+    id: mod
+    attributes:
+      label: Your mod
+      description: Name, and a link if it's public.
+    validations:
+      required: true
+  - type: dropdown
+    id: kind
+    attributes:
+      label: What kind of request is it?
+      options:
+        - Something is missing from the API
+        - The API doesn't behave as documented
+        - A question about how to do something
+    validations:
+      required: true
+  - type: textarea
+    id: goal
+    attributes:
+      label: What are you trying to show?
+      placeholder: My multiblock has 27 parts and I want each one to show the controller's energy.
+    validations:
+      required: true
+  - type: textarea
+    id: tried
+    attributes:
+      label: What you tried
+      description: The code you have so far and what happened.
+      render: java
+  - type: textarea
+    id: proposal
+    attributes:
+      label: What would work for you?
+      description: Optional. A method or hook you'd like, if you have one in mind.
+  - type: input
+    id: smwti
+    attributes:
+      label: SMWTI version you build against
+    validations:
+      required: true

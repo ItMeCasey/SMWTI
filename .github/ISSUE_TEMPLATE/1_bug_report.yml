@@ -1,0 +1,81 @@
+name: Bug report
+description: Something in SMWTI doesn't work the way it should.
+title: "[Bug] "
+labels: ["bug"]
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Thanks for taking the time to report this. If the game crashed, use **Crash report** instead.
+        If the overlay shows the wrong information for one block or mob, use **Wrong or missing info**.
+  - type: textarea
+    id: what
+    attributes:
+      label: What happened?
+      description: What you saw, and what you expected to see.
+      placeholder: When I look at a chest on a server, the item icons flicker every second.
+    validations:
+      required: true
+  - type: textarea
+    id: steps
+    attributes:
+      label: Steps to reproduce
+      placeholder: |
+        1. Join a server that has SMWTI
+        2. Look at a chest with items in it
+        3. ...
+    validations:
+      required: true
+  - type: input
+    id: smwti
+    attributes:
+      label: SMWTI version
+      description: From the jar's file name or the mod list.
+    validations:
+      required: true
+  - type: input
+    id: minecraft
+    attributes:
+      label: Minecraft and Forge versions
+      placeholder: Minecraft ..., Forge ...
+    validations:
+      required: true
+  - type: dropdown
+    id: where
+    attributes:
+      label: Where is SMWTI installed?
+      options:
+        - Single player
+        - Client only, on a server without SMWTI
+        - Client and server
+    validations:
+      required: true
+  - type: dropdown
+    id: theme
+    attributes:
+      label: Theme
+      description: Only matters if the problem is how the overlay looks.
+      options:
+        - Modern (default)
+        - Dark
+        - Light
+        - Vanilla
+        - Clear
+        - Not related to the look
+  - type: textarea
+    id: mods
+    attributes:
+      label: Other mods
+      description: The mods in your instance, or a link to your modpack. Leave empty if it happens with SMWTI alone.
+  - type: textarea
+    id: media
+    attributes:
+      label: Screenshots or video
+      description: Drag images or a short clip in here. A screenshot of the overlay helps a lot.
+  - type: textarea
+    id: log
+    attributes:
+      label: Log
+      description: |
+        `logs/latest.log` from your Minecraft folder. For a long log, upload it to https://mclo.gs or a GitHub gist and paste the link.
+      render: text

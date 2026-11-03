@@ -1,0 +1,37 @@
+name: Feature request
+description: An idea for something SMWTI could show or do.
+title: "[Idea] "
+labels: ["enhancement"]
+body:
+  - type: textarea
+    id: idea
+    attributes:
+      label: What would you like?
+      placeholder: Show how many bees are in a nest without breaking it.
+    validations:
+      required: true
+  - type: textarea
+    id: why
+    attributes:
+      label: Why would it help?
+      description: What you're trying to do in game, and what you do now instead.
+    validations:
+      required: true
+  - type: dropdown
+    id: area
+    attributes:
+      label: What part of SMWTI is it about?
+      options:
+        - New info about blocks
+        - New info about mobs
+        - How the overlay looks
+        - Settings and keys
+        - Resource pack rules
+        - Something else
+    validations:
+      required: true
+  - type: textarea
+    id: mockup
+    attributes:
+      label: Sketch or example
+      description: A mockup, a screenshot from another mod, or a short description of how it would look.

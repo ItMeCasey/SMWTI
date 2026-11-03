@@ -1,0 +1,56 @@
+name: Wrong or missing info
+description: The overlay shows the wrong name, mod or state for a block or mob, or leaves something out.
+title: "[Info] "
+labels: ["overlay info"]
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Use this when the overlay is wrong or incomplete for something specific, including blocks and mobs from other mods.
+        Other mods can add their own lines through SMWTI's API, so for a modded block it may be worth telling that mod's author too.
+  - type: input
+    id: target
+    attributes:
+      label: Block or mob
+      description: Its name, and its id if you know it (sneak to see the long form, which shows the id).
+      placeholder: Furnace (minecraft:furnace)
+    validations:
+      required: true
+  - type: input
+    id: mod
+    attributes:
+      label: Which mod adds it?
+      placeholder: Minecraft, or the mod's name and version
+    validations:
+      required: true
+  - type: textarea
+    id: shows
+    attributes:
+      label: What the overlay shows
+      description: A screenshot is best.
+    validations:
+      required: true
+  - type: textarea
+    id: should
+    attributes:
+      label: What it should show
+      placeholder: The fuel time left, like it does for a regular furnace.
+    validations:
+      required: true
+  - type: dropdown
+    id: where
+    attributes:
+      label: Where is SMWTI installed?
+      description: Containers, tanks and machines need SMWTI on the server for live data.
+      options:
+        - Single player
+        - Client only, on a server without SMWTI
+        - Client and server
+    validations:
+      required: true
+  - type: input
+    id: smwti
+    attributes:
+      label: SMWTI version
+    validations:
+      required: true

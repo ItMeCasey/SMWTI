@@ -1,0 +1,8 @@
+blank_issues_enabled: false
+contact_links:
+  - name: Adding SMWTI support to your mod
+    url: https://github.com/ItMeCasey/SMWTI#for-mod-authors
+    about: Examples for the SmwtiApi. Read these first, then open an "API request" if something is missing.
+  - name: Changing how the overlay looks with a resource pack
+    url: https://github.com/ItMeCasey/SMWTI#resource-pack-rules
+    about: Hide, rename or add lines to any block or entity with a small JSON file.
