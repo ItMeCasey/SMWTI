@@ -12,6 +12,7 @@ import java.util.Locale;
 import net.minecraft.ChatFormatting;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.network.chat.Component;
+import net.minecraft.resources.Identifier;
 import net.minecraft.tags.BlockTags;
 import net.minecraft.world.effect.MobEffectCategory;
 import net.minecraft.world.effect.MobEffectInstance;
@@ -21,6 +22,8 @@ import net.minecraft.world.entity.ai.attributes.Attributes;
 import net.minecraft.world.entity.animal.equine.AbstractHorse;
 import net.minecraft.world.entity.decoration.ItemFrame;
 import net.minecraft.world.entity.item.ItemEntity;
+import net.minecraft.world.entity.npc.villager.Villager;
+import net.minecraft.world.entity.npc.villager.VillagerData;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
 import net.minecraft.world.level.block.CocoaBlock;
@@ -66,6 +69,7 @@ public final class VanillaProviders {
         SmwtiApi.registerEntity(VanillaProviders::riders);
         SmwtiApi.registerEntity(VanillaProviders::horse);
         SmwtiApi.registerEntity(VanillaProviders::heldItems);
+        SmwtiApi.registerEntity(VanillaProviders::villager);
         SmwtiApi.registerEntity(VanillaProviders::entityDetails);
         SmwtiApi.overrideEntity(new TargetOverride<EntityView>() {
             @Override
@@ -223,6 +227,19 @@ public final class VanillaProviders {
             double height = -0.1817584952 * jump * jump * jump + 3.689713992 * jump * jump + 2.128599134 * jump - 0.343930367;
             tooltip.add(Component.translatable("smwti.horse.speed", String.format(Locale.ROOT, "%.1f", speed)));
             tooltip.add(Component.translatable("smwti.horse.jump", String.format(Locale.ROOT, "%.1f", height)));
+        }
+    }
+
+    /** A villager's profession and level, such as "Farmer, Journeyman". */
+    private static void villager(Tooltip tooltip, EntityView view) {
+        if (view.entity() instanceof Villager villager) {
+            VillagerData data = villager.getVillagerData();
+            Identifier profession = BuiltInRegistries.VILLAGER_PROFESSION.getKey(data.profession().value());
+            Component job = Component.translatable("entity.minecraft.villager." + profession.getPath());
+            if (villager.isBaby()) {
+                return;
+            }
+            tooltip.add(Component.empty().append(job).append(", ").append(Component.translatable("merchant.level." + data.level())));
         }
     }
 

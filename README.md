@@ -9,7 +9,7 @@ Status: in development (version 2026.11.1). See `PLAN.md`.
 ## For players
 
 - Install it on the client. It also works on a server that has it, and shows more there: the server sends live data about a block or entity, such as what is in a chest or how full a tank is.
-- The overlay shows the target's icon, name and mod, then lines from mods and from SMWTI itself: a crop's growth, a creature's health, the tool that breaks a block, to the right of the name (green when you already hold it), inventories shown as icons with counts, fluid tanks and stored energy on blocks that expose them. Looking at water or lava shows it too.
+- The overlay shows the target's icon, name and mod, then lines from mods and from SMWTI itself: a crop's growth, a creature's health, the tool that breaks a block, to the right of the name (a green check when you hold the right one, a red cross when the block gives no drops without it), inventories shown as icons with counts, fluid tanks and stored energy on blocks that expose them. Looking at water or lava shows it too.
 - Blocks: crop and plant growth, redstone power, a note block's note, composter, cauldron, honey and respawn anchor levels, furnace and brewing stand progress, a spawner's mob, a beacon's level, a hive's bees, a jukebox's disc, a flower pot's plant. Entities: armor, active effects with their time left, riders and mounts, a horse's speed and jump, what an item frame or a dropped item holds, a pet's owner, and how long a young animal takes to grow up or an adult to breed again.
 - Sneak for the long form, which lists more (the default; change it in the settings): the registry id, the block's state, more items.
 - Themes (dark, light, vanilla, clear) and the backdrop's opacity are in the settings.

@@ -29,6 +29,7 @@ public final class DefaultProviders {
     private static final int HEALTH_RED = 0xE04848;
     private static final int GROWTH_GREEN = 0x5DBB63;
     private static final int CHECK_GREEN = 0x55FF55;
+    private static final int CROSS_RED = 0xFF5555;
 
     private DefaultProviders() {
     }
@@ -77,6 +78,9 @@ public final class DefaultProviders {
                 // The tool's picture beside the name, with a green check when the player already holds the right one.
                 if (player.getMainHandItem().isCorrectToolForDrops(state)) {
                     tooltip.stack(Position.BADGE, new ItemStack(kind.icon()), "✔", CHECK_GREEN);
+                } else if (state.requiresCorrectToolForDrops()) {
+                    // The block drops nothing without the right tool, and what is in hand is not it.
+                    tooltip.stack(Position.BADGE, new ItemStack(kind.icon()), "✖", CROSS_RED);
                 } else {
                     tooltip.stack(Position.BADGE, new ItemStack(kind.icon()));
                 }
