@@ -6,7 +6,7 @@ Everything you need to fill in the two project forms. Files are in `branding/ico
 
 | Field | CurseForge | Modrinth |
 |---|---|---|
-| Project ID | 1781438 | (not created yet) |
+| Project ID | 1781438 | CQb1zQ86 (draft, https://modrinth.com/mod/smwti) |
 | Name | Show Me What This Is | Show Me What This Is |
 | Slug / URL | `show-me-what-this-is` | `smwti` (short), or `show-me-what-this-is` |
 | Icon / logo | `icon/icon_512.png` (CurseForge wants square, at least 400x400) | `icon/icon_512.png` (square, under 256 KiB; this one is a few KB) |

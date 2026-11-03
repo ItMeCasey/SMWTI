@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.List;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.network.chat.Component;
+import net.minecraft.world.level.material.Fluid;
 import net.minecraft.world.item.ItemStack;
 
 /**
@@ -37,6 +38,16 @@ public final class Tooltip {
     /** Adds a line of text with a bar under it, {@code fraction} full (clamped to 0 to 1) in the given RGB color. */
     public Tooltip bar(Position position, Component text, double fraction, int color) {
         lines.add(new Line(text, (float) Math.max(0.0, Math.min(1.0, fraction)), color, position, "", 1));
+        return this;
+    }
+
+    /**
+     * Adds a bar filled with a fluid's own texture and tint, with the text over it: the level of a tank.
+     * {@code fraction} is how full it is, clamped to 0 to 1.
+     */
+    public Tooltip fluidBar(Position position, Component text, double fraction, Fluid fluid) {
+        String id = BuiltInRegistries.FLUID.getKey(fluid).toString();
+        lines.add(new Line(text, (float) Math.max(0.0, Math.min(1.0, fraction)), 0xFFFFFF, position, "", 1, "", 0xFFFFFF, id));
         return this;
     }
 

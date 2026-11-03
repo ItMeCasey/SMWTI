@@ -23,9 +23,10 @@ import net.minecraft.world.item.ItemStack;
  * @param count    how many of the item the icon shows
  * @param mark     a short mark drawn small in the icon's lower right corner in place of the count (a check, say), or empty
  * @param markColor the mark's RGB color
+ * @param fluid    the registry name of a fluid whose texture fills the bar (a fluid bar), or an empty string
  */
 public record Line(Component text, float fraction, int color, Position position, String item, int count, String mark,
-                   int markColor) {
+                   int markColor, String fluid) {
     /** The fill of a line that draws no bar. */
     public static final float NO_BAR = -1.0F;
 
@@ -39,12 +40,24 @@ public record Line(Component text, float fraction, int color, Position position,
             Codec.STRING.optionalFieldOf("item", "").forGetter(Line::item),
             Codec.INT.optionalFieldOf("count", 1).forGetter(Line::count),
             Codec.STRING.optionalFieldOf("mark", "").forGetter(Line::mark),
-            Codec.INT.optionalFieldOf("mark_color", 0xFFFFFF).forGetter(Line::markColor)
+            Codec.INT.optionalFieldOf("mark_color", 0xFFFFFF).forGetter(Line::markColor),
+            Codec.STRING.optionalFieldOf("fluid", "").forGetter(Line::fluid)
     ).apply(instance, Line::new));
 
-    /** A line without a mark; the shorter way to build most lines. */
+    /** A line without a mark or a fluid; the shorter way to build most lines. */
     public Line(Component text, float fraction, int color, Position position, String item, int count) {
-        this(text, fraction, color, position, item, count, "", 0xFFFFFF);
+        this(text, fraction, color, position, item, count, "", 0xFFFFFF, "");
+    }
+
+    /** A line with an icon mark and no fluid. */
+    public Line(Component text, float fraction, int color, Position position, String item, int count, String mark,
+                int markColor) {
+        this(text, fraction, color, position, item, count, mark, markColor, "");
+    }
+
+    /** Whether the bar is filled with a fluid's texture. */
+    public boolean isFluidBar() {
+        return hasBar() && !fluid.isEmpty();
     }
 
     /** A line of plain text in the body. */
@@ -74,6 +87,6 @@ public record Line(Component text, float fraction, int color, Position position,
 
     /** The same line moved to another part of the overlay. */
     public Line at(Position where) {
-        return new Line(text, fraction, color, where, item, count, mark, markColor);
+        return new Line(text, fraction, color, where, item, count, mark, markColor, fluid);
     }
 }

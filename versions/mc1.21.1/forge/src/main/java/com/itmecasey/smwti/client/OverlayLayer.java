@@ -29,6 +29,7 @@ import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
+import net.minecraft.world.level.material.Fluid;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraftforge.api.distmarker.Dist;
@@ -65,6 +66,8 @@ public final class OverlayLayer {
     private static final int LINE_GAP = 2;
     private static final int LINE_GAP_COMPACT = 1;
     private static final int BAR_HEIGHT = 3;
+    /** Height of a bar filled with a fluid's texture, tall enough for the texture to show and the text to sit on it. */
+    private static final int FLUID_BAR_HEIGHT = 12;
 
     /** The colors in use this frame; set at the start of each draw. */
     private static Palette palette = Palette.current();
@@ -327,11 +330,18 @@ public final class OverlayLayer {
                 return SLOT;
             }
             Line line = row.lines().get(0);
+            if (line.isFluidBar()) {
+                return FLUID_BAR_HEIGHT;
+            }
             int text = line.icon().isEmpty() ? font.lineHeight : Math.max(font.lineHeight, SMALL_ICON);
             return text + (line.hasBar() ? BAR_HEIGHT + 1 : 0);
         }
 
         private static int lineWidth(Font font, Line line) {
+            if (line.isFluidBar()) {
+                // The text sits on the bar with a little room at each end.
+                return font.width(line.text()) + 8;
+            }
             return font.width(line.text()) + (line.icon().isEmpty() ? 0 : SMALL_ICON + 3);
         }
 
@@ -455,7 +465,21 @@ public final class OverlayLayer {
         }
 
         /** One text line with its icon and bar; returns where the next row starts. */
+        /** A fluid bar: the dark backdrop, the fluid's texture for the filled part, and the text over it. */
+        private int drawFluidBar(GuiGraphics graphics, Font font, Line line, int x, int rowY, int innerWidth) {
+            graphics.fill(x, rowY, x + innerWidth, rowY + FLUID_BAR_HEIGHT, palette.barBack());
+            Fluid fluid = FluidSprites.byName(line.fluid());
+            if (fluid != null) {
+                FluidSprites.drawTiled(graphics, fluid, x, rowY, Math.round(innerWidth * line.fraction()), FLUID_BAR_HEIGHT);
+            }
+            graphics.drawString(font, line.text(), x + 4, rowY + (FLUID_BAR_HEIGHT - font.lineHeight) / 2 + 1, 0xFFFFFFFF, true);
+            return rowY + FLUID_BAR_HEIGHT + lineGap();
+        }
+
         private int drawLine(GuiGraphics graphics, Font font, Line line, int x, int rowY, int innerWidth) {
+            if (line.isFluidBar()) {
+                return drawFluidBar(graphics, font, line, x, rowY, innerWidth);
+            }
             ItemStack small = line.icon();
             int textX = x;
             int textY = rowY;

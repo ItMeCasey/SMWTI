@@ -60,9 +60,14 @@ public final class ServerProviders {
             if (capacity <= 0) {
                 continue;
             }
-            Component name = stored.isEmpty() ? Component.translatable("smwti.fluid.empty") : stored.getDisplayName();
-            tooltip.bar(Component.translatable("smwti.fluid", name, stored.getAmount(), capacity),
-                    (double) stored.getAmount() / capacity, FLUID_BLUE);
+            if (stored.isEmpty()) {
+                tooltip.bar(Component.translatable("smwti.fluid", Component.translatable("smwti.fluid.empty"), 0, capacity),
+                        0.0, FLUID_BLUE);
+            } else {
+                // The overlay fills this bar with the fluid's own texture and tint.
+                tooltip.fluidBar(Position.BODY, Component.translatable("smwti.fluid", stored.getDisplayName(), stored.getAmount(), capacity),
+                        (double) stored.getAmount() / capacity, stored.getFluid());
+            }
         }
     }
 
