@@ -4,7 +4,7 @@ A look-at overlay for Minecraft Forge 26.1.2. Point at a block or an entity and 
 
 It exists because the usual overlay mods (Jade, The One Probe) have no Forge build for this Minecraft version, and WTHIT is the only other choice. SMWTI is inspired by them but shares no code with them.
 
-Status: in development (version 0.2). See `PLAN.md`.
+Status: in development (version 2026.11.1). See `PLAN.md`.
 
 ## For players
 
