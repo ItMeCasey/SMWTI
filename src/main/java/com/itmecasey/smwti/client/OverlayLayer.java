@@ -123,8 +123,12 @@ public final class OverlayLayer {
             case TOP_LEFT -> new int[] {6, 6};
             case TOP_CENTER -> new int[] {(screenWidth - width) / 2, 6};
             case TOP_RIGHT -> new int[] {screenWidth - width - 6, 6};
-            case CUSTOM -> new int[] {(int) Math.round(fractionX * Math.max(0, screenWidth - width)),
-                    (int) Math.round(fractionY * Math.max(0, screenHeight - height))};
+            case CUSTOM -> {
+                // Worked out in screen pixels, where the margins and the hotbar are, then back to the overlay's units.
+                int[] pixels = OverlayPlacement.fromFractions(guiWidth, guiHeight, Math.round(width * scale),
+                        Math.round(height * scale), fractionX, fractionY);
+                yield new int[] {Math.round(pixels[0] / scale), Math.round(pixels[1] / scale)};
+            }
         };
     }
 

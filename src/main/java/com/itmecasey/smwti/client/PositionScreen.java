@@ -11,16 +11,23 @@ import org.jetbrains.annotations.Nullable;
 /**
  * Lets the player drag the overlay anywhere on the screen. It shows a sample panel where the
  * overlay is now; dragging moves it, and closing the screen keeps the new spot (the anchor becomes
- * custom). The spot is stored as fractions of the room the panel has to move in, so it still fits
- * when the window or the overlay's size changes.
+ * custom). While it is dragged it clings softly to the centers and the corners, keeps clear of
+ * the screen's edges and stays off the hotbar (see {@link OverlayPlacement}). The spot is stored as fractions of the room the panel has
+ * to move in, so it still fits when the window or the overlay's size changes.
  */
 public final class PositionScreen extends Screen {
+    private static final int GUIDE = 0x80FFFFFF;
+    private static final int HOTBAR = 0x30FFFFFF;
+
     private final @Nullable Screen parent;
     private double fractionX = SmwtiConfig.positionX();
     private double fractionY = SmwtiConfig.positionY();
     /** Where the panel was, in GUI pixels: x, y, width, height; set each frame. */
     private int[] panel = {0, 0, 0, 0};
     private boolean dragging;
+    /** Whether the panel is clinging to the middle of the screen across or down, which draws a guide line. */
+    private boolean centeredX;
+    private boolean centeredY;
     private double grabX;
     private double grabY;
 
@@ -53,6 +60,14 @@ public final class PositionScreen extends Screen {
         super.extractRenderState(graphics, mouseX, mouseY, partialTick);
         Component hint = Component.translatable("smwti.position.hint");
         graphics.text(font, hint, (width - font.width(hint)) / 2, height - 46, 0xFFFFFFFF, true);
+        // Where the hotbar will be in the game, which the panel keeps off.
+        graphics.fill(width / 2 - 91, height - 22, width / 2 + 91, height, HOTBAR);
+        if (centeredX) {
+            graphics.fill(width / 2, 0, width / 2 + 1, height, GUIDE);
+        }
+        if (centeredY) {
+            graphics.fill(0, height / 2, width, height / 2 + 1, GUIDE);
+        }
         panel = OverlayLayer.drawSample(graphics, font, fractionX, fractionY);
     }
 
@@ -76,17 +91,23 @@ public final class PositionScreen extends Screen {
         if (!dragging) {
             return super.mouseDragged(event, dx, dy);
         }
-        // The panel can move across the room left over once its own size is taken out.
-        double roomX = width - panel[2];
-        double roomY = height - panel[3];
-        fractionX = roomX <= 0 ? 0.0 : Math.max(0.0, Math.min(1.0, (event.x() - grabX) / roomX));
-        fractionY = roomY <= 0 ? 0.0 : Math.max(0.0, Math.min(1.0, (event.y() - grabY) / roomY));
+        // Where the panel's corner would be, clung to the centers and corners when it is near them,
+        // and kept off the edges and the hotbar.
+        OverlayPlacement.Snapped spot = OverlayPlacement.snap(width, height, panel[2], panel[3],
+                (int) Math.round(event.x() - grabX), (int) Math.round(event.y() - grabY));
+        double[] fractions = OverlayPlacement.toFractions(width, height, panel[2], panel[3], spot.x(), spot.y());
+        fractionX = fractions[0];
+        fractionY = fractions[1];
+        centeredX = spot.centeredX();
+        centeredY = spot.centeredY();
         return true;
     }
 
     @Override
     public boolean mouseReleased(MouseButtonEvent event) {
         dragging = false;
+        centeredX = false;
+        centeredY = false;
         return super.mouseReleased(event);
     }
 
