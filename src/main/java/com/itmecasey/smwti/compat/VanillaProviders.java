@@ -6,10 +6,13 @@ import com.itmecasey.smwti.api.Position;
 import com.itmecasey.smwti.api.SmwtiApi;
 import com.itmecasey.smwti.api.TargetOverride;
 import com.itmecasey.smwti.api.Tooltip;
+import it.unimi.dsi.fastutil.objects.Object2IntMap;
 import java.util.Collection;
 import java.util.List;
 import java.util.Locale;
 import net.minecraft.ChatFormatting;
+import net.minecraft.core.Holder;
+import net.minecraft.core.component.DataComponents;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.Identifier;
@@ -17,6 +20,7 @@ import net.minecraft.tags.BlockTags;
 import net.minecraft.world.effect.MobEffectCategory;
 import net.minecraft.world.effect.MobEffectInstance;
 import net.minecraft.world.entity.Entity;
+import net.minecraft.world.entity.EquipmentSlot;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.ai.attributes.Attributes;
 import net.minecraft.world.entity.animal.equine.AbstractHorse;
@@ -26,13 +30,18 @@ import net.minecraft.world.entity.npc.villager.Villager;
 import net.minecraft.world.entity.npc.villager.VillagerData;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
+import net.minecraft.world.item.enchantment.Enchantment;
+import net.minecraft.world.item.enchantment.ItemEnchantments;
 import net.minecraft.world.level.block.CocoaBlock;
 import net.minecraft.world.level.block.CropBlock;
 import net.minecraft.world.level.block.ComposterBlock;
 import net.minecraft.world.level.block.FlowerPotBlock;
 import net.minecraft.world.level.block.NetherWartBlock;
 import net.minecraft.world.level.block.SweetBerryBushBlock;
+import net.minecraft.world.level.block.entity.CampfireBlockEntity;
 import net.minecraft.world.level.block.entity.JukeboxBlockEntity;
+import net.minecraft.world.level.block.entity.LecternBlockEntity;
+import net.minecraft.world.level.block.entity.SignBlockEntity;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.block.state.properties.BlockStateProperties;
 import net.minecraft.world.level.block.state.properties.IntegerProperty;
@@ -64,13 +73,23 @@ public final class VanillaProviders {
         SmwtiApi.registerBlock(VanillaProviders::redstone);
         SmwtiApi.registerBlock(VanillaProviders::contents);
         SmwtiApi.registerBlock(VanillaProviders::blockDetails);
+        SmwtiApi.registerBlock(VanillaProviders::harvest);
+        SmwtiApi.registerBlock(VanillaProviders::texts);
         SmwtiApi.registerEntity(VanillaProviders::armor);
         SmwtiApi.registerEntity(VanillaProviders::effects);
         SmwtiApi.registerEntity(VanillaProviders::riders);
         SmwtiApi.registerEntity(VanillaProviders::horse);
         SmwtiApi.registerEntity(VanillaProviders::heldItems);
+        SmwtiApi.registerEntity((tooltip, view) -> {
+            if (view.detailed() && view.entity() instanceof ItemEntity dropped) {
+                enchantments(tooltip, dropped.getItem());
+            } else if (view.detailed() && view.entity() instanceof ItemFrame frame) {
+                enchantments(tooltip, frame.getItem());
+            }
+        });
         SmwtiApi.registerEntity(VanillaProviders::villager);
         SmwtiApi.registerEntity(VanillaProviders::entityDetails);
+        SmwtiApi.registerEntity(VanillaProviders::equipment);
         SmwtiApi.overrideEntity(new TargetOverride<EntityView>() {
             @Override
             public Component name(EntityView view) {
@@ -166,6 +185,41 @@ public final class VanillaProviders {
         }
     }
 
+    /** In the long form: the tool tier the block needs, how hard it is and how well it stands up to explosions. */
+    private static void harvest(Tooltip tooltip, BlockView view) {
+        if (!view.detailed()) {
+            return;
+        }
+        BlockState state = view.state();
+        float hardness = state.getDestroySpeed(view.level(), view.pos());
+        if (hardness < 0) {
+            tooltip.add(Position.TAIL, Component.translatable("smwti.unbreakable"));
+            return;
+        }
+        String tier = state.is(BlockTags.NEEDS_DIAMOND_TOOL) ? "diamond" : state.is(BlockTags.NEEDS_IRON_TOOL) ? "iron"
+                : state.is(BlockTags.NEEDS_STONE_TOOL) ? "stone" : null;
+        if (tier != null) {
+            tooltip.add(Position.TAIL, Component.translatable("smwti.tier." + tier));
+        }
+        tooltip.add(Position.TAIL, Component.translatable("smwti.hardness", String.format(Locale.ROOT, "%.1f", hardness),
+                String.format(Locale.ROOT, "%.1f", state.getBlock().getExplosionResistance())));
+    }
+
+    /** What is written on a sign, what book a lectern holds and what is cooking on a campfire. */
+    private static void texts(Tooltip tooltip, BlockView view) {
+        if (view.entity() instanceof SignBlockEntity sign) {
+            for (Component line : sign.getFrontText().getMessages(false)) {
+                if (!line.getString().isBlank()) {
+                    tooltip.add(line);
+                }
+            }
+        } else if (view.entity() instanceof LecternBlockEntity lectern && !lectern.getBook().isEmpty()) {
+            tooltip.item(lectern.getBook(), lectern.getBook().getHoverName());
+        } else if (view.entity() instanceof CampfireBlockEntity campfire) {
+            campfire.getItems().stream().filter(stack -> !stack.isEmpty()).forEach(stack -> tooltip.stack(Position.BODY, stack));
+        }
+    }
+
     // --- Entities ---------------------------------------------------------------------------
 
     /** Armor points, shown with a chestplate. */
@@ -230,6 +284,14 @@ public final class VanillaProviders {
         }
     }
 
+    /** The enchantments on a stack, one line each, in the long form. */
+    private static void enchantments(Tooltip tooltip, ItemStack stack) {
+        ItemEnchantments enchantments = stack.getOrDefault(DataComponents.ENCHANTMENTS, ItemEnchantments.EMPTY);
+        for (Object2IntMap.Entry<Holder<Enchantment>> entry : enchantments.entrySet()) {
+            tooltip.add(Position.TAIL, Enchantment.getFullname(entry.getKey(), entry.getIntValue()));
+        }
+    }
+
     /** A villager's profession and level, such as "Farmer, Journeyman". */
     private static void villager(Tooltip tooltip, EntityView view) {
         if (view.entity() instanceof Villager villager) {
@@ -247,6 +309,22 @@ public final class VanillaProviders {
     private static void heldItems(Tooltip tooltip, EntityView view) {
         if (view.entity() instanceof ItemFrame frame && !frame.getItem().isEmpty()) {
             tooltip.item(frame.getItem(), frame.getItem().getHoverName());
+        }
+    }
+
+    /** The items a mob or an armor stand holds and wears, as a row of icons. */
+    private static void equipment(Tooltip tooltip, EntityView view) {
+        if (!(view.entity() instanceof LivingEntity living) || living instanceof net.minecraft.world.entity.player.Player) {
+            return;
+        }
+        for (EquipmentSlot slot : EquipmentSlot.values()) {
+            if (slot == EquipmentSlot.BODY || slot == EquipmentSlot.SADDLE) {
+                continue;
+            }
+            ItemStack stack = living.getItemBySlot(slot);
+            if (!stack.isEmpty()) {
+                tooltip.stack(Position.BODY, stack.copyWithCount(1));
+            }
         }
     }
 

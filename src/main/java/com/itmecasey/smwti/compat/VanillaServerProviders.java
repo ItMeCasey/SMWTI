@@ -49,7 +49,7 @@ public final class VanillaServerProviders {
             case AbstractFurnaceBlockEntity furnace -> furnace(tooltip, data);
             case BrewingStandBlockEntity stand -> brewing(tooltip, data);
             case SpawnerBlockEntity spawner -> spawner(tooltip, data);
-            case BeaconBlockEntity beacon -> number(tooltip, "smwti.beacon", data, 0, "Levels", "levels");
+            case BeaconBlockEntity beacon -> beacon(tooltip, data);
             case BeehiveBlockEntity hive -> hive(tooltip, data);
             default -> {
             }
@@ -102,6 +102,17 @@ public final class VanillaServerProviders {
     private static void spawner(Tooltip tooltip, CompoundTag data) {
         data.getCompound("SpawnData").flatMap(spawn -> spawn.getCompound("entity")).flatMap(entity -> entity.getString("id"))
                 .ifPresent(id -> tooltip.add(Component.translatable("smwti.spawner", id.replaceFirst("^minecraft:", ""))));
+    }
+
+    /** A beacon's level and the effects it gives. */
+    private static void beacon(Tooltip tooltip, CompoundTag data) {
+        number(tooltip, "smwti.beacon", data, 0, "Levels", "levels");
+        for (String key : new String[] {"primary_effect", "Primary"}) {
+            data.getString(key).ifPresent(id -> tooltip.add(Component.translatable("smwti.beacon.primary", id.replaceFirst("^minecraft:", ""))));
+        }
+        for (String key : new String[] {"secondary_effect", "Secondary"}) {
+            data.getString(key).ifPresent(id -> tooltip.add(Component.translatable("smwti.beacon.secondary", id.replaceFirst("^minecraft:", ""))));
+        }
     }
 
     /** How many bees a hive or nest holds. */
