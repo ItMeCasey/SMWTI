@@ -12,7 +12,7 @@ Status: in development (version 2026.11.1). See `PLAN.md`.
 - The overlay shows the target's icon, name and mod, then lines from mods and from SMWTI itself: a crop's growth, a creature's health, the tool that breaks a block, to the right of the name (a green check when you hold the right one, a red cross when the block gives no drops without it), inventories shown as icons with counts, fluid tanks and stored energy on blocks that expose them. Looking at water or lava shows it too.
 - Blocks: crop and plant growth, redstone power, a note block's note, composter, cauldron, honey and respawn anchor levels, furnace and brewing stand progress, a spawner's mob, a beacon's level, a hive's bees, a jukebox's disc, a flower pot's plant. Entities: armor, active effects with their time left, riders and mounts, a horse's speed and jump, what an item frame or a dropped item holds, a pet's owner, and how long a young animal takes to grow up or an adult to breed again.
 - Sneak for the long form, which lists more (the default; change it in the settings): the registry id, the block's state, more items.
-- Themes (dark, light, vanilla, clear, modern) and the backdrop's opacity are in the settings.
+- Themes (dark, light, vanilla, clear, modern; modern is the default) and the backdrop's opacity (80% by default) are in the settings. "Move overlay..." there lets you drag the panel anywhere on the screen; the spot is remembered as a fraction of the screen, so it survives window and size changes.
 - Numpad 0 opens the settings screen and numpad 1 switches the overlay on and off; both keys can be changed in Controls. Settings are also in `config/smwti-client.toml`.
 
 ### Resource pack rules

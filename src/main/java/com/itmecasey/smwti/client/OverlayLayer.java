@@ -89,13 +89,10 @@ public final class OverlayLayer {
         int width = content.width(font);
         int height = content.height(font);
         float scale = SmwtiConfig.scale();
-        int screenWidth = (int) (graphics.guiWidth() / scale);
-        int x = switch (SmwtiConfig.anchor()) {
-            case TOP_LEFT -> 6;
-            case TOP_CENTER -> (screenWidth - width) / 2;
-            case TOP_RIGHT -> screenWidth - width - 6;
-        };
-        int y = 6;
+        int[] at = position(graphics.guiWidth(), graphics.guiHeight(), width, height, scale, SmwtiConfig.anchor(),
+                SmwtiConfig.positionX(), SmwtiConfig.positionY());
+        int x = at[0];
+        int y = at[1];
 
         RenderCallback.Panel panel = new RenderCallback.Panel(content.name(), x, y, width, height);
         for (RenderCallback callback : SmwtiApi.renderCallbacks()) {
@@ -105,6 +102,31 @@ public final class OverlayLayer {
         }
         graphics.pose().pushMatrix();
         graphics.pose().scale(scale, scale);
+        drawPanel(graphics, font, content, x, y, width, height);
+        for (RenderCallback callback : SmwtiApi.renderCallbacks()) {
+            run(() -> callback.after(graphics, panel));
+        }
+        graphics.pose().popMatrix();
+    }
+
+    /**
+     * Where the panel's top left corner goes, in the overlay's own (scaled) units: an anchor along
+     * the top, or a custom spot given as fractions of the room the panel has to move in.
+     */
+    private static int[] position(int guiWidth, int guiHeight, int width, int height, float scale, SmwtiConfig.Anchor anchor,
+                                  double fractionX, double fractionY) {
+        int screenWidth = (int) (guiWidth / scale);
+        int screenHeight = (int) (guiHeight / scale);
+        return switch (anchor) {
+            case TOP_LEFT -> new int[] {6, 6};
+            case TOP_CENTER -> new int[] {(screenWidth - width) / 2, 6};
+            case TOP_RIGHT -> new int[] {screenWidth - width - 6, 6};
+            case CUSTOM -> new int[] {(int) Math.round(fractionX * Math.max(0, screenWidth - width)),
+                    (int) Math.round(fractionY * Math.max(0, screenHeight - height))};
+        };
+    }
+
+    private static void drawPanel(GuiGraphicsExtractor graphics, Font font, Content content, int x, int y, int width, int height) {
         if ((palette.edge() >>> 24) == 0) {
             graphics.fill(x, y, x + width, y + height, palette.panel());
         } else {
@@ -115,10 +137,30 @@ public final class OverlayLayer {
             graphics.fill(x, y, x + width, y + 2, palette.accent());
         }
         content.draw(graphics, font, x + PADDING, y + PADDING, width - 2 * PADDING);
-        for (RenderCallback callback : SmwtiApi.renderCallbacks()) {
-            run(() -> callback.after(graphics, panel));
-        }
+    }
+
+    /**
+     * Draws a sample panel at a custom spot for the move screen, and returns where it landed on
+     * the screen in GUI pixels: x, y, width, height.
+     */
+    public static int[] drawSample(GuiGraphicsExtractor graphics, Font font, double fractionX, double fractionY) {
+        palette = Palette.current();
+        Tooltip tooltip = new Tooltip();
+        tooltip.bar(Component.translatable("smwti.sample.growth"), 0.6, 0x5DBB63);
+        tooltip.stack(Position.BODY, new ItemStack(net.minecraft.world.item.Items.DIAMOND, 5));
+        tooltip.stack(Position.BODY, new ItemStack(net.minecraft.world.item.Items.IRON_INGOT, 32));
+        Content sample = new Content(new ItemStack(net.minecraft.world.item.Items.GRASS_BLOCK),
+                Component.translatable("smwti.sample.name"), modName("minecraft"), tooltip);
+        int width = sample.width(font);
+        int height = sample.height(font);
+        float scale = SmwtiConfig.scale();
+        int[] at = position(graphics.guiWidth(), graphics.guiHeight(), width, height, scale, SmwtiConfig.Anchor.CUSTOM,
+                fractionX, fractionY);
+        graphics.pose().pushMatrix();
+        graphics.pose().scale(scale, scale);
+        drawPanel(graphics, font, sample, at[0], at[1], width, height);
         graphics.pose().popMatrix();
+        return new int[] {Math.round(at[0] * scale), Math.round(at[1] * scale), Math.round(width * scale), Math.round(height * scale)};
     }
 
     /** What the overlay shows for the current target, or {@code null} when there is none. */

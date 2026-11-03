@@ -174,6 +174,8 @@ function sprite(name, s) {
 }
 
 // ---------- helpers ----------
+// Compact assets render at device scale 2; half() shows a canvas at half its pixel size so it stays crisp.
+function half(c) { c.style.width = c.width / 2 + "px"; c.style.height = c.height / 2 + "px"; return c; }
 function el(tag, attrs = {}, ...kids) {
   const e = document.createElement(tag);
   for (const [k, v] of Object.entries(attrs)) k === "style" ? (e.style.cssText = v) : e.setAttribute(k, v);
@@ -231,16 +233,16 @@ function themePanel([label, c, flags]) {
     el("div", {class: "line"}, "Fuel: 12 s left"));
 }
 // An original pixel landscape: sky, clouds, grassy hills. Block size in px.
-function scene(w, h, bs) {
+function scene(w, h, bs, groundRows = 5, clouds = true) {
   const c = document.createElement("canvas"); c.width = w; c.height = h;
   const x = c.getContext("2d");
   const g = x.createLinearGradient(0, 0, 0, h); g.addColorStop(0, "#6fb6ea"); g.addColorStop(1, "#c4e6f8");
   x.fillStyle = g; x.fillRect(0, 0, w, h);
   let seed = 11; const rnd = () => (seed = (seed * 16807) % 2147483647) / 2147483647;
   x.fillStyle = "rgba(255,255,255,.92)";
-  for (const [cx, cy, cw] of [[2, 2, 6], [13, 4, 4], [24, 1, 7], [33, 5, 5]])
+  if (clouds) for (const [cx, cy, cw] of [[2, 2, 6], [13, 4, 4], [24, 1, 7], [33, 5, 5]])
     { x.fillRect(cx * bs, cy * bs, cw * bs, bs); x.fillRect((cx + 1) * bs, (cy - 1) * bs, (cw - 3) * bs, bs); }
-  const cols = Math.ceil(w / bs), base = Math.floor(h / bs) - 5;
+  const cols = Math.ceil(w / bs), base = Math.floor(h / bs) - groundRows;
   for (let i = 0; i < cols; i++) {
     const top = base + Math.round(Math.sin(i * 0.3) * 1.2);
     for (let j = top; j * bs < h; j++) {
@@ -258,14 +260,27 @@ function scene(w, h, bs) {
 
 // ---------- assets ----------
 const ASSETS = {
-  banner: [1600, 400, (r) => {
-    r.style.cssText += "display:flex;align-items:center;gap:56px;padding:0 72px";
-    r.append(iconImg(256));
-    r.append(el("div", {style: "display:flex;flex-direction:column;gap:22px;flex:1"},
-      pixelText("Show me what this is", 7),
-      el("div", {class: "tag"}, "Point at a block or a mob. ", el("b", {}, "Know what it is.")),
-      el("div", {class: "meta"}, el("span", {class: "pill on"}, "Forge 26.1.2"), el("span", {class: "pill"}, "Client + optional server"), el("span", {class: "pill"}, "Open API"))));
-    const p = PANELS.crop(); p.style.transform = "rotate(-2deg)"; r.append(p);
+  banner: [800, 150, (r) => {
+    r.style.cssText += "display:flex;align-items:center;gap:24px;padding:0 28px";
+    r.append(iconImg(104));
+    r.append(el("div", {style: "display:flex;flex-direction:column;align-items:flex-start;gap:11px;flex:1"},
+      half(pixelText("Show me what this is", 7)),
+      el("div", {class: "tag", style: "font-size:16px"}, "Point at a block or a mob. ", el("b", {}, "Know what it is.")),
+      el("div", {class: "meta", style: "gap:6px"},
+        el("span", {class: "pill on", style: "font-size:11px;padding:3px 9px"}, "Forge 26.1.2"),
+        el("span", {class: "pill", style: "font-size:11px;padding:3px 9px"}, "Client + optional server"),
+        el("span", {class: "pill", style: "font-size:11px;padding:3px 9px"}, "Open API"))));
+    const p = PANELS.crop(); p.style.cssText += ";zoom:.5;transform:rotate(-2deg)"; r.append(p);
+  }],
+  themes_strip: [800, 150, (r) => {
+    const bg = scene(1600, 300, 48, 2, false); half(bg); bg.style.cssText = "position:absolute;inset:0";
+    r.append(bg);
+    const row = el("div", {style: "position:absolute;left:0;right:0;top:12px;display:flex;justify-content:center;gap:8px"});
+    for (const t of THEMES) {
+      const p = themePanel(t); p.style.cssText += ";zoom:.46";
+      row.append(el("div", {}, p, el("div", {class: "tlabel", style: "margin-top:7px"}, half(pixelText(t[0], 4, WHITE)))));
+    }
+    r.append(row);
   }],
   social: [1280, 640, (r) => {
     r.style.cssText += "display:flex;flex-direction:column;align-items:center;justify-content:center;gap:28px;text-align:center";
@@ -307,10 +322,10 @@ const ASSETS = {
   }],
 };
 for (const [k, label] of Object.entries({features: "Features", themes: "Themes", players: "For players", authors: "For mod authors", install: "Install", config: "Settings", faq: "FAQ"})) {
-  ASSETS["h_" + k] = [1200, 110, (r) => {
-    r.style.cssText += "display:flex;align-items:center;gap:26px;padding:0 36px;border-top:3px solid var(--gold);";
-    r.append(iconImg(64));
-    r.append(pixelText(label, 6));
+  ASSETS["h_" + k] = [800, 46, (r) => {
+    r.style.cssText += "display:flex;align-items:center;gap:14px;padding:0 16px;border-top:2px solid var(--gold)";
+    r.append(iconImg(30));
+    r.append(half(pixelText(label, 5)));
   }];
 }
 

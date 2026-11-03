@@ -45,6 +45,9 @@ public final class SettingsScreen extends Screen {
         addControl(CycleButton.builder(SettingsScreen::anchorName, SmwtiConfig.anchor())
                 .withValues(SmwtiConfig.Anchor.values()), "smwti.settings.anchor",
                 (button, value) -> SmwtiConfig.setAnchor(value));
+        addRenderableWidget(Button.builder(Component.translatable("smwti.settings.move"),
+                button -> minecraft.setScreen(new PositionScreen(this))).bounds(columnX(placed), rowY(placed), COLUMN, 20).build());
+        placed++;
         addControl(CycleButton.builder((Double scale) -> Component.literal(scale + "x"), nearest(SCALES, SmwtiConfig.scale()))
                 .withValues(SCALES), "smwti.settings.scale", (button, value) -> SmwtiConfig.setScale(value));
         addControl(CycleButton.builder(SettingsScreen::themeName, SmwtiConfig.theme())

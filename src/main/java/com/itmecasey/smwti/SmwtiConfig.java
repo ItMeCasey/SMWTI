@@ -9,7 +9,7 @@ import net.minecraftforge.common.ForgeConfigSpec;
 public final class SmwtiConfig {
     /** Where on the screen the overlay sits. */
     public enum Anchor {
-        TOP_LEFT, TOP_CENTER, TOP_RIGHT
+        TOP_LEFT, TOP_CENTER, TOP_RIGHT, CUSTOM
     }
 
     /** The overlay's colors. */
@@ -26,11 +26,11 @@ public final class SmwtiConfig {
 
     private static final ForgeConfigSpec.EnumValue<Theme> THEME = BUILDER
             .comment("Colors of the overlay: dark, light, vanilla (like a tooltip), clear (a faint backdrop) or modern (flat and square with an orange line on top).")
-            .defineEnum("theme", Theme.DARK);
+            .defineEnum("theme", Theme.MODERN);
 
     private static final ForgeConfigSpec.DoubleValue OPACITY = BUILDER
             .comment("How solid the overlay's backdrop is, from 0.2 (faint) to 1.")
-            .defineInRange("opacity", 1.0, 0.2, 1.0);
+            .defineInRange("opacity", 0.8, 0.2, 1.0);
 
     private static final ForgeConfigSpec.EnumValue<Detail> DETAIL = BUILDER
             .comment("When providers may show their longer lines: only while sneaking, always, or never.")
@@ -45,8 +45,16 @@ public final class SmwtiConfig {
             .define("enabled", true);
 
     private static final ForgeConfigSpec.EnumValue<Anchor> ANCHOR = BUILDER
-            .comment("Which part of the top of the screen the overlay hangs from.")
+            .comment("Which part of the top of the screen the overlay hangs from. CUSTOM uses positionX and positionY, which the settings screen sets when you drag the overlay.")
             .defineEnum("anchor", Anchor.TOP_CENTER);
+
+    private static final ForgeConfigSpec.DoubleValue POSITION_X = BUILDER
+            .comment("With the CUSTOM anchor: how far across the screen the overlay sits, 0 at the left edge, 1 at the right.")
+            .defineInRange("positionX", 0.5, 0.0, 1.0);
+
+    private static final ForgeConfigSpec.DoubleValue POSITION_Y = BUILDER
+            .comment("With the CUSTOM anchor: how far down the screen the overlay sits, 0 at the top edge, 1 at the bottom.")
+            .defineInRange("positionY", 0.0, 0.0, 1.0);
 
     private static final ForgeConfigSpec.DoubleValue SCALE = BUILDER
             .comment("Size of the overlay, 1 is normal.")
@@ -99,6 +107,23 @@ public final class SmwtiConfig {
         ENABLED.set(value);
     }
 
+    /** Puts the overlay at a custom spot: fractions of the room it has, 0 to 1 across and down. */
+    public static void setPosition(double x, double y) {
+        POSITION_X.set(Math.max(0.0, Math.min(1.0, x)));
+        POSITION_Y.set(Math.max(0.0, Math.min(1.0, y)));
+        ANCHOR.set(Anchor.CUSTOM);
+    }
+
+    /** How far across the free width the custom position is. */
+    public static double positionX() {
+        return SPEC.isLoaded() ? POSITION_X.get() : 0.5;
+    }
+
+    /** How far down the free height the custom position is. */
+    public static double positionY() {
+        return SPEC.isLoaded() ? POSITION_Y.get() : 0.0;
+    }
+
     public static void setAnchor(Anchor value) {
         ANCHOR.set(value);
     }
@@ -125,12 +150,12 @@ public final class SmwtiConfig {
 
     /** The overlay's colors. */
     public static Theme theme() {
-        return SPEC.isLoaded() ? THEME.get() : Theme.DARK;
+        return SPEC.isLoaded() ? THEME.get() : Theme.MODERN;
     }
 
     /** How solid the backdrop is. */
     public static float opacity() {
-        return SPEC.isLoaded() ? OPACITY.get().floatValue() : 1.0F;
+        return SPEC.isLoaded() ? OPACITY.get().floatValue() : 0.8F;
     }
 
     /** When providers may show their long form. */
