@@ -6,7 +6,6 @@ import com.itmecasey.smwti.api.Position;
 import com.itmecasey.smwti.api.SmwtiApi;
 import com.itmecasey.smwti.api.Tooltip;
 import java.util.List;
-import net.minecraft.ChatFormatting;
 import net.minecraft.client.Minecraft;
 import net.minecraft.network.chat.Component;
 import net.minecraft.tags.BlockTags;
@@ -74,9 +73,8 @@ public final class DefaultProviders {
         }
         for (ToolKind kind : TOOLS) {
             if (state.is(kind.mines())) {
-                boolean right = player.getMainHandItem().isCorrectToolForDrops(state);
-                tooltip.item(Position.BADGE, new ItemStack(kind.icon()), Component.translatable("smwti.tool." + kind.id())
-                        .withStyle(right ? ChatFormatting.GREEN : ChatFormatting.GRAY));
+                // Just the tool's picture, beside the name.
+                tooltip.stack(Position.BADGE, new ItemStack(kind.icon()));
                 return;
             }
         }

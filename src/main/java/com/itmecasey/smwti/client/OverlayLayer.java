@@ -257,17 +257,28 @@ public final class OverlayLayer {
 
         int width(Font font) {
             Line badge = badge();
-            int header = Math.max(font.width(name) + (badge == null ? 0 : BADGE_GAP + lineWidth(font, badge)), font.width(mod));
-            int widest = header + textLeft();
+            int top = textLeft() + font.width(name) + (badge == null ? 0 : BADGE_GAP + badgeWidth(font, badge));
+            int widest = Math.max(top, textLeft() + font.width(mod));
             for (Row row : rows()) {
                 widest = Math.max(widest, rowWidth(font, row));
             }
             return Math.max(widest, 60) + 2 * PADDING;
         }
 
+        /** A badge that is only an item stack is drawn at full size, like the target's own icon. */
+        private static int badgeWidth(Font font, Line badge) {
+            return badge.isStack() ? ICON : lineWidth(font, badge);
+        }
+
+        /** The height of the top line, which holds the icon, the name and the badge side by side. */
+        private int topLineHeight(Font font) {
+            Line badge = badge();
+            boolean tall = !icon.isEmpty() || (badge != null && badge.isStack());
+            return Math.max(font.lineHeight, tall ? ICON : 0);
+        }
+
         private int headerHeight(Font font) {
-            int text = font.lineHeight + (mod.getString().isEmpty() ? 0 : font.lineHeight + 1);
-            return Math.max(icon.isEmpty() ? 0 : ICON, text);
+            return topLineHeight(font) + (mod.getString().isEmpty() ? 0 : font.lineHeight + 1);
         }
 
         int height(Font font) {
@@ -282,15 +293,22 @@ public final class OverlayLayer {
             if (!icon.isEmpty()) {
                 graphics.fakeItem(icon, x, y);
             }
+            // The icon, the name and the badge share the top line, each centered on it.
+            int top = topLineHeight(font);
             int textX = x + textLeft();
-            graphics.text(font, name, textX, y, TEXT, true);
+            graphics.text(font, name, textX, y + (top - font.lineHeight) / 2, TEXT, true);
             if (!mod.getString().isEmpty()) {
-                graphics.text(font, mod, textX, y + font.lineHeight + 1, MOD_TEXT, false);
+                graphics.text(font, mod, textX, y + top + 1, MOD_TEXT, false);
             }
             Line badge = badge();
             if (badge != null) {
-                // Flush with the right edge of the panel, on the row of the name.
-                drawLine(graphics, font, badge, x + innerWidth - lineWidth(font, badge), y - 1, 0);
+                // Flush with the right edge of the panel.
+                int badgeX = x + innerWidth - badgeWidth(font, badge);
+                if (badge.isStack()) {
+                    graphics.fakeItem(badge.icon(), badgeX, y + (top - ICON) / 2);
+                } else {
+                    drawLine(graphics, font, badge, badgeX, y + (top - Math.max(font.lineHeight, SMALL_ICON)) / 2, 0);
+                }
             }
             int rowY = y + headerHeight(font) + LINE_GAP;
             for (Row row : rows()) {
