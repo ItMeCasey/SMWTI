@@ -233,6 +233,22 @@ function themePanel([label, c, flags]) {
     bar(62, "linear-gradient(90deg,#e0702a,#ffc14a)", "Smelting 62%"),
     el("div", {class: "line"}, "Fuel: 12 s left"));
 }
+// Example resource pack themes from the wiki, turned into panel colors at 80% opacity.
+const PACK_THEMES = [
+  ["Ocean",     {panel:"#0B2530", panel_alpha:210, edge:"#2A6F7F", edge_alpha:255, text:"#E6FAFF", sub:"#7FC4D4", bar_back:"#123845", shadow:true, accent:"#3FD8C8"}],
+  ["Parchment", {panel:"#F3E7C9", panel_alpha:235, edge:"#8B6B3E", edge_alpha:255, text:"#3B2A17", sub:"#8B6B3E", bar_back:"#D9C79E", shadow:false}],
+  ["Redstone",  {panel:"#1A0606", panel_alpha:220, edge:"#000000", edge_alpha:0,   text:"#FFE5E5", sub:"#D07070", bar_back:"#3A1010", shadow:true, accent:"#E53B3B"}],
+  ["Glass",     {panel:"#FFFFFF", panel_alpha:40,  edge:"#FFFFFF", edge_alpha:90,  text:"#FFFFFF", sub:"#E0E8F0", bar_back:"#00000055", shadow:true}],
+];
+function rgba(hex, a) { const n = parseInt(hex.slice(1, 7), 16); return `rgba(${n >> 16},${(n >> 8) & 255},${n & 255},${(a * .8 / 255).toFixed(3)})`; }
+function packTheme([label, d]) {
+  const c = {p: rgba(d.panel, d.panel_alpha), e: rgba(d.edge, d.edge_alpha), t: d.text, s: d.sub,
+    b: d.bar_back.length > 7 ? "rgba(0,0,0,.33)" : d.bar_back};
+  if (d.accent) c.a = d.accent;
+  const flags = [d.edge_alpha > 0 ? "edge" : "", d.shadow ? "shadow" : "", d.accent ? "accent" : ""].join(" ");
+  return [label, c, flags];
+}
+
 // An original pixel landscape: sky, clouds, grassy hills. Block size in px.
 function scene(w, h, bs, groundRows = 5, clouds = true) {
   const c = document.createElement("canvas"); c.width = w; c.height = h;
@@ -272,6 +288,16 @@ const ASSETS = {
         el("span", {class: "pill", style: "font-size:11px;padding:3px 9px"}, "Client + optional server"),
         el("span", {class: "pill", style: "font-size:11px;padding:3px 9px"}, "Open API"))));
     const p = PANELS.crop(); p.style.cssText += ";zoom:.5;transform:rotate(-2deg)"; r.append(p);
+  }],
+  pack_themes: [800, 150, (r) => {
+    const bg = scene(1600, 300, 48, 2, false); bg.style.cssText = "position:absolute;left:0;top:0"; half(bg);
+    r.append(bg);
+    const row = el("div", {style: "position:absolute;left:0;right:0;top:12px;display:flex;justify-content:center;gap:10px"});
+    for (const t of PACK_THEMES.map(packTheme)) {
+      const p = themePanel(t); p.style.cssText += ";zoom:.5";
+      row.append(el("div", {}, p, el("div", {class: "tlabel", style: "margin-top:7px"}, half(pixelText(t[0], 4, WHITE)))));
+    }
+    r.append(row);
   }],
   themes_strip: [800, 150, (r) => {
     const bg = scene(1600, 300, 48, 2, false); bg.style.cssText = "position:absolute;left:0;top:0"; half(bg);

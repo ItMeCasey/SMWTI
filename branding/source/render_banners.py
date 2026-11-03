@@ -19,6 +19,7 @@ PROFILE = tempfile.mkdtemp(prefix="smwti-chrome-")
 ASSETS = {
     "banner": (800, 150, 2),
     "themes_strip": (800, 150, 2),
+    "pack_themes": (800, 150, 2),
     "social": (1280, 640, 1),
     "features": (1920, 1080, 1),
     "themes": (1920, 1080, 1),

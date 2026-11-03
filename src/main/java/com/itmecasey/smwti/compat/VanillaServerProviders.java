@@ -1,5 +1,6 @@
 package com.itmecasey.smwti.compat;
 
+import com.itmecasey.smwti.SmwtiServerConfig;
 import com.itmecasey.smwti.api.SmwtiApi;
 import com.itmecasey.smwti.api.Tooltip;
 import java.util.Locale;
@@ -11,11 +12,13 @@ import net.minecraft.world.entity.AgeableMob;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.OwnableEntity;
 import net.minecraft.world.entity.animal.Animal;
+import net.minecraft.world.entity.animal.chicken.Chicken;
 import net.minecraft.world.level.block.entity.AbstractFurnaceBlockEntity;
 import net.minecraft.world.level.block.entity.BeaconBlockEntity;
 import net.minecraft.world.level.block.entity.BeehiveBlockEntity;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.entity.BrewingStandBlockEntity;
+import net.minecraft.world.level.block.entity.CommandBlockEntity;
 import net.minecraft.world.level.block.entity.SpawnerBlockEntity;
 
 /**
@@ -41,7 +44,7 @@ public final class VanillaServerProviders {
     private static void blockEntity(Tooltip tooltip, ServerLevel level, BlockPos pos, BlockEntity entity, boolean detailed) {
         if (!(entity instanceof AbstractFurnaceBlockEntity || entity instanceof BrewingStandBlockEntity
                 || entity instanceof SpawnerBlockEntity || entity instanceof BeaconBlockEntity
-                || entity instanceof BeehiveBlockEntity)) {
+                || entity instanceof BeehiveBlockEntity || entity instanceof CommandBlockEntity)) {
             return;
         }
         CompoundTag data = entity.saveCustomOnly(level.registryAccess());
@@ -51,6 +54,11 @@ public final class VanillaServerProviders {
             case SpawnerBlockEntity spawner -> spawner(tooltip, data);
             case BeaconBlockEntity beacon -> beacon(tooltip, data);
             case BeehiveBlockEntity hive -> hive(tooltip, data);
+            case CommandBlockEntity command -> {
+                if (SmwtiServerConfig.showCommands()) {
+                    data.getString("Command").filter(text -> !text.isEmpty()).ifPresent(text -> tooltip.add(Component.translatable("smwti.command", text)));
+                }
+            }
             default -> {
             }
         }
@@ -102,6 +110,8 @@ public final class VanillaServerProviders {
     private static void spawner(Tooltip tooltip, CompoundTag data) {
         data.getCompound("SpawnData").flatMap(spawn -> spawn.getCompound("entity")).flatMap(entity -> entity.getString("id"))
                 .ifPresent(id -> tooltip.add(Component.translatable("smwti.spawner", id.replaceFirst("^minecraft:", ""))));
+        // The ticks until the next spawn.
+        data.getShort("Delay").filter(delay -> delay > 0).ifPresent(delay -> tooltip.add(Component.translatable("smwti.spawner.next", seconds(delay))));
     }
 
     /** A beacon's level and the effects it gives. */
@@ -139,6 +149,9 @@ public final class VanillaServerProviders {
             } else if (age > 0) {
                 tooltip.add(Component.translatable("smwti.breed_cooldown", seconds(age)));
             }
+        }
+        if (entity instanceof Chicken chicken && chicken.eggTime > 0) {
+            tooltip.add(Component.translatable("smwti.egg.next", seconds(chicken.eggTime)));
         }
         if (entity instanceof Animal animal && animal.isInLove()) {
             tooltip.add(Component.translatable("smwti.in_love"));

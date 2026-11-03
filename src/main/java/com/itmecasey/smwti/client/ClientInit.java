@@ -3,6 +3,7 @@ package com.itmecasey.smwti.client;
 import com.itmecasey.smwti.Smwti;
 import com.itmecasey.smwti.SmwtiConfig;
 import com.itmecasey.smwti.compat.DefaultProviders;
+import com.itmecasey.smwti.compat.VanillaMoreProviders;
 import com.itmecasey.smwti.compat.VanillaProviders;
 import com.itmecasey.smwti.plugin.PluginLoader;
 import com.mojang.blaze3d.platform.InputConstants;
@@ -49,6 +50,7 @@ public final class ClientInit {
     public static void onClientSetup(FMLClientSetupEvent event) {
         DefaultProviders.registerClient();
         VanillaProviders.register();
+        VanillaMoreProviders.register();
         PackRules.register();
         // Plugins registered their common parts during common setup, which runs first on the client too.
         event.enqueueWork(PluginLoader::loadClient);

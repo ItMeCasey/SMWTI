@@ -25,6 +25,10 @@ public final class SmwtiServerConfig {
             .comment("Whether the overlay lists what is in chests, furnaces and other containers.")
             .define("showInventories", true);
 
+    private static final ForgeConfigSpec.BooleanValue COMMANDS = BUILDER
+            .comment("Whether the overlay shows the command in a command block. Off by default: a command can give away how a map or an adventure works.")
+            .define("showCommands", false);
+
     private static final ForgeConfigSpec.ConfigValue<List<? extends String>> BLACKLIST = BUILDER
             .comment("Blocks, block entity types and entity types the server never sends lines about, by id: [\"minecraft:ender_chest\", \"minecraft:villager\"].")
             .defineListAllowEmpty("blacklist", List.<String>of(), value -> value instanceof String);
@@ -47,6 +51,11 @@ public final class SmwtiServerConfig {
     /** Whether containers' contents are listed. */
     public static boolean showInventories() {
         return !SPEC.isLoaded() || INVENTORIES.get();
+    }
+
+    /** Whether command blocks' commands are shown. */
+    public static boolean showCommands() {
+        return SPEC.isLoaded() && COMMANDS.get();
     }
 
     /** Whether the server never answers about the thing with this id. */
