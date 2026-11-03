@@ -268,7 +268,7 @@ const ASSETS = {
       half(pixelText("Show me what this is", 7)),
       el("div", {class: "tag", style: "font-size:16px"}, "Point at a block or a mob. ", el("b", {}, "Know what it is.")),
       el("div", {class: "meta", style: "gap:6px"},
-        el("span", {class: "pill on", style: "font-size:11px;padding:3px 9px"}, "Forge 26.1.2"),
+        el("span", {class: "pill on", style: "font-size:11px;padding:3px 9px"}, "Forge"),
         el("span", {class: "pill", style: "font-size:11px;padding:3px 9px"}, "Client + optional server"),
         el("span", {class: "pill", style: "font-size:11px;padding:3px 9px"}, "Open API"))));
     const p = PANELS.crop(); p.style.cssText += ";zoom:.5;transform:rotate(-2deg)"; r.append(p);
@@ -287,7 +287,7 @@ const ASSETS = {
     r.style.cssText += "display:flex;flex-direction:column;align-items:center;justify-content:center;gap:28px;text-align:center";
     r.append(iconImg(220));
     r.append(pixelText("Show me what this is", 7));
-    r.append(el("div", {class: "tag"}, "A look-at overlay for Minecraft Forge 26.1.2"));
+    r.append(el("div", {class: "tag"}, "Point at anything. Know what it is."));
   }],
   themes: [1920, 1080, (r) => {
     r.style.cssText += "display:flex;flex-direction:column";
@@ -317,7 +317,7 @@ const ASSETS = {
     const grid = el("div", {style: "zoom:1.18;display:grid;grid-template-columns:repeat(3,auto);gap:50px 70px;justify-content:center;align-items:start"});
     for (const [k, t, d] of items) grid.append(el("div", {}, PANELS[k](), el("div", {class: "cap"}, el("b", {}, t), d)));
     grid.append(el("div", {style: "align-self:center"}, el("div", {class: "meta", style: "flex-direction:column;align-items:flex-start"},
-      el("span", {class: "pill on"}, "Forge 26.1.2"), el("span", {class: "pill"}, "Five themes, Modern by default"),
+      el("span", {class: "pill on"}, "Forge"), el("span", {class: "pill"}, "Five themes, Modern by default"),
       el("span", {class: "pill"}, "Resource pack rules"), el("span", {class: "pill"}, "MIT license"))));
     r.append(grid);
   }],

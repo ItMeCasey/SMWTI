@@ -13,21 +13,27 @@ Everything you need to fill in the two project forms. Files are in `branding/ico
 | Main category | Map and Information | Utility |
 | More categories | Utility & QoL, API and Library | (none needed) |
 | Loader | Forge | Forge |
-| Game version | 26.1.2 | 26.1.2 |
+| Game versions | Set on each uploaded file | Set on each uploaded file |
 | Environment | Client, server optional | Client: required, Server: optional |
 | License | MIT | MIT |
 | Source | https://github.com/ItMeCasey/SMWTI | same |
 | Issues | https://github.com/ItMeCasey/SMWTI/issues | same |
 
+### One-line description
+
+> Point at anything in your world and SMWTI tells you what it is, where it came from and what it's up to, from crop growth to chest contents.
+
+Use it anywhere a single sentence fits: the CurseForge summary, social posts, the top of the description.
+
 ### Summary
 
 Modrinth (256 characters max):
 
-> A look-at overlay for Forge 26.1.2. Point at a block or a mob to see its name, its mod and its state: crop growth, health, chest contents, machine progress. Other mods add their own lines through a small API.
+> A look-at overlay for Forge. Point at a block or a mob to see its name, its mod and its state: crop growth, health, chest contents, machine progress. Other mods add their own lines through a small API.
 
 CurseForge (keep it short; it shows on cards):
 
-> Point at a block or a mob and see what it is, which mod it's from and what state it's in.
+> Point at anything in your world and SMWTI tells you what it is, where it came from and what it's up to, from crop growth to chest contents.
 
 ### Gallery
 
@@ -53,9 +59,11 @@ The descriptions below load images from the GitHub repository, so they only show
 ```markdown
 ![Show Me What This Is](https://raw.githubusercontent.com/ItMeCasey/SMWTI/main/branding/banners/banner.png)
 
-**Show Me What This Is** (SMWTI) is a look-at overlay for Minecraft Forge 26.1.2. Point at a block or an entity and a small panel at the top of the screen tells you what it is, which mod it comes from and, where it can, what state it is in.
+**Point at anything in your world and SMWTI tells you what it is, where it came from and what it's up to, from crop growth to chest contents.**
 
-It is inspired by Jade and The One Probe, which have no Forge build for this Minecraft version. SMWTI shares no code with them.
+Show Me What This Is (SMWTI) is a look-at overlay for Minecraft Forge. Point at a block or an entity and a small panel tells you what it is, which mod it comes from and, where it can, what state it is in.
+
+It is inspired by Jade and The One Probe and shares no code with them.
 
 ![Features](https://raw.githubusercontent.com/ItMeCasey/SMWTI/main/branding/banners/h_features.png)
 
@@ -69,8 +77,8 @@ It is inspired by Jade and The One Probe, which have no Forge build for this Min
 ![For players](https://raw.githubusercontent.com/ItMeCasey/SMWTI/main/branding/banners/h_players.png)
 
 - Install it on the client. It works on any server; a server that also has SMWTI sends extra live data (chest contents, tank levels, machine progress).
-- **Numpad 0** opens the settings, **Numpad 1** turns the overlay on and off. Both can be rebound in Controls.
-- Drag the overlay anywhere on the screen from the settings (**Move overlay...**). The spot is kept when the window size changes.
+- **F10** turns the overlay on and off, **Ctrl+F10** opens the settings. Both can be rebound in Controls.
+- Drag the overlay anywhere on the screen from the settings (**Move overlay...**). It snaps to centers and corners and stays clear of the hotbar.
 - Resource packs can hide, rename or add lines to any block or entity with a small JSON file.
 
 ![Themes](https://raw.githubusercontent.com/ItMeCasey/SMWTI/main/branding/banners/h_themes.png)
@@ -89,7 +97,7 @@ Add your own lines through `SmwtiApi`: client and server providers for blocks an
 
 **Does it load Jade or The One Probe plugins?** No. Mods add support through SMWTI's own API.
 
-**Other loaders or versions?** Forge 26.1.2 only for now.
+**Other loaders?** Forge only for now. The Files tab lists the Minecraft versions each release supports.
 
 **License:** MIT. Source and issues on [GitHub](https://github.com/ItMeCasey/SMWTI).
 ```
