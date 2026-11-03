@@ -1,6 +1,6 @@
 {
   "smwti.crop.growth": "Growth: %s%%",
-  "smwti.crop.mature": "Fully grown",
+  "smwti.crop.mature": "Mature",
   "smwti.entity.health": "Health: %s / %s",
   "smwti.energy": "Energy: %s / %s",
   "smwti.fluid": "%s: %s / %s mB",
