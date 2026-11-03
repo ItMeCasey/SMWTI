@@ -274,7 +274,7 @@ const ASSETS = {
     const p = PANELS.crop(); p.style.cssText += ";zoom:.5;transform:rotate(-2deg)"; r.append(p);
   }],
   themes_strip: [800, 150, (r) => {
-    const bg = scene(1600, 300, 48, 2, false); half(bg); bg.style.cssText = "position:absolute;inset:0";
+    const bg = scene(1600, 300, 48, 2, false); bg.style.cssText = "position:absolute;left:0;top:0"; half(bg);
     r.append(bg);
     const row = el("div", {style: "position:absolute;left:0;right:0;top:12px;display:flex;justify-content:center;gap:8px"});
     for (const t of THEMES) {
