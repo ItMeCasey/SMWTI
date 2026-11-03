@@ -6,6 +6,7 @@ import net.minecraft.client.renderer.texture.TextureAtlasSprite;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.inventory.InventoryMenu;
+import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.material.Fluid;
 import net.minecraft.world.level.material.Fluids;
 import net.minecraftforge.client.extensions.common.IClientFluidTypeExtensions;
@@ -29,6 +30,20 @@ final class FluidSprites {
     }
 
     /**
+     * The sprite a fluid is drawn with: its own still texture, or, for a fluid that names none, the particle
+     * sprite of its block, or {@code null} when it has neither.
+     */
+    private static TextureAtlasSprite sprite(Fluid fluid, IClientFluidTypeExtensions extensions) {
+        Minecraft game = Minecraft.getInstance();
+        ResourceLocation texture = extensions.getStillTexture();
+        if (texture != null) {
+            return game.getTextureAtlas(InventoryMenu.BLOCK_ATLAS).apply(texture);
+        }
+        BlockState block = fluid.defaultFluidState().createLegacyBlock();
+        return block.isAir() ? null : game.getBlockRenderer().getBlockModelShaper().getParticleIcon(block);
+    }
+
+    /**
      * Fills a rectangle with the fluid's still sprite, tiled from the left and clipped, and tinted.
      * The tint is the fluid's own, kept opaque.
      */
@@ -37,9 +52,13 @@ final class FluidSprites {
             return;
         }
         IClientFluidTypeExtensions extensions = IClientFluidTypeExtensions.of(fluid);
-        TextureAtlasSprite sprite = Minecraft.getInstance().getTextureAtlas(InventoryMenu.BLOCK_ATLAS)
-                .apply(extensions.getStillTexture());
         int argb = extensions.getTintColor() | 0xFF000000;
+        TextureAtlasSprite sprite = sprite(fluid, extensions);
+        if (sprite == null) {
+            // A fluid with no texture at all still shows its color.
+            graphics.fill(x, y, x + width, y + height, argb);
+            return;
+        }
         float red = (argb >> 16 & 0xFF) / 255.0F;
         float green = (argb >> 8 & 0xFF) / 255.0F;
         float blue = (argb & 0xFF) / 255.0F;

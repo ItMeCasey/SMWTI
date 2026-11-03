@@ -6,11 +6,14 @@ import com.itmecasey.smwti.api.SmwtiApi;
 import com.itmecasey.smwti.api.Tooltip;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 import net.minecraft.core.BlockPos;
+import net.minecraft.core.Direction;
 import net.minecraft.network.chat.Component;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.block.entity.BlockEntity;
+import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.common.capabilities.ForgeCapabilities;
 import net.minecraftforge.energy.IEnergyStorage;
 import net.minecraftforge.fluids.FluidStack;
@@ -39,11 +42,24 @@ public final class ServerProviders {
     }
 
     private static void collect(Tooltip tooltip, ServerLevel level, BlockPos pos, BlockEntity entity, boolean detailed) {
-        entity.getCapability(ForgeCapabilities.ENERGY, null).ifPresent(energy -> energy(tooltip, energy));
-        entity.getCapability(ForgeCapabilities.FLUID_HANDLER, null).ifPresent(fluids -> fluids(tooltip, fluids));
+        capability(entity, ForgeCapabilities.ENERGY).ifPresent(energy -> energy(tooltip, energy));
+        capability(entity, ForgeCapabilities.FLUID_HANDLER).ifPresent(fluids -> fluids(tooltip, fluids));
         if (SmwtiServerConfig.showInventories()) {
-            entity.getCapability(ForgeCapabilities.ITEM_HANDLER, null).ifPresent(items -> items(tooltip, items, detailed));
+            capability(entity, ForgeCapabilities.ITEM_HANDLER).ifPresent(items -> items(tooltip, items, detailed));
         }
+    }
+
+    /**
+     * The block entity's capability, asked for on no side first and then on each side in turn. Many
+     * tanks and machines only hand out their handler on the sides that connect to something, so asking
+     * on one side would miss them.
+     */
+    private static <T> Optional<T> capability(BlockEntity entity, Capability<T> type) {
+        Optional<T> found = entity.getCapability(type, null).resolve();
+        for (int i = 0; found.isEmpty() && i < Direction.values().length; i++) {
+            found = entity.getCapability(type, Direction.values()[i]).resolve();
+        }
+        return found;
     }
 
     private static void energy(Tooltip tooltip, IEnergyStorage energy) {
