@@ -69,3 +69,12 @@ sourceSets.main.resources.srcDir generateModMetadata
 tasks.withType(JavaCompile).configureEach {
     options.encoding = 'UTF-8'
 }
+
+// The public API on its own, for mods that support SMWTI to compile against. It holds only the
+// com.itmecasey.smwti.api package, so a mod never sees SMWTI's internals.
+tasks.register('apiJar', Jar) {
+    archiveClassifier = 'api'
+    from(sourceSets.main.output) {
+        include 'com/itmecasey/smwti/api/**'
+    }
+}
