@@ -28,6 +28,7 @@ import net.minecraft.world.level.block.state.BlockState;
 public final class DefaultProviders {
     private static final int HEALTH_RED = 0xE04848;
     private static final int GROWTH_GREEN = 0x5DBB63;
+    private static final int CHECK_GREEN = 0x55FF55;
 
     private DefaultProviders() {
     }
@@ -73,8 +74,12 @@ public final class DefaultProviders {
         }
         for (ToolKind kind : TOOLS) {
             if (state.is(kind.mines())) {
-                // Just the tool's picture, beside the name.
-                tooltip.stack(Position.BADGE, new ItemStack(kind.icon()));
+                // The tool's picture beside the name, with a green check when the player already holds the right one.
+                if (player.getMainHandItem().isCorrectToolForDrops(state)) {
+                    tooltip.stack(Position.BADGE, new ItemStack(kind.icon()), "✔", CHECK_GREEN);
+                } else {
+                    tooltip.stack(Position.BADGE, new ItemStack(kind.icon()));
+                }
                 return;
             }
         }

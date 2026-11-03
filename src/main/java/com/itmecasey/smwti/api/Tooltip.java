@@ -55,6 +55,16 @@ public final class Tooltip {
         return item(position, stack, Component.empty());
     }
 
+    /**
+     * Adds an item stack to list with a short mark in its lower right corner in place of the count,
+     * such as a check in green: {@code stack(Position.BADGE, tool, "✔", 0x55FF55)}.
+     */
+    public Tooltip stack(Position position, ItemStack stack, String mark, int markColor) {
+        String id = stack.isEmpty() ? "" : BuiltInRegistries.ITEM.getKey(stack.getItem()).toString();
+        lines.add(new Line(Component.empty(), Line.NO_BAR, 0xFFFFFF, position, id, stack.getCount(), mark, markColor));
+        return this;
+    }
+
     /** Adds a line built elsewhere, such as one a server sent. */
     public Tooltip add(Line line) {
         lines.add(line);

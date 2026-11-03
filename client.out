@@ -185,3 +185,10 @@ Transformer Audit:
 [04:36:51] [Render thread/INFO] [minecraft/DynamicUniformStorage]: Resizing Chunk Sections UBO, capacity limit of 32 reached during a single frame. New capacity will be 64.
 [04:36:51] [Render thread/INFO] [minecraft/DynamicUniformStorage]: Resizing Chunk Sections UBO, capacity limit of 64 reached during a single frame. New capacity will be 128.
 [04:36:51] [Render thread/INFO] [minecraft/DynamicUniformStorage]: Resizing Chunk Sections UBO, capacity limit of 128 reached during a single frame. New capacity will be 256.
+[04:37:14] [Server thread/INFO] [minecraft/MinecraftServer]: [Dev: Gave 1 [Bone Meal] to Dev]
+[04:37:14] [Render thread/INFO] [minecraft/ChatComponent]: [System] [CHAT] Gave 1 [Bone Meal] to Dev
+[04:37:15] [Render thread/INFO] [minecraft/AdvancementTree]: Loaded 4 advancements
+[04:37:22] [Server thread/INFO] [minecraft/IntegratedServer]: Saving and pausing game...
+[04:37:22] [Server thread/INFO] [minecraft/MinecraftServer]: Saving chunks for level 'ServerLevel[smwti_shots]'/minecraft:overworld
+[04:37:22] [Server thread/INFO] [minecraft/MinecraftServer]: Saving chunks for level 'ServerLevel[smwti_shots]'/minecraft:the_end
+[04:37:22] [Server thread/INFO] [minecraft/MinecraftServer]: Saving chunks for level 'ServerLevel[smwti_shots]'/minecraft:the_nether

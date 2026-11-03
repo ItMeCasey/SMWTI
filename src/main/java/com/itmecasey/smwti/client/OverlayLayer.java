@@ -305,7 +305,7 @@ public final class OverlayLayer {
                 // Flush with the right edge of the panel.
                 int badgeX = x + innerWidth - badgeWidth(font, badge);
                 if (badge.isStack()) {
-                    graphics.fakeItem(badge.icon(), badgeX, y + (top - ICON) / 2);
+                    drawStack(graphics, font, badge, badgeX, y + (top - ICON) / 2);
                 } else {
                     drawLine(graphics, font, badge, badgeX, y + (top - Math.max(font.lineHeight, SMALL_ICON)) / 2, 0);
                 }
@@ -321,24 +321,34 @@ public final class OverlayLayer {
             }
         }
 
-        /** Item stacks side by side: the icon, and the count small in its lower right corner when it is more than one. */
+        /** Item stacks side by side. */
         private void drawStacks(GuiGraphicsExtractor graphics, Font font, Row row, int x, int y) {
             int cellX = x;
             for (Line line : row.lines()) {
-                ItemStack stack = line.icon();
-                graphics.fakeItem(stack, cellX, y);
-                if (stack.getCount() > 1) {
-                    Component count = Component.literal(shortCount(stack.getCount()));
-                    // Small text whose right and bottom edges meet the icon's.
-                    graphics.pose().pushMatrix();
-                    graphics.pose().translate(cellX + ICON - font.width(count) * COUNT_SCALE + 1,
-                            y + ICON - font.lineHeight * COUNT_SCALE + 1);
-                    graphics.pose().scale(COUNT_SCALE, COUNT_SCALE);
-                    graphics.text(font, count, 0, 0, TEXT, true);
-                    graphics.pose().popMatrix();
-                }
+                drawStack(graphics, font, line, cellX, y);
                 cellX += SLOT;
             }
+        }
+
+        /**
+         * One item icon with its corner text, small and at the lower right: the line's mark if it has
+         * one, otherwise the count when there is more than one.
+         */
+        private void drawStack(GuiGraphicsExtractor graphics, Font font, Line line, int x, int y) {
+            ItemStack stack = line.icon();
+            graphics.fakeItem(stack, x, y);
+            boolean marked = !line.mark().isEmpty();
+            if (!marked && stack.getCount() <= 1) {
+                return;
+            }
+            Component corner = Component.literal(marked ? line.mark() : shortCount(stack.getCount()));
+            int color = marked ? 0xFF000000 | line.markColor() : TEXT;
+            // Small text whose right and bottom edges meet the icon's.
+            graphics.pose().pushMatrix();
+            graphics.pose().translate(x + ICON - font.width(corner) * COUNT_SCALE + 1, y + ICON - font.lineHeight * COUNT_SCALE + 1);
+            graphics.pose().scale(COUNT_SCALE, COUNT_SCALE);
+            graphics.text(font, corner, 0, 0, color, true);
+            graphics.pose().popMatrix();
         }
 
         /** 1 to 999 as they are, then 1.2k style so a big stack never outgrows its icon. */

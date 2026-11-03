@@ -21,8 +21,11 @@ import net.minecraft.world.item.ItemStack;
  * @param position which part of the overlay the line belongs to
  * @param item     the registry name of the icon's item, or an empty string for no icon
  * @param count    how many of the item the icon shows
+ * @param mark     a short mark drawn small in the icon's lower right corner in place of the count (a check, say), or empty
+ * @param markColor the mark's RGB color
  */
-public record Line(Component text, float fraction, int color, Position position, String item, int count) {
+public record Line(Component text, float fraction, int color, Position position, String item, int count, String mark,
+                   int markColor) {
     /** The fill of a line that draws no bar. */
     public static final float NO_BAR = -1.0F;
 
@@ -34,8 +37,15 @@ public record Line(Component text, float fraction, int color, Position position,
             Codec.STRING.xmap(Position::valueOf, Position::name).optionalFieldOf("position", Position.BODY)
                     .forGetter(Line::position),
             Codec.STRING.optionalFieldOf("item", "").forGetter(Line::item),
-            Codec.INT.optionalFieldOf("count", 1).forGetter(Line::count)
+            Codec.INT.optionalFieldOf("count", 1).forGetter(Line::count),
+            Codec.STRING.optionalFieldOf("mark", "").forGetter(Line::mark),
+            Codec.INT.optionalFieldOf("mark_color", 0xFFFFFF).forGetter(Line::markColor)
     ).apply(instance, Line::new));
+
+    /** A line without a mark; the shorter way to build most lines. */
+    public Line(Component text, float fraction, int color, Position position, String item, int count) {
+        this(text, fraction, color, position, item, count, "", 0xFFFFFF);
+    }
 
     /** A line of plain text in the body. */
     public static Line of(Component text) {
@@ -64,6 +74,6 @@ public record Line(Component text, float fraction, int color, Position position,
 
     /** The same line moved to another part of the overlay. */
     public Line at(Position where) {
-        return new Line(text, fraction, color, where, item, count);
+        return new Line(text, fraction, color, where, item, count, mark, markColor);
     }
 }
