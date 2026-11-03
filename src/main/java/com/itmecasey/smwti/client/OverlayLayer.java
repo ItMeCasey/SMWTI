@@ -5,9 +5,11 @@ import com.itmecasey.smwti.SmwtiConfig;
 import com.itmecasey.smwti.api.BlockProvider;
 import com.itmecasey.smwti.api.BlockView;
 import com.itmecasey.smwti.api.EntityProvider;
+import com.itmecasey.smwti.api.Element;
 import com.itmecasey.smwti.api.EntityView;
 import com.itmecasey.smwti.api.Line;
 import com.itmecasey.smwti.api.Position;
+import com.itmecasey.smwti.api.RenderCallback;
 import com.itmecasey.smwti.api.SmwtiApi;
 import com.itmecasey.smwti.api.TargetOverride;
 import com.itmecasey.smwti.api.Tooltip;
@@ -59,11 +61,9 @@ public final class OverlayLayer {
     private static final int BADGE_GAP = 8;
     private static final int LINE_GAP = 2;
     private static final int BAR_HEIGHT = 3;
-    private static final int PANEL = 0xC0101018;
-    private static final int EDGE = 0xFF3A3A4C;
-    private static final int BAR_BACK = 0xFF2A2A34;
-    private static final int TEXT = 0xFFFFFFFF;
-    private static final int MOD_TEXT = 0xFF8E8EA6;
+
+    /** The colors in use this frame; set at the start of each draw. */
+    private static Palette palette = Palette.current();
 
     private OverlayLayer() {
     }
@@ -84,6 +84,7 @@ public final class OverlayLayer {
         if (content == null) {
             return;
         }
+        palette = Palette.current();
         Font font = game.font;
         int width = content.width(font);
         int height = content.height(font);
@@ -96,11 +97,20 @@ public final class OverlayLayer {
         };
         int y = 6;
 
+        RenderCallback.Panel panel = new RenderCallback.Panel(content.name(), x, y, width, height);
+        for (RenderCallback callback : SmwtiApi.renderCallbacks()) {
+            if (Boolean.FALSE.equals(call(() -> callback.before(panel)))) {
+                return;
+            }
+        }
         graphics.pose().pushMatrix();
         graphics.pose().scale(scale, scale);
-        graphics.fill(x, y, x + width, y + height, EDGE);
-        graphics.fill(x + 1, y + 1, x + width - 1, y + height - 1, PANEL);
+        graphics.fill(x, y, x + width, y + height, palette.edge());
+        graphics.fill(x + 1, y + 1, x + width - 1, y + height - 1, palette.panel());
         content.draw(graphics, font, x + PADDING, y + PADDING, width - 2 * PADDING);
+        for (RenderCallback callback : SmwtiApi.renderCallbacks()) {
+            run(() -> callback.after(graphics, panel));
+        }
         graphics.pose().popMatrix();
     }
 
@@ -199,7 +209,7 @@ public final class OverlayLayer {
     /** The icon, name, mod and lines of one target, laid out and drawn. */
     private record Content(ItemStack icon, Component name, Component mod, Tooltip tooltip) {
         /** One drawn row: a single text line, or a run of item stacks shown side by side. */
-        private record Row(List<Line> lines, boolean grid) {
+        private record Row(List<Line> lines, boolean grid, @Nullable Element element) {
         }
 
         private int textLeft() {
@@ -223,9 +233,12 @@ public final class OverlayLayer {
                         continue;
                     }
                     flush(rows, run);
-                    rows.add(new Row(List.of(line), false));
+                    rows.add(new Row(List.of(line), false, null));
                 }
                 flush(rows, run);
+                for (Element element : tooltip.elements(position)) {
+                    rows.add(new Row(List.of(), false, element));
+                }
             }
             return rows;
         }
@@ -233,12 +246,15 @@ public final class OverlayLayer {
         /** Cuts a run of stacks into rows of at most {@link #STACKS_PER_ROW}. */
         private static void flush(List<Row> rows, List<Line> run) {
             for (int from = 0; from < run.size(); from += STACKS_PER_ROW) {
-                rows.add(new Row(List.copyOf(run.subList(from, Math.min(run.size(), from + STACKS_PER_ROW))), true));
+                rows.add(new Row(List.copyOf(run.subList(from, Math.min(run.size(), from + STACKS_PER_ROW))), true, null));
             }
             run.clear();
         }
 
         private static int rowHeight(Font font, Row row) {
+            if (row.element() != null) {
+                return row.element().height(font);
+            }
             if (row.grid()) {
                 return SLOT;
             }
@@ -252,6 +268,9 @@ public final class OverlayLayer {
         }
 
         private static int rowWidth(Font font, Row row) {
+            if (row.element() != null) {
+                return row.element().width(font);
+            }
             return row.grid() ? row.lines().size() * SLOT : lineWidth(font, row.lines().get(0));
         }
 
@@ -296,9 +315,9 @@ public final class OverlayLayer {
             // The icon, the name and the badge share the top line, each centered on it.
             int top = topLineHeight(font);
             int textX = x + textLeft();
-            graphics.text(font, name, textX, y + (top - font.lineHeight) / 2, TEXT, true);
+            graphics.text(font, name, textX, y + (top - font.lineHeight) / 2, palette.text(), palette.shadow());
             if (!mod.getString().isEmpty()) {
-                graphics.text(font, mod, textX, y + top + 1, MOD_TEXT, false);
+                graphics.text(font, mod, textX, y + top + 1, palette.sub(), false);
             }
             Line badge = badge();
             if (badge != null) {
@@ -312,7 +331,10 @@ public final class OverlayLayer {
             }
             int rowY = y + headerHeight(font) + LINE_GAP;
             for (Row row : rows()) {
-                if (row.grid()) {
+                if (row.element() != null) {
+                    row.element().draw(graphics, font, x, rowY, innerWidth);
+                    rowY += row.element().height(font) + LINE_GAP;
+                } else if (row.grid()) {
                     drawStacks(graphics, font, row, x, rowY);
                     rowY += SLOT + LINE_GAP;
                 } else {
@@ -342,7 +364,7 @@ public final class OverlayLayer {
                 return;
             }
             Component corner = Component.literal(marked ? line.mark() : shortCount(stack.getCount()));
-            int color = marked ? 0xFF000000 | line.markColor() : TEXT;
+            int color = marked ? 0xFF000000 | line.markColor() : palette.text();
             // Small text whose right and bottom edges meet the icon's.
             graphics.pose().pushMatrix();
             graphics.pose().translate(x + ICON - font.width(corner) * COUNT_SCALE + 1, y + ICON - font.lineHeight * COUNT_SCALE + 1);
@@ -373,10 +395,10 @@ public final class OverlayLayer {
                 textX = x + SMALL_ICON + 3;
                 textY = rowY + (SMALL_ICON - font.lineHeight) / 2;
             }
-            graphics.text(font, line.text(), textX, textY, TEXT, false);
+            graphics.text(font, line.text(), textX, textY, palette.text(), false);
             int bottom = rowY + Math.max(font.lineHeight, small.isEmpty() ? 0 : SMALL_ICON);
             if (line.hasBar()) {
-                graphics.fill(x, bottom + 1, x + innerWidth, bottom + 1 + BAR_HEIGHT, BAR_BACK);
+                graphics.fill(x, bottom + 1, x + innerWidth, bottom + 1 + BAR_HEIGHT, palette.barBack());
                 graphics.fill(x, bottom + 1, x + Math.round(innerWidth * line.fraction()), bottom + 1 + BAR_HEIGHT,
                         0xFF000000 | line.color());
                 bottom += BAR_HEIGHT + 1;

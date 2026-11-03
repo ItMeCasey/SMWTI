@@ -12,6 +12,11 @@ import net.minecraft.world.item.ItemStack;
  */
 public final class Tooltip {
     private final List<Line> lines = new ArrayList<>();
+    private final List<PlacedElement> elements = new ArrayList<>();
+
+    /** An element and the part of the overlay it goes in. */
+    public record PlacedElement(Position position, Element element) {
+    }
 
     /** Adds a line of text to the body. */
     public Tooltip add(Component text) {
@@ -63,6 +68,20 @@ public final class Tooltip {
         String id = stack.isEmpty() ? "" : BuiltInRegistries.ITEM.getKey(stack.getItem()).toString();
         lines.add(new Line(Component.empty(), Line.NO_BAR, 0xFFFFFF, position, id, stack.getCount(), mark, markColor));
         return this;
+    }
+
+    /**
+     * Adds something the mod draws itself, after the lines of that part of the overlay. Client-side
+     * providers only: an element cannot be sent from the server.
+     */
+    public Tooltip element(Position position, Element element) {
+        elements.add(new PlacedElement(position, element));
+        return this;
+    }
+
+    /** The elements of one part of the overlay, in the order they were added. */
+    public List<Element> elements(Position position) {
+        return elements.stream().filter(placed -> placed.position() == position).map(PlacedElement::element).toList();
     }
 
     /** Adds a line built elsewhere, such as one a server sent. */

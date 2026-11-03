@@ -12,12 +12,25 @@ public final class SmwtiConfig {
         TOP_LEFT, TOP_CENTER, TOP_RIGHT
     }
 
+    /** The overlay's colors. */
+    public enum Theme {
+        DARK, LIGHT, VANILLA, CLEAR
+    }
+
     /** When the long form of the overlay is shown. */
     public enum Detail {
         WHILE_SNEAKING, ALWAYS, NEVER
     }
 
     private static final ForgeConfigSpec.Builder BUILDER = new ForgeConfigSpec.Builder();
+
+    private static final ForgeConfigSpec.EnumValue<Theme> THEME = BUILDER
+            .comment("Colors of the overlay: dark, light, vanilla (like a tooltip) or clear (a faint backdrop).")
+            .defineEnum("theme", Theme.DARK);
+
+    private static final ForgeConfigSpec.DoubleValue OPACITY = BUILDER
+            .comment("How solid the overlay's backdrop is, from 0.2 (faint) to 1.")
+            .defineInRange("opacity", 1.0, 0.2, 1.0);
 
     private static final ForgeConfigSpec.EnumValue<Detail> DETAIL = BUILDER
             .comment("When providers may show their longer lines: only while sneaking, always, or never.")
@@ -74,6 +87,14 @@ public final class SmwtiConfig {
 
     // The settings screen changes values through these and then writes the file.
 
+    public static void setTheme(Theme value) {
+        THEME.set(value);
+    }
+
+    public static void setOpacity(double value) {
+        OPACITY.set(value);
+    }
+
     public static void setEnabled(boolean value) {
         ENABLED.set(value);
     }
@@ -100,6 +121,16 @@ public final class SmwtiConfig {
 
     public static void setShowFluids(boolean value) {
         SHOW_FLUIDS.set(value);
+    }
+
+    /** The overlay's colors. */
+    public static Theme theme() {
+        return SPEC.isLoaded() ? THEME.get() : Theme.DARK;
+    }
+
+    /** How solid the backdrop is. */
+    public static float opacity() {
+        return SPEC.isLoaded() ? OPACITY.get().floatValue() : 1.0F;
     }
 
     /** When providers may show their long form. */

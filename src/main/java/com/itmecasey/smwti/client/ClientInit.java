@@ -3,6 +3,7 @@ package com.itmecasey.smwti.client;
 import com.itmecasey.smwti.Smwti;
 import com.itmecasey.smwti.SmwtiConfig;
 import com.itmecasey.smwti.compat.DefaultProviders;
+import com.itmecasey.smwti.compat.VanillaProviders;
 import com.mojang.blaze3d.platform.InputConstants;
 import net.minecraft.client.KeyMapping;
 import net.minecraft.client.Minecraft;
@@ -33,6 +34,7 @@ public final class ClientInit {
     @SubscribeEvent
     public static void onClientSetup(FMLClientSetupEvent event) {
         DefaultProviders.registerClient();
+        VanillaProviders.register();
         PackRules.register();
         event.enqueueWork(OptionsFile::load);
     }

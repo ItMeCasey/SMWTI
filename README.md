@@ -10,7 +10,9 @@ Status: in development (version 2026.11.1). See `PLAN.md`.
 
 - Install it on the client. It also works on a server that has it, and shows more there: the server sends live data about a block or entity, such as what is in a chest or how full a tank is.
 - The overlay shows the target's icon, name and mod, then lines from mods and from SMWTI itself: a crop's growth, a creature's health, the tool that breaks a block, to the right of the name (green when you already hold it), inventories shown as icons with counts, fluid tanks and stored energy on blocks that expose them. Looking at water or lava shows it too.
-- Sneak for the long form, which lists more (the default; change it in the settings).
+- Blocks: crop and plant growth, redstone power, a note block's note, composter, cauldron, honey and respawn anchor levels, furnace and brewing stand progress, a spawner's mob, a beacon's level, a hive's bees, a jukebox's disc, a flower pot's plant. Entities: armor, active effects with their time left, riders and mounts, a horse's speed and jump, what an item frame or a dropped item holds, a pet's owner, and how long a young animal takes to grow up or an adult to breed again.
+- Sneak for the long form, which lists more (the default; change it in the settings): the registry id, the block's state, more items.
+- Themes (dark, light, vanilla, clear) and the backdrop's opacity are in the settings.
 - Numpad 0 opens the settings screen and numpad 1 switches the overlay on and off; both keys can be changed in Controls. Settings are also in `config/smwti-client.toml`.
 
 ### Resource pack rules
@@ -55,9 +57,22 @@ SmwtiApi.overrideBlock(new TargetOverride<BlockView>() {
     }
 });
 
-// An on-off option for your own lines, listed in the settings screen. Name it with the translation
-// key smwti.option.<namespace>.<path>.
+// Settings for your own lines, listed in the settings screen: a switch, a slider, a cycling choice.
+// Name each with the translation key smwti.option.<namespace>.<path>.
 Option showRecipe = SmwtiApi.registerOption(Identifier.fromNamespaceAndPath("mymod", "show_recipe"), true);
+IntSetting rows = SmwtiApi.registerInt(Identifier.fromNamespaceAndPath("mymod", "rows"), 3, 1, 8);
+ChoiceSetting unit = SmwtiApi.registerChoice(Identifier.fromNamespaceAndPath("mymod", "unit"), List.of("fe", "percent"), "fe");
+
+// Draw something yourself (client side): tooltip.element(Position.BODY, new MyArrowElement()).
+// Point the overlay at another block (a multiblock part showing its controller):
+SmwtiApi.registerRedirect((level, pos, state) -> state.is(MyBlocks.PART.get()) ? controllerOf(pos) : null);
+// Run code around the drawing, or hide the overlay for a frame:
+SmwtiApi.registerRenderCallback(new RenderCallback() {
+    @Override
+    public boolean before(Panel panel) {
+        return !MyMod.cutsceneRunning();
+    }
+});
 ```
 
 Lines go to the badge (right of the name, on the same row), the head (right under the name), the body or the tail. To list item stacks, call `tooltip.stack(Position.BODY, stack)` once per stack: they are drawn as a grid of icons with the count small in the lower right corner and no names. A provider that throws is logged and skipped. Server providers run only for targets within 12 blocks of the player, a few times a second while they look, and only if the server has SMWTI.

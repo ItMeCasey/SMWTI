@@ -2,7 +2,9 @@ package com.itmecasey.smwti.client;
 
 import com.itmecasey.smwti.Smwti;
 import com.itmecasey.smwti.SmwtiConfig;
+import com.itmecasey.smwti.api.BlockRedirect;
 import com.itmecasey.smwti.api.Line;
+import com.itmecasey.smwti.api.SmwtiApi;
 import com.itmecasey.smwti.net.LookChannel;
 import com.itmecasey.smwti.net.LookTarget;
 import java.util.List;
@@ -101,7 +103,7 @@ public final class LookTracker {
                 }
             }
             if (hit instanceof BlockHitResult blockHit && hit.getType() == HitResult.Type.BLOCK) {
-                blockPos = blockHit.getBlockPos();
+                blockPos = redirected(game, blockHit.getBlockPos());
             }
         }
 
@@ -116,6 +118,21 @@ public final class LookTracker {
             sinceAsked = 0;
             LookChannel.ask(target, detailed);
         }
+    }
+
+    /** Asks the registered redirects whether another block should be shown in place of this one. */
+    private static BlockPos redirected(Minecraft game, BlockPos pos) {
+        for (BlockRedirect redirect : SmwtiApi.redirects()) {
+            try {
+                BlockPos other = redirect.redirect(game.level, pos, game.level.getBlockState(pos));
+                if (other != null) {
+                    return other;
+                }
+            } catch (RuntimeException e) {
+                Smwti.LOGGER.warn("A block redirect failed", e);
+            }
+        }
+        return pos;
     }
 
     /** Leaving a world forgets everything about it. */

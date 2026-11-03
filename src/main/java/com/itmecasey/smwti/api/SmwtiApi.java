@@ -2,6 +2,7 @@ package com.itmecasey.smwti.api;
 
 import java.util.List;
 import java.util.concurrent.CopyOnWriteArrayList;
+import net.minecraft.resources.Identifier;
 
 /**
  * Where other mods add to the overlay. Call these once while your mod loads (the mod constructor
@@ -19,7 +20,9 @@ public final class SmwtiApi {
     private static final List<ServerEntityProvider> SERVER_ENTITY_PROVIDERS = new CopyOnWriteArrayList<>();
     private static final List<TargetOverride<BlockView>> BLOCK_OVERRIDES = new CopyOnWriteArrayList<>();
     private static final List<TargetOverride<EntityView>> ENTITY_OVERRIDES = new CopyOnWriteArrayList<>();
-    private static final List<Option> OPTIONS = new CopyOnWriteArrayList<>();
+    private static final List<Setting> SETTINGS = new CopyOnWriteArrayList<>();
+    private static final List<BlockRedirect> REDIRECTS = new CopyOnWriteArrayList<>();
+    private static final List<RenderCallback> RENDER_CALLBACKS = new CopyOnWriteArrayList<>();
 
     private SmwtiApi() {
     }
@@ -55,15 +58,49 @@ public final class SmwtiApi {
     }
 
     /** Adds an on-off option to the settings screen; see {@link Option}. */
-    public static Option registerOption(net.minecraft.resources.Identifier id, boolean defaultValue) {
+    public static Option registerOption(Identifier id, boolean defaultValue) {
         Option option = new Option(id, defaultValue);
-        OPTIONS.add(option);
+        SETTINGS.add(option);
         return option;
     }
 
-    /** The registered options, in registration order. */
-    public static List<Option> options() {
-        return OPTIONS;
+    /** Adds a whole-number slider to the settings screen; see {@link IntSetting}. */
+    public static IntSetting registerInt(Identifier id, int defaultValue, int min, int max) {
+        IntSetting setting = new IntSetting(id, defaultValue, min, max);
+        SETTINGS.add(setting);
+        return setting;
+    }
+
+    /** Adds a cycling choice to the settings screen; see {@link ChoiceSetting}. */
+    public static ChoiceSetting registerChoice(Identifier id, List<String> choices, String defaultValue) {
+        ChoiceSetting setting = new ChoiceSetting(id, choices, defaultValue);
+        SETTINGS.add(setting);
+        return setting;
+    }
+
+    /** Points the overlay at another block than the one under the crosshair; see {@link BlockRedirect}. */
+    public static void registerRedirect(BlockRedirect redirect) {
+        REDIRECTS.add(redirect);
+    }
+
+    /** Runs around the drawing of the overlay; see {@link RenderCallback}. */
+    public static void registerRenderCallback(RenderCallback callback) {
+        RENDER_CALLBACKS.add(callback);
+    }
+
+    /** The registered settings, in registration order. */
+    public static List<Setting> settings() {
+        return SETTINGS;
+    }
+
+    /** The block redirects, in registration order. */
+    public static List<BlockRedirect> redirects() {
+        return REDIRECTS;
+    }
+
+    /** The render callbacks, in registration order. */
+    public static List<RenderCallback> renderCallbacks() {
+        return RENDER_CALLBACKS;
     }
 
     /** The client block providers, in registration order. */
