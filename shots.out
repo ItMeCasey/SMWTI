@@ -1,0 +1,13 @@
+Parallel Configuration Cache is an incubating feature.
+Configuration on demand is an incubating feature.
+Minecraft Maven is up-to-date, took 0:01.724
+Reusing configuration cache.
+> Task :generateModMetadata UP-TO-DATE
+> Task :slimeLauncherMetadataForForge UP-TO-DATE
+> Task :compileJava UP-TO-DATE
+> Task :processResources UP-TO-DATE
+> Task :classes UP-TO-DATE
+
+> Task :runClient
+Slime Launcher setup is up-to-date, took 515ms
+Launching using main class: net.minecraftforge.bootstrap.ForgeBootstrap

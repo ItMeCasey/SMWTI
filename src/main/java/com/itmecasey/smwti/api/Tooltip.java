@@ -47,6 +47,14 @@ public final class Tooltip {
         return this;
     }
 
+    /**
+     * Adds an item stack to list: just its icon with the count small in the lower right corner, no name.
+     * Stacks added one after another are laid out side by side in a grid.
+     */
+    public Tooltip stack(Position position, ItemStack stack) {
+        return item(position, stack, Component.empty());
+    }
+
     /** Adds a line built elsewhere, such as one a server sent. */
     public Tooltip add(Line line) {
         lines.add(line);

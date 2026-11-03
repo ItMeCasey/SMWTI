@@ -87,7 +87,7 @@ public final class ServerProviders {
         int limit = detailed ? ITEMS_LONG : ITEMS_SHORT;
         for (int i = 0; i < Math.min(limit, merged.size()); i++) {
             ItemStack stack = merged.get(i);
-            tooltip.item(Position.BODY, stack, Component.literal(stack.getCount() + " × ").append(stack.getHoverName()));
+            tooltip.stack(Position.BODY, stack);
         }
         if (merged.size() > limit) {
             tooltip.add(Component.translatable("smwti.items.more", merged.size() - limit));

@@ -47,6 +47,11 @@ public record Line(Component text, float fraction, int color, Position position,
         return fraction >= 0.0F;
     }
 
+    /** Whether the line is only an item icon with its count, as {@link Tooltip#stack} adds it. */
+    public boolean isStack() {
+        return !item.isEmpty() && text.getString().isEmpty() && !hasBar();
+    }
+
     /** The icon's item stack, or {@link ItemStack#EMPTY} when the line has none or the item is unknown. */
     public ItemStack icon() {
         if (item.isEmpty()) {

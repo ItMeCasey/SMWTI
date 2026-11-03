@@ -75,7 +75,7 @@ public final class DefaultProviders {
         for (ToolKind kind : TOOLS) {
             if (state.is(kind.mines())) {
                 boolean right = player.getMainHandItem().isCorrectToolForDrops(state);
-                tooltip.item(Position.TAIL, new ItemStack(kind.icon()), Component.translatable("smwti.tool." + kind.id())
+                tooltip.item(Position.BADGE, new ItemStack(kind.icon()), Component.translatable("smwti.tool." + kind.id())
                         .withStyle(right ? ChatFormatting.GREEN : ChatFormatting.GRAY));
                 return;
             }

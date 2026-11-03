@@ -1,0 +1,169 @@
+Parallel Configuration Cache is an incubating feature.
+Configuration on demand is an incubating feature.
+Minecraft Maven is up-to-date, took 0:01.811
+Reusing configuration cache.
+> Task :slimeLauncherMetadataForForge UP-TO-DATE
+> Task :generateModMetadata UP-TO-DATE
+> Task :compileJava UP-TO-DATE
+> Task :processResources UP-TO-DATE
+> Task :classes UP-TO-DATE
+
+> Task :runClient
+Slime Launcher setup is up-to-date, took 555ms
+Launching using main class: net.minecraftforge.bootstrap.ForgeBootstrap
+Ignoring duplicate module on SecureModuleFinder: org.lwjgl.freetype.natives: Jar[jar:file:///C:/Users/casey/.gradle/caches/modules-2/files-2.1/org.lwjgl/lwjgl-freetype/3.4.1/a677b4a7bba84f925b4cc4f52a58c5248974bdeb/lwjgl-freetype-3.4.1-natives-windows-arm64.jar!/]
+Ignoring duplicate module on SecureModuleFinder: org.lwjgl.freetype.natives: Jar[jar:file:///C:/Users/casey/.gradle/caches/modules-2/files-2.1/org.lwjgl/lwjgl-freetype/3.4.1/81431d868bcf162d4c915b9c39b2c7aae155ad4f/lwjgl-freetype-3.4.1-natives-windows-x86.jar!/]
+Ignoring duplicate module on SecureModuleFinder: org.lwjgl.glfw.natives: Jar[jar:file:///C:/Users/casey/.gradle/caches/modules-2/files-2.1/org.lwjgl/lwjgl-glfw/3.4.1/196101d96d9b2aa73264a96ae1dc8944a1446cee/lwjgl-glfw-3.4.1-natives-windows-arm64.jar!/]
+Ignoring duplicate module on SecureModuleFinder: org.lwjgl.glfw.natives: Jar[jar:file:///C:/Users/casey/.gradle/caches/modules-2/files-2.1/org.lwjgl/lwjgl-glfw/3.4.1/a48bbdd544f00c88f8906e9d09e3f31bc1c17fac/lwjgl-glfw-3.4.1-natives-windows-x86.jar!/]
+Ignoring duplicate module on SecureModuleFinder: org.lwjgl.jemalloc.natives: Jar[jar:file:///C:/Users/casey/.gradle/caches/modules-2/files-2.1/org.lwjgl/lwjgl-jemalloc/3.4.1/662e0926dd990f679e1cfb31d710d22d175bdabc/lwjgl-jemalloc-3.4.1-natives-windows-arm64.jar!/]
+Ignoring duplicate module on SecureModuleFinder: org.lwjgl.jemalloc.natives: Jar[jar:file:///C:/Users/casey/.gradle/caches/modules-2/files-2.1/org.lwjgl/lwjgl-jemalloc/3.4.1/d8cf69e1155df83260f9bbe01944fe91f8ca3955/lwjgl-jemalloc-3.4.1-natives-windows-x86.jar!/]
+Ignoring duplicate module on SecureModuleFinder: org.lwjgl.openal.natives: Jar[jar:file:///C:/Users/casey/.gradle/caches/modules-2/files-2.1/org.lwjgl/lwjgl-openal/3.4.1/4b996cc3321a807ee34e7ce53aba7fe529dc485a/lwjgl-openal-3.4.1-natives-windows-arm64.jar!/]
+Ignoring duplicate module on SecureModuleFinder: org.lwjgl.openal.natives: Jar[jar:file:///C:/Users/casey/.gradle/caches/modules-2/files-2.1/org.lwjgl/lwjgl-openal/3.4.1/9e4bab87e9b89876fa77ea3c19e1b45334b97c10/lwjgl-openal-3.4.1-natives-windows-x86.jar!/]
+Ignoring duplicate module on SecureModuleFinder: org.lwjgl.opengl.natives: Jar[jar:file:///C:/Users/casey/.gradle/caches/modules-2/files-2.1/org.lwjgl/lwjgl-opengl/3.4.1/4b6a9c5d7d5325312b740d9886087b7292b43bf9/lwjgl-opengl-3.4.1-natives-windows-arm64.jar!/]
+Ignoring duplicate module on SecureModuleFinder: org.lwjgl.opengl.natives: Jar[jar:file:///C:/Users/casey/.gradle/caches/modules-2/files-2.1/org.lwjgl/lwjgl-opengl/3.4.1/cfd47352b758a0c9f7046de467b103182ec77eb1/lwjgl-opengl-3.4.1-natives-windows-x86.jar!/]
+Ignoring duplicate module on SecureModuleFinder: org.lwjgl.stb.natives: Jar[jar:file:///C:/Users/casey/.gradle/caches/modules-2/files-2.1/org.lwjgl/lwjgl-stb/3.4.1/7f4c39b3d56c7bae4900ee6e59d8f75432bdb18f/lwjgl-stb-3.4.1-natives-windows-arm64.jar!/]
+Ignoring duplicate module on SecureModuleFinder: org.lwjgl.stb.natives: Jar[jar:file:///C:/Users/casey/.gradle/caches/modules-2/files-2.1/org.lwjgl/lwjgl-stb/3.4.1/e091cd3b25ab7db88f0e34a0d2797dc396a528fa/lwjgl-stb-3.4.1-natives-windows-x86.jar!/]
+Ignoring duplicate module on SecureModuleFinder: org.lwjgl.tinyfd.natives: Jar[jar:file:///C:/Users/casey/.gradle/caches/modules-2/files-2.1/org.lwjgl/lwjgl-tinyfd/3.4.1/9c93b8211856bfe682f3225ccac811e74243f98e/lwjgl-tinyfd-3.4.1-natives-windows-arm64.jar!/]
+Ignoring duplicate module on SecureModuleFinder: org.lwjgl.tinyfd.natives: Jar[jar:file:///C:/Users/casey/.gradle/caches/modules-2/files-2.1/org.lwjgl/lwjgl-tinyfd/3.4.1/f585da74a17695ba38351697712c03784ee1348b/lwjgl-tinyfd-3.4.1-natives-windows-x86.jar!/]
+Ignoring duplicate module on SecureModuleFinder: org.lwjgl.natives: Jar[jar:file:///C:/Users/casey/.gradle/caches/modules-2/files-2.1/org.lwjgl/lwjgl/3.4.1/d1d3a7052da47ccde2a5fdf3a1bd45d801c3157c/lwjgl-3.4.1-natives-windows-arm64.jar!/]
+Ignoring duplicate module on SecureModuleFinder: org.lwjgl.natives: Jar[jar:file:///C:/Users/casey/.gradle/caches/modules-2/files-2.1/org.lwjgl/lwjgl/3.4.1/65de43bd52507e108a58247c0da57a50ce3ee6f6/lwjgl-3.4.1-natives-windows-x86.jar!/]
+[04:29:18] [main/INFO] [cp.mo.mo.Launcher/MODLAUNCHER]: ModLauncher running: args [--gameDir, ., --launchTarget, forge_userdev_client, --version, MOD_DEV, --assetIndex, 30, --assetsDir, C:\Users\casey\AppData\Roaming\.minecraft\assets]
+[04:29:18] [main/INFO] [cp.mo.mo.Launcher/MODLAUNCHER]: JVM identified as Eclipse Adoptium OpenJDK 64-Bit Server VM 25.0.3+9-LTS
+[04:29:18] [main/INFO] [cp.mo.mo.Launcher/MODLAUNCHER]: ModLauncher 10.2.6 starting: java version 25.0.3 by Eclipse Adoptium; OS Windows 10 arch amd64 version 10.0
+[04:29:18] [main/INFO] [ne.mi.fm.lo.ImmediateWindowHandler/]: Loading ImmediateWindowProvider fmlearlywindow
+[04:29:18] [main/INFO] [EARLYDISPLAY/]: Trying GL version 4.6
+[04:29:18] [main/INFO] [EARLYDISPLAY/]: Requested GL version 4.6 got version 4.6
+[04:29:18] [main/INFO] [mixin/]: SpongePowered MIXIN Subsystem Version=0.8.7 Source=jar:file:///C:/Users/casey/.gradle/caches/modules-2/files-2.1/org.spongepowered/mixin/0.8.7/8ab114ac385e6dbdad5efafe28aba4df8120915f/mixin-0.8.7.jar!/ Service=ModLauncher Env=CLIENT
+[04:29:19] [EarlyDisplay/INFO] [EARLYDISPLAY/]: GL info: NVIDIA GeForce GTX 1080 Ti/PCIe/SSE2 GL version 4.6.0 NVIDIA 582.78, NVIDIA Corporation
+[04:29:20] [main/INFO] [ne.mi.fm.lo.mo.JarInJarDependencyLocator/]: No dependencies to load found. Skipping!
+[04:29:20] [main/INFO] [cp.mo.mo.LaunchServiceHandler/MODLAUNCHER]: Launching target 'forge_userdev_client' with arguments [--version, MOD_DEV, --gameDir, ., --assetsDir, C:\Users\casey\AppData\Roaming\.minecraft\assets, --assetIndex, 30]
+[04:29:21] [Datafixer Bootstrap/INFO] [mojang/DataFixerBuilder]: 291 Datafixer optimizations took 445 milliseconds
+[04:29:26] [Render thread/WARN] [minecraft/VanillaPackResourcesBuilder]: Assets URL 'union:/C:/Users/casey/Desktop/SMWTI/.gradle/mavenizer/repo/net/minecraftforge/forge/26.1.2-64.1.5/forge-26.1.2-64.1.5.jar%230!/assets/.mcassetsroot' uses unexpected schema
+[04:29:26] [Render thread/WARN] [minecraft/VanillaPackResourcesBuilder]: Assets URL 'union:/C:/Users/casey/Desktop/SMWTI/.gradle/mavenizer/repo/net/minecraftforge/forge/26.1.2-64.1.5/forge-26.1.2-64.1.5.jar%230!/data/.mcassetsroot' uses unexpected schema
+[04:29:26] [Render thread/INFO] [mojang/YggdrasilAuthenticationService]: Environment: Environment[sessionHost=https://sessionserver.mojang.com, servicesHost=https://api.minecraftservices.com, profilesHost=https://api.mojang.com, name=PROD]
+[04:29:26] [Render thread/INFO] [minecraft/Minecraft]: Setting user: Dev
+[04:29:26] [Render thread/INFO] [minecraft/Minecraft]: Backend library: LWJGL version 3.4.1+2
+[04:29:26] [Render thread/INFO] [minecraft/Minecraft]: Using optional rendering extensions: GL_ARB_buffer_storage, GL_KHR_debug, GL_ARB_vertex_attrib_binding, GL_ARB_direct_state_access, GL_EXT_texture_filter_anisotropic
+[04:29:26] [modloading-worker-0/INFO] [ne.mi.co.ForgeMod/FORGEMOD]: Forge mod loading, version 64.1.5, for MC 26.1.2 with MCP 20260409.101008
+[04:29:26] [modloading-worker-0/INFO] [ne.mi.co.MinecraftForge/FORGE]: MinecraftForge v64.1.5 Initialized
+[04:29:26] [modloading-worker-0/INFO] [co.it.sm.Smwti/]: Show Me What This Is loaded (Forge 26.1.2)
+[04:29:26] [modloading-worker-0/INFO] [ne.mi.co.ForgeMod/FORGEMOD]: Opening jdk.naming.dns/com.sun.jndi.dns to java.naming
+[04:29:27] [Render thread/INFO] [minecraft/ReloadableResourceManager]: Reloading ResourceManager: vanilla, mod_resources
+[04:29:27] [Download-2/INFO] [mojang/RealmsClient]: Could not authorize you against Realms server: java.lang.RuntimeException: Failed to parse into SignedJWT: 0
+[04:29:27] [Download-2/ERROR] [mojang/RealmsClient]: Failed to fetch Realms feature flags
+com.mojang.realmsclient.exception.RealmsServiceException: Realms authentication error with message 'java.lang.RuntimeException: Failed to parse into SignedJWT: 0'
+	at TRANSFORMER/minecraft@26.1.2/com.mojang.realmsclient.client.RealmsClient.execute(RealmsClient.java:513) ~[forge-26.1.2-64.1.5.jar%230!/:?]
+	at TRANSFORMER/minecraft@26.1.2/com.mojang.realmsclient.client.RealmsClient.fetchFeatureFlags(RealmsClient.java:160) [forge-26.1.2-64.1.5.jar%230!/:?]
+	at java.base/java.util.concurrent.CompletableFuture$AsyncSupply.run(CompletableFuture.java:1789) [?:?]
+	at java.base/java.util.concurrent.ThreadPoolExecutor.runWorker(ThreadPoolExecutor.java:1090) [?:?]
+	at java.base/java.util.concurrent.ThreadPoolExecutor$Worker.run(ThreadPoolExecutor.java:614) [?:?]
+	at java.base/java.lang.Thread.run(Thread.java:1474) [?:?]
+Transformer Audit:
+  com.mojang.realmsclient.client.RealmsClient
+    REASON: classloading
+[04:29:27] [Worker-Main-4/INFO] [minecraft/UnihexProvider]: Found unifont_pua-17.0.01.hex, loading
+[04:29:27] [Worker-Main-9/INFO] [minecraft/UnihexProvider]: Found unifont_all_no_pua-17.0.01.hex, loading
+[04:29:27] [Worker-Main-2/INFO] [minecraft/UnihexProvider]: Found unifont_jp_patch-17.0.01.hex, loading
+[04:29:28] [Forge Version Check/INFO] [ne.mi.fm.VersionChecker/]: [forge] Starting version check at https://files.minecraftforge.net/net/minecraftforge/forge/promotions_slim.json
+[04:29:28] [Forge Version Check/INFO] [ne.mi.fm.VersionChecker/]: [forge] Found status: UP_TO_DATE Current: 64.1.5 Target: null
+[04:29:29] [Render thread/INFO] [mojang/Library]: OpenAL initialized on device OpenAL Soft on Voicemeeter AUX Input (VB-Audio Voicemeeter VAIO)
+[04:29:29] [Render thread/INFO] [minecraft/SoundEngine]: Sound engine started
+[04:29:29] [Render thread/INFO] [minecraft/TextureAtlas]: Created: 512x256x0 minecraft:textures/atlas/particles.png-atlas
+[04:29:30] [Render thread/INFO] [minecraft/TextureAtlas]: Created: 128x128x0 minecraft:textures/atlas/decorated_pot.png-atlas
+[04:29:30] [Render thread/INFO] [minecraft/TextureAtlas]: Created: 2048x1024x0 minecraft:textures/atlas/armor_trims.png-atlas
+[04:29:30] [Render thread/INFO] [minecraft/TextureAtlas]: Created: 512x256x0 minecraft:textures/atlas/paintings.png-atlas
+[04:29:30] [Render thread/INFO] [minecraft/TextureAtlas]: Created: 1024x512x0 minecraft:textures/atlas/shield_patterns.png-atlas
+[04:29:30] [Render thread/INFO] [minecraft/TextureAtlas]: Created: 2048x2048x4 minecraft:textures/atlas/blocks.png-atlas
+[04:29:30] [Render thread/INFO] [minecraft/TextureAtlas]: Created: 512x512x0 minecraft:textures/atlas/chest.png-atlas
+[04:29:30] [Render thread/INFO] [minecraft/TextureAtlas]: Created: 256x128x0 minecraft:textures/atlas/celestials.png-atlas
+[04:29:30] [Render thread/INFO] [minecraft/TextureAtlas]: Created: 1024x512x0 minecraft:textures/atlas/banner_patterns.png-atlas
+[04:29:30] [Render thread/INFO] [minecraft/TextureAtlas]: Created: 512x512x0 minecraft:textures/atlas/beds.png-atlas
+[04:29:30] [Render thread/INFO] [minecraft/TextureAtlas]: Created: 1024x512x0 minecraft:textures/atlas/items.png-atlas
+[04:29:30] [Render thread/INFO] [minecraft/TextureAtlas]: Created: 1024x1024x0 minecraft:textures/atlas/gui.png-atlas
+[04:29:30] [Render thread/INFO] [minecraft/TextureAtlas]: Created: 128x64x0 minecraft:textures/atlas/map_decorations.png-atlas
+[04:29:30] [Render thread/INFO] [minecraft/TextureAtlas]: Created: 512x256x0 minecraft:textures/atlas/signs.png-atlas
+[04:29:30] [Render thread/INFO] [minecraft/TextureAtlas]: Created: 512x512x0 minecraft:textures/atlas/shulker_boxes.png-atlas
+[04:29:30] [Render thread/INFO] [co.it.sm.Smwti/]: Read look-at rules from 0 file(s)
+[04:29:30] [IO-Worker-1/INFO] [mojang/RealmsClient]: Could not authorize you against Realms server: java.lang.RuntimeException: Failed to parse into SignedJWT: 0
+[04:29:30] [IO-Worker-1/ERROR] [mojang/RealmsAvailability]: Couldn't connect to realms
+com.mojang.realmsclient.exception.RealmsServiceException: Realms authentication error with message 'java.lang.RuntimeException: Failed to parse into SignedJWT: 0'
+	at TRANSFORMER/minecraft@26.1.2/com.mojang.realmsclient.client.RealmsClient.execute(RealmsClient.java:513) ~[forge-26.1.2-64.1.5.jar%230!/:?]
+	at TRANSFORMER/minecraft@26.1.2/com.mojang.realmsclient.client.RealmsClient.clientCompatible(RealmsClient.java:283) ~[forge-26.1.2-64.1.5.jar%230!/:?]
+	at TRANSFORMER/minecraft@26.1.2/com.mojang.realmsclient.RealmsAvailability.lambda$check$0(RealmsAvailability.java:50) [forge-26.1.2-64.1.5.jar%230!/:?]
+	at java.base/java.util.concurrent.CompletableFuture$AsyncSupply.run(CompletableFuture.java:1789) [?:?]
+	at java.base/java.util.concurrent.ThreadPoolExecutor.runWorker(ThreadPoolExecutor.java:1090) [?:?]
+	at java.base/java.util.concurrent.ThreadPoolExecutor$Worker.run(ThreadPoolExecutor.java:614) [?:?]
+	at java.base/java.lang.Thread.run(Thread.java:1474) [?:?]
+Transformer Audit:
+  com.mojang.realmsclient.RealmsAvailability
+    REASON: classloading
+  com.mojang.realmsclient.client.RealmsClient
+    REASON: classloading
+[04:29:41] [Render thread/INFO] [minecraft/RecipeManager]: Loaded 1515 recipes
+[04:29:41] [Render thread/INFO] [minecraft/AdvancementTree]: Loaded 1617 advancements
+[04:29:42] [Server thread/INFO] [minecraft/IntegratedServer]: Starting integrated minecraft server version 26.1.2
+[04:29:42] [Server thread/INFO] [minecraft/MinecraftServer]: Generating keypair
+[04:29:42] [Server thread/INFO] [minecraft/LoggingLevelLoadListener]: Loading 0 persistent chunks...
+[04:29:42] [Server thread/INFO] [minecraft/MinecraftServer]: Saving chunks for level 'ServerLevel[smwti_shots]'/minecraft:overworld
+[04:29:42] [Server thread/INFO] [minecraft/MinecraftServer]: Saving chunks for level 'ServerLevel[smwti_shots]'/minecraft:the_end
+[04:29:42] [Server thread/INFO] [minecraft/MinecraftServer]: Saving chunks for level 'ServerLevel[smwti_shots]'/minecraft:the_nether
+[04:29:42] [Server thread/INFO] [minecraft/MinecraftServer]: ThreadedAnvilChunkStorage (world): All chunks are saved
+[04:29:42] [Server thread/INFO] [minecraft/MinecraftServer]: ThreadedAnvilChunkStorage (DIM1): All chunks are saved
+[04:29:42] [Server thread/INFO] [minecraft/MinecraftServer]: ThreadedAnvilChunkStorage (DIM-1): All chunks are saved
+[04:29:42] [Server thread/INFO] [minecraft/MinecraftServer]: ThreadedAnvilChunkStorage: All dimensions are saved
+[04:29:42] [Server thread/INFO] [ne.mi.se.pe.PermissionAPI/]: Successfully initialized permission handler forge:default_handler
+[04:29:42] [Server thread/INFO] [minecraft/LoggingLevelLoadListener]: Loading 49 chunks for player spawn...
+[04:29:42] [Server thread/INFO] [minecraft/LoggingLevelLoadListener]: Preparing spawn area: 16%
+[04:29:42] [Server thread/INFO] [minecraft/LoggingLevelLoadListener]: Preparing spawn area: 16%
+[04:29:43] [Server thread/INFO] [minecraft/LoggingLevelLoadListener]: Time elapsed: 745 ms
+[04:29:43] [Server thread/INFO] [minecraft/PlayerList]: Dev[local:E:a89a4414] logged in with entity id 2 at (16.5, -61.0, -1.6)
+[04:29:43] [Server thread/INFO] [minecraft/MinecraftServer]: Dev joined the game
+[04:29:43] [Server thread/INFO] [minecraft/IntegratedServer]: Changing view distance to 12, from 10
+[04:29:43] [Server thread/INFO] [minecraft/IntegratedServer]: Changing simulation distance to 12, from 0
+[04:29:43] [Render thread/INFO] [minecraft/AdvancementTree]: Loaded 2 advancements
+[04:29:43] [Render thread/INFO] [minecraft/DynamicUniformStorage]: Resizing Dynamic Transforms UBO, capacity limit of 2 reached during a single frame. New capacity will be 4.
+[04:29:43] [Render thread/INFO] [minecraft/DynamicUniformStorage]: Resizing Dynamic Transforms UBO, capacity limit of 4 reached during a single frame. New capacity will be 8.
+[04:29:43] [Render thread/INFO] [minecraft/DynamicUniformStorage]: Resizing Chunk Sections UBO, capacity limit of 2 reached during a single frame. New capacity will be 8.
+[04:29:44] [Render thread/INFO] [minecraft/DynamicUniformStorage]: Resizing Chunk Sections UBO, capacity limit of 8 reached during a single frame. New capacity will be 16.
+[04:29:44] [Render thread/INFO] [minecraft/DynamicUniformStorage]: Resizing Chunk Sections UBO, capacity limit of 16 reached during a single frame. New capacity will be 32.
+[04:29:44] [Render thread/INFO] [minecraft/DynamicUniformStorage]: Resizing Chunk Sections UBO, capacity limit of 32 reached during a single frame. New capacity will be 64.
+[04:29:44] [Render thread/INFO] [minecraft/DynamicUniformStorage]: Resizing Chunk Sections UBO, capacity limit of 64 reached during a single frame. New capacity will be 128.
+[04:29:46] [Render thread/INFO] [minecraft/DynamicUniformStorage]: Resizing Chunk Sections UBO, capacity limit of 128 reached during a single frame. New capacity will be 256.
+[04:30:04] [Server thread/INFO] [minecraft/IntegratedServer]: Saving and pausing game...
+[04:30:05] [Server thread/INFO] [minecraft/MinecraftServer]: Saving chunks for level 'ServerLevel[smwti_shots]'/minecraft:overworld
+[04:30:05] [Server thread/INFO] [minecraft/MinecraftServer]: Saving chunks for level 'ServerLevel[smwti_shots]'/minecraft:the_end
+[04:30:05] [Server thread/INFO] [minecraft/MinecraftServer]: Saving chunks for level 'ServerLevel[smwti_shots]'/minecraft:the_nether
+[04:30:21] [Server thread/INFO] [minecraft/IntegratedServer]: Saving and pausing game...
+[04:30:21] [Server thread/INFO] [minecraft/MinecraftServer]: Saving chunks for level 'ServerLevel[smwti_shots]'/minecraft:overworld
+[04:30:21] [Server thread/INFO] [minecraft/MinecraftServer]: Saving chunks for level 'ServerLevel[smwti_shots]'/minecraft:the_end
+[04:30:21] [Server thread/INFO] [minecraft/MinecraftServer]: Saving chunks for level 'ServerLevel[smwti_shots]'/minecraft:the_nether
+[04:30:35] [Server thread/INFO] [minecraft/IntegratedServer]: Saving and pausing game...
+[04:30:35] [Server thread/INFO] [minecraft/MinecraftServer]: Saving chunks for level 'ServerLevel[smwti_shots]'/minecraft:overworld
+[04:30:35] [Server thread/INFO] [minecraft/MinecraftServer]: Saving chunks for level 'ServerLevel[smwti_shots]'/minecraft:the_end
+[04:30:35] [Server thread/INFO] [minecraft/MinecraftServer]: Saving chunks for level 'ServerLevel[smwti_shots]'/minecraft:the_nether
+[04:30:38] [Server thread/INFO] [minecraft/IntegratedServer]: Saving and pausing game...
+[04:30:38] [Server thread/INFO] [minecraft/MinecraftServer]: Saving chunks for level 'ServerLevel[smwti_shots]'/minecraft:overworld
+[04:30:38] [Server thread/INFO] [minecraft/MinecraftServer]: Saving chunks for level 'ServerLevel[smwti_shots]'/minecraft:the_end
+[04:30:38] [Server thread/INFO] [minecraft/MinecraftServer]: Saving chunks for level 'ServerLevel[smwti_shots]'/minecraft:the_nether
+[04:31:13] [Server thread/INFO] [minecraft/IntegratedServer]: Saving and pausing game...
+[04:31:13] [Server thread/INFO] [minecraft/MinecraftServer]: Saving chunks for level 'ServerLevel[smwti_shots]'/minecraft:overworld
+[04:31:13] [Server thread/INFO] [minecraft/MinecraftServer]: Saving chunks for level 'ServerLevel[smwti_shots]'/minecraft:the_end
+[04:31:13] [Server thread/INFO] [minecraft/MinecraftServer]: Saving chunks for level 'ServerLevel[smwti_shots]'/minecraft:the_nether
+[04:31:14] [Server thread/INFO] [minecraft/MinecraftServer]: Stopping server
+[04:31:14] [Server thread/INFO] [minecraft/MinecraftServer]: Saving players
+[04:31:14] [Server thread/INFO] [minecraft/ServerGamePacketListenerImpl]: Dev lost connection: Disconnected
+[04:31:14] [Server thread/INFO] [minecraft/MinecraftServer]: Dev left the game
+[04:31:14] [Server thread/INFO] [minecraft/ServerCommonPacketListenerImpl]: Stopping singleplayer server as player logged out
+[04:31:14] [Server thread/INFO] [minecraft/MinecraftServer]: Saving worlds
+[04:31:14] [Server thread/INFO] [minecraft/MinecraftServer]: Saving chunks for level 'ServerLevel[smwti_shots]'/minecraft:overworld
+[04:31:14] [Server thread/INFO] [minecraft/MinecraftServer]: Saving chunks for level 'ServerLevel[smwti_shots]'/minecraft:the_end
+[04:31:14] [Server thread/INFO] [minecraft/MinecraftServer]: Saving chunks for level 'ServerLevel[smwti_shots]'/minecraft:the_nether
+[04:31:14] [Server thread/INFO] [minecraft/MinecraftServer]: ThreadedAnvilChunkStorage (world): All chunks are saved
+[04:31:14] [Server thread/INFO] [minecraft/MinecraftServer]: ThreadedAnvilChunkStorage (DIM1): All chunks are saved
+[04:31:14] [Server thread/INFO] [minecraft/MinecraftServer]: ThreadedAnvilChunkStorage (DIM-1): All chunks are saved
+[04:31:14] [Server thread/INFO] [minecraft/MinecraftServer]: ThreadedAnvilChunkStorage: All dimensions are saved
+[04:31:16] [Render thread/INFO] [minecraft/Minecraft]: Stopping!
+
+BUILD SUCCESSFUL in 2m 5s
+5 actionable tasks: 1 executed, 4 up-to-date
+Configuration cache entry reused.

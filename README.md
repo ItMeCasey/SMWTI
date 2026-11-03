@@ -9,7 +9,7 @@ Status: in development (version 2026.11.1). See `PLAN.md`.
 ## For players
 
 - Install it on the client. It also works on a server that has it, and shows more there: the server sends live data about a block or entity, such as what is in a chest or how full a tank is.
-- The overlay shows the target's icon, name and mod, then lines from mods and from SMWTI itself: a crop's growth, a creature's health, the tool that breaks a block (green when you already hold it), inventories, fluid tanks and stored energy on blocks that expose them. Looking at water or lava shows it too.
+- The overlay shows the target's icon, name and mod, then lines from mods and from SMWTI itself: a crop's growth, a creature's health, the tool that breaks a block, to the right of the name (green when you already hold it), inventories shown as icons with counts, fluid tanks and stored energy on blocks that expose them. Looking at water or lava shows it too.
 - Sneak for the long form, which lists more (the default; change it in the settings).
 - Numpad 0 opens the settings screen and numpad 1 switches the overlay on and off; both keys can be changed in Controls. Settings are also in `config/smwti-client.toml`.
 
@@ -60,7 +60,7 @@ SmwtiApi.overrideBlock(new TargetOverride<BlockView>() {
 Option showRecipe = SmwtiApi.registerOption(Identifier.fromNamespaceAndPath("mymod", "show_recipe"), true);
 ```
 
-Lines go to the head (right under the name), the body or the tail. A provider that throws is logged and skipped. Server providers run only for targets within 12 blocks of the player, a few times a second while they look, and only if the server has SMWTI.
+Lines go to the badge (right of the name, on the same row), the head (right under the name), the body or the tail. To list item stacks, call `tooltip.stack(Position.BODY, stack)` once per stack: they are drawn as a grid of icons with the count small in the lower right corner and no names. A provider that throws is logged and skipped. Server providers run only for targets within 12 blocks of the player, a few times a second while they look, and only if the server has SMWTI.
 
 ## Building
 
