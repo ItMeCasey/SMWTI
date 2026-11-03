@@ -4,7 +4,7 @@
 
 Show Me What This Is (SMWTI) is a look-at overlay for Minecraft Forge. Point at a block or a creature and a small panel tells you what it is, which mod it comes from and what state it's in. It's inspired by Jade and The One Probe and shares no code with them.
 
-📖 **Full guide:** [itmecasey.com/wiki/smwti](https://itmecasey.com/wiki/smwti/)
+**Full guide:** [itmecasey.com/wiki/smwti](https://itmecasey.com/wiki/smwti/)
 
 ![Features](https://raw.githubusercontent.com/ItMeCasey/SMWTI/main/branding/banners/h_features.png)
 
