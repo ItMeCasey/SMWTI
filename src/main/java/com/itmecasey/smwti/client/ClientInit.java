@@ -9,6 +9,8 @@ import net.minecraft.client.KeyMapping;
 import net.minecraft.client.Minecraft;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.client.event.RegisterKeyMappingsEvent;
+import net.minecraftforge.client.settings.KeyConflictContext;
+import net.minecraftforge.client.settings.KeyModifier;
 import net.minecraftforge.event.TickEvent;
 import net.minecraftforge.eventbus.api.listener.SubscribeEvent;
 import net.minecraftforge.fml.common.Mod;
@@ -23,10 +25,12 @@ import org.lwjgl.glfw.GLFW;
 @Mod.EventBusSubscriber(modid = Smwti.MODID, value = Dist.CLIENT)
 public final class ClientInit {
     private static final KeyMapping.Category CATEGORY = KeyMapping.Category.register(Smwti.id("main"));
-    private static final KeyMapping SETTINGS = new KeyMapping("key.smwti.settings", InputConstants.Type.KEYSYM,
-            GLFW.GLFW_KEY_KP_0, CATEGORY);
-    private static final KeyMapping TOGGLE = new KeyMapping("key.smwti.toggle", InputConstants.Type.KEYSYM,
-            GLFW.GLFW_KEY_KP_1, CATEGORY);
+    /** Control+F10 opens the settings screen. */
+    private static final KeyMapping SETTINGS = new KeyMapping("key.smwti.settings", KeyConflictContext.UNIVERSAL,
+            KeyModifier.CONTROL, InputConstants.Type.KEYSYM, GLFW.GLFW_KEY_F10, CATEGORY, 0);
+    /** F10 switches the overlay on and off. */
+    private static final KeyMapping TOGGLE = new KeyMapping("key.smwti.toggle", KeyConflictContext.UNIVERSAL,
+            KeyModifier.NONE, InputConstants.Type.KEYSYM, GLFW.GLFW_KEY_F10, CATEGORY, 0);
 
     private ClientInit() {
     }
