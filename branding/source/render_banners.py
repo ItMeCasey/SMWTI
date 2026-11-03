@@ -16,6 +16,8 @@ ASSETS = {
     "banner": (1600, 400),
     "social": (1280, 640),
     "features": (1920, 1080),
+    "themes": (1920, 1080),
+    "h_themes": (1200, 110),
     "h_features": (1200, 110),
     "h_players": (1200, 110),
     "h_authors": (1200, 110),

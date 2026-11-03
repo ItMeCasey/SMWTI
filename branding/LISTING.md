@@ -1,0 +1,107 @@
+# SMWTI listing kit: CurseForge and Modrinth
+
+Everything you need to fill in the two project forms. Files are in `branding/icon/` and `branding/banners/`.
+
+## Project fields
+
+| Field | CurseForge | Modrinth |
+|---|---|---|
+| Name | Show Me What This Is | Show Me What This Is |
+| Slug / URL | `show-me-what-this-is` | `smwti` (short), or `show-me-what-this-is` |
+| Icon / logo | `icon/icon_512.png` (CurseForge wants square, at least 400x400) | `icon/icon_512.png` (square, under 256 KiB; this one is a few KB) |
+| Class | Mods | Mod |
+| Main category | Map and Information | Utility |
+| More categories | Utility & QoL, API and Library | (none needed) |
+| Loader | Forge | Forge |
+| Game version | 26.1.2 | 26.1.2 |
+| Environment | Client, server optional | Client: required, Server: optional |
+| License | MIT | MIT |
+| Source | https://github.com/ItMeCasey/SMWTI | same |
+| Issues | https://github.com/ItMeCasey/SMWTI/issues | same |
+
+### Summary
+
+Modrinth (256 characters max):
+
+> A look-at overlay for Forge 26.1.2. Point at a block or a mob to see its name, its mod and its state: crop growth, health, chest contents, machine progress. Other mods add their own lines through a small API.
+
+CurseForge (keep it short; it shows on cards):
+
+> Point at a block or a mob and see what it is, which mod it's from and what state it's in.
+
+### Gallery
+
+| File | Use |
+|---|---|
+| `banners/features.png` (1920x1080) | Featured gallery image on Modrinth, first image on CurseForge |
+| `banners/themes.png` (1920x1080) | The five themes side by side, second gallery image |
+| `banners/social.png` (1280x640) | GitHub social preview (repo Settings > Social preview), third gallery image |
+| `banners/banner.png` (1600x400) | Top of both descriptions |
+| `banners/h_*.png` (1200x110) | Section headers inside the descriptions |
+
+The panels in these images are illustrations drawn for the branding, not game screenshots. Add real in-game screenshots to the gallery once the overlay has been checked in a client.
+
+### Image links in the descriptions
+
+The descriptions below load images from the GitHub repository, so they only show once `branding/` is pushed and the repository is public. If it stays private, upload the images to the project gallery (Modrinth) or Images tab (CurseForge) and swap in those links.
+
+---
+
+## Description (Modrinth, Markdown)
+
+```markdown
+![Show Me What This Is](https://raw.githubusercontent.com/ItMeCasey/SMWTI/main/branding/banners/banner.png)
+
+**Show Me What This Is** (SMWTI) is a look-at overlay for Minecraft Forge 26.1.2. Point at a block or an entity and a small panel at the top of the screen tells you what it is, which mod it comes from and, where it can, what state it is in.
+
+It is inspired by Jade and The One Probe, which have no Forge build for this Minecraft version. SMWTI shares no code with them.
+
+![Features](https://raw.githubusercontent.com/ItMeCasey/SMWTI/main/branding/banners/h_features.png)
+
+- **Every target:** icon, name and the mod it comes from. Looking at water or lava works too.
+- **Blocks:** crop and plant growth, redstone power, a note block's note, composter, cauldron, honey and respawn anchor levels, furnace and brewing stand progress, a spawner's mob, a beacon's level, a hive's bees, a jukebox's disc, a flower pot's plant.
+- **Containers and machines:** inventories as item icons with counts, fluid tanks and stored energy, sent live by the server.
+- **Mobs:** health, armor, active effects with time left, riders and mounts, a horse's speed and jump, a pet's owner, how long a baby takes to grow up or an adult to breed again.
+- **Tools:** the tool that breaks the block, with a green check when it's already in your hand.
+- **Long form:** sneak to see more, such as the registry id and the block's state.
+
+![For players](https://raw.githubusercontent.com/ItMeCasey/SMWTI/main/branding/banners/h_players.png)
+
+- Install it on the client. It works on any server; a server that also has SMWTI sends extra live data (chest contents, tank levels, machine progress).
+- **Numpad 0** opens the settings, **Numpad 1** turns the overlay on and off. Both can be rebound in Controls.
+- Resource packs can hide, rename or add lines to any block or entity with a small JSON file.
+
+![Themes](https://raw.githubusercontent.com/ItMeCasey/SMWTI/main/branding/banners/h_themes.png)
+
+Five themes: dark, light, vanilla, clear and modern. Pick one in the settings and set how see-through the backdrop is.
+
+![The five themes](https://raw.githubusercontent.com/ItMeCasey/SMWTI/main/branding/banners/themes.png)
+
+![For mod authors](https://raw.githubusercontent.com/ItMeCasey/SMWTI/main/branding/banners/h_authors.png)
+
+Add your own lines through `SmwtiApi`: client and server providers for blocks and entities, progress bars, item icons, name and icon overrides, block redirects for multiblocks, custom drawn elements, and settings that show up in the SMWTI settings screen. The API is shaped like Jade's, so porting a Jade plugin is mostly renaming. See the [README](https://github.com/ItMeCasey/SMWTI#for-mod-authors) for examples.
+
+![FAQ](https://raw.githubusercontent.com/ItMeCasey/SMWTI/main/branding/banners/h_faq.png)
+
+**Does it need to be on the server?** No. On a server without it you still get names, mods, growth, health and everything the client can see. Install it on the server too for container contents and machine data.
+
+**Does it load Jade or The One Probe plugins?** No. Mods add support through SMWTI's own API.
+
+**Other loaders or versions?** Forge 26.1.2 only for now.
+
+**License:** MIT. Source and issues on [GitHub](https://github.com/ItMeCasey/SMWTI).
+```
+
+## Description (CurseForge)
+
+CurseForge's description editor accepts Markdown (pick **Markdown** as the description type). Paste the same text as Modrinth. If you use the WYSIWYG editor instead, paste it into a Markdown viewer first and copy the rendered result.
+
+---
+
+## Checklist
+
+1. Push `branding/` to GitHub (and make the repository public) so the description images load.
+2. Create the Modrinth project: name, slug, summary, icon, categories, environment, license, links, description. Upload `features.png` as the featured gallery image.
+3. Create the CurseForge project the same way, with `icon_512.png` as the logo. CurseForge reviews new projects before they go live, so it needs a first file uploaded.
+4. Set `banners/social.png` as the GitHub social preview.
+5. Optional: add `icon/smwti_logo.png` to the jar as the Forge mod list logo (`logoFile="smwti_logo.png"` in `mods.toml`, file in `src/main/resources/`).

@@ -61,6 +61,18 @@
 
   .cap { font-size: 22px; color: var(--muted); margin-top: 14px; }
   .cap b { display: block; font-size: 26px; color: var(--text); font-weight: 600; margin-bottom: 4px; }
+  /* Theme panels, colors from client/Palette.java. */
+  .tpanel { display: flex; flex-direction: column; gap: 10px; width: 330px; padding: 14px 16px 16px;
+    background: var(--p); color: var(--t); position: relative; }
+  .tpanel.edge { box-shadow: inset 0 0 0 3px var(--e); }
+  .tpanel.rounded { border-radius: 5px; }
+  .tpanel.accent::before { content: ""; position: absolute; left: 3px; right: 3px; top: 0; height: 4px; background: var(--a); }
+  .tpanel.shadow .name, .tpanel.shadow .line { text-shadow: 2px 2px 0 rgba(0,0,0,.55); }
+  .tpanel .name { color: var(--t); }
+  .tpanel .tmod { font-size: 19px; color: var(--s); line-height: 1; margin-top: 4px; }
+  .tpanel .line { color: var(--t); }
+  .tpanel .bar { background: var(--b); border: 0; border-radius: 0; }
+  .tlabel { margin-top: 18px; display: flex; justify-content: center; }
 </style>
 </head>
 <body>
@@ -201,6 +213,49 @@ const PANELS = {
     bar(60, "linear-gradient(90deg,#1fa597,#5ff0e0)", "48,000 / 80,000 FE")),
 };
 
+
+// ---------- themes ----------
+const THEMES = [
+  ["Dark",    {p:"rgba(16,16,24,.75)",  e:"#3a3a4c", t:"#ffffff", s:"#8e8ea6", b:"#2a2a34"}, "edge shadow"],
+  ["Light",   {p:"rgba(240,240,244,.88)", e:"#9a9aaa", t:"#202028", s:"#6a6a7a", b:"#c8c8d4"}, "edge"],
+  ["Vanilla", {p:"rgba(16,0,16,.94)",   e:"rgba(80,0,255,.94)", t:"#ffffff", s:"#aaaaaa", b:"#2a1a3a"}, "edge shadow"],
+  ["Clear",   {p:"rgba(0,0,0,.31)",     e:"transparent", t:"#ffffff", s:"#cccccc", b:"rgba(0,0,0,.5)"}, "shadow"],
+  ["Modern",  {p:"rgba(20,24,33,.91)",  e:"transparent", t:"#eaf0fa", s:"#7c8aa5", b:"#222a38", a:"#4da3ff"}, "shadow accent rounded"],
+];
+function themePanel([label, c, flags]) {
+  const vars = Object.entries(c).map(([k, v]) => `--${k}:${v}`).join(";");
+  const box = el("div", {style: "width:48px;height:48px;display:grid;place-items:center"}, sprite("furnace", 4));
+  return el("div", {class: "tpanel " + flags, style: vars},
+    el("div", {class: "row"}, box, el("div", {}, el("div", {class: "name"}, "Furnace"), el("div", {class: "tmod"}, "Minecraft"))),
+    bar(62, "linear-gradient(90deg,#e0702a,#ffc14a)", "Smelting 62%"),
+    el("div", {class: "line"}, "Fuel: 12 s left"));
+}
+// An original pixel landscape: sky, clouds, grassy hills. Block size in px.
+function scene(w, h, bs) {
+  const c = document.createElement("canvas"); c.width = w; c.height = h;
+  const x = c.getContext("2d");
+  const g = x.createLinearGradient(0, 0, 0, h); g.addColorStop(0, "#6fb6ea"); g.addColorStop(1, "#c4e6f8");
+  x.fillStyle = g; x.fillRect(0, 0, w, h);
+  let seed = 11; const rnd = () => (seed = (seed * 16807) % 2147483647) / 2147483647;
+  x.fillStyle = "rgba(255,255,255,.92)";
+  for (const [cx, cy, cw] of [[2, 2, 6], [13, 4, 4], [24, 1, 7], [33, 5, 5]])
+    { x.fillRect(cx * bs, cy * bs, cw * bs, bs); x.fillRect((cx + 1) * bs, (cy - 1) * bs, (cw - 3) * bs, bs); }
+  const cols = Math.ceil(w / bs), base = Math.floor(h / bs) - 5;
+  for (let i = 0; i < cols; i++) {
+    const top = base + Math.round(Math.sin(i * 0.3) * 1.2);
+    for (let j = top; j * bs < h; j++) {
+      const px = 8, cell = bs / px;
+      for (let a = 0; a < px; a++) for (let b = 0; b < px; b++) {
+        let col;
+        if (j === top && b < 3 - (a % 3 === 1 ? 1 : 0)) col = ["#6dbb45", "#5ea838", "#7cc952"][Math.floor(rnd() * 3)];
+        else col = ["#8b5e34", "#7a522d", "#96683c", "#60401f"][Math.floor(rnd() * (rnd() < .1 ? 4 : 3))];
+        x.fillStyle = col; x.fillRect(i * bs + a * cell, j * bs + b * cell, cell, cell);
+      }
+    }
+  }
+  return c;
+}
+
 // ---------- assets ----------
 const ASSETS = {
   banner: [1600, 400, (r) => {
@@ -218,6 +273,19 @@ const ASSETS = {
     r.append(pixelText("Show me what this is", 7));
     r.append(el("div", {class: "tag"}, "A look-at overlay for Minecraft Forge 26.1.2"));
   }],
+  themes: [1920, 1080, (r) => {
+    r.style.cssText += "display:flex;flex-direction:column";
+    r.append(el("div", {style: "height:230px;display:flex;align-items:center;justify-content:center;gap:36px"}, iconImg(130),
+      el("div", {style: "display:flex;flex-direction:column;align-items:flex-start;gap:16px"}, pixelText("Five themes", 7),
+        el("div", {class: "tag"}, "Pick one in the settings, then set how see-through the backdrop is"))));
+    const world = el("div", {style: "position:relative;flex:1"});
+    const bg = scene(1920, 850, 64); bg.style.cssText = "position:absolute;inset:0";
+    world.append(bg);
+    const row = el("div", {style: "position:absolute;left:0;right:0;top:340px;display:flex;justify-content:center;gap:40px"});
+    for (const t of THEMES) row.append(el("div", {}, themePanel(t), el("div", {class: "tlabel"}, pixelText(t[0], 5, WHITE))));
+    world.append(row);
+    r.append(world);
+  }],
   features: [1920, 1080, (r) => {
     r.style.cssText += "display:flex;flex-direction:column;align-items:center;justify-content:center;padding:40px 90px;gap:70px";
     r.append(el("div", {style: "display:flex;align-items:center;gap:36px"}, iconImg(140),
@@ -233,12 +301,12 @@ const ASSETS = {
     const grid = el("div", {style: "zoom:1.18;display:grid;grid-template-columns:repeat(3,auto);gap:50px 70px;justify-content:center;align-items:start"});
     for (const [k, t, d] of items) grid.append(el("div", {}, PANELS[k](), el("div", {class: "cap"}, el("b", {}, t), d)));
     grid.append(el("div", {style: "align-self:center"}, el("div", {class: "meta", style: "flex-direction:column;align-items:flex-start"},
-      el("span", {class: "pill on"}, "Forge 26.1.2"), el("span", {class: "pill"}, "Themes: dark, light, vanilla, clear"),
+      el("span", {class: "pill on"}, "Forge 26.1.2"), el("span", {class: "pill"}, "Five themes, from vanilla to modern"),
       el("span", {class: "pill"}, "Resource pack rules"), el("span", {class: "pill"}, "MIT license"))));
     r.append(grid);
   }],
 };
-for (const [k, label] of Object.entries({features: "Features", players: "For players", authors: "For mod authors", install: "Install", config: "Settings", faq: "FAQ"})) {
+for (const [k, label] of Object.entries({features: "Features", themes: "Themes", players: "For players", authors: "For mod authors", install: "Install", config: "Settings", faq: "FAQ"})) {
   ASSETS["h_" + k] = [1200, 110, (r) => {
     r.style.cssText += "display:flex;align-items:center;gap:26px;padding:0 36px;border-top:3px solid var(--gold);";
     r.append(iconImg(64));

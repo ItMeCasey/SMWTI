@@ -27,7 +27,6 @@ public final class SettingsScreen extends Screen {
     private static final int GAP = 8;
     private static final int ROW = 24;
     private static final List<Double> SCALES = List.of(0.5, 0.75, 1.0, 1.25, 1.5, 2.0);
-    private static final List<Double> OPACITIES = List.of(0.2, 0.4, 0.6, 0.8, 1.0);
 
     private final @Nullable Screen parent;
     /** How many controls have been placed, which decides the next one's column and row. */
@@ -51,9 +50,8 @@ public final class SettingsScreen extends Screen {
         addControl(CycleButton.builder(SettingsScreen::themeName, SmwtiConfig.theme())
                 .withValues(SmwtiConfig.Theme.values()), "smwti.settings.theme",
                 (button, value) -> SmwtiConfig.setTheme(value));
-        addControl(CycleButton.builder((Double opacity) -> Component.literal(Math.round(opacity * 100) + "%"),
-                nearest(OPACITIES, SmwtiConfig.opacity())).withValues(OPACITIES), "smwti.settings.opacity",
-                (button, value) -> SmwtiConfig.setOpacity(value));
+        addRenderableWidget(new OpacitySlider(columnX(placed), rowY(placed)));
+        placed++;
         addControl(CycleButton.builder(SettingsScreen::detailName, SmwtiConfig.detail())
                 .withValues(SmwtiConfig.Detail.values()), "smwti.settings.detail",
                 (button, value) -> SmwtiConfig.setDetail(value));
@@ -112,6 +110,30 @@ public final class SettingsScreen extends Screen {
 
     private static Component detailName(SmwtiConfig.Detail detail) {
         return Component.translatable("smwti.settings.detail." + detail.name().toLowerCase(Locale.ROOT));
+    }
+
+    /** A slider for how solid the backdrop is, from 20% to 100%. */
+    private static final class OpacitySlider extends AbstractSliderButton {
+        private static final double MIN = 0.2;
+
+        OpacitySlider(int x, int y) {
+            super(x, y, COLUMN, 20, Component.empty(), (SmwtiConfig.opacity() - MIN) / (1.0 - MIN));
+            updateMessage();
+        }
+
+        private double opacity() {
+            return MIN + value * (1.0 - MIN);
+        }
+
+        @Override
+        protected void updateMessage() {
+            setMessage(Component.translatable("smwti.settings.opacity").append(": " + Math.round(opacity() * 100) + "%"));
+        }
+
+        @Override
+        protected void applyValue() {
+            SmwtiConfig.setOpacity(Math.round(opacity() * 100) / 100.0);
+        }
     }
 
     /** A slider over a whole-number range. */

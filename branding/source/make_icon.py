@@ -185,7 +185,7 @@ for y in range(N):
             img.putpixel((x, y), px[y][x] + (255,))
 
 OUT.mkdir(parents=True, exist_ok=True)
-for size in (32, 64, 128, 256, 400, 512, 1024):
+for size in (32, 64, 128, 256, 512, 1024):
     img.resize((size, size), Image.NEAREST).save(OUT / f"icon_{size}.png", optimize=True)
 img.resize((512, 512), Image.NEAREST).save(OUT / "smwti_logo.png", optimize=True)
 

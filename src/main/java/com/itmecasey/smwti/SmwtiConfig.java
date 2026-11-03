@@ -25,7 +25,7 @@ public final class SmwtiConfig {
     private static final ForgeConfigSpec.Builder BUILDER = new ForgeConfigSpec.Builder();
 
     private static final ForgeConfigSpec.EnumValue<Theme> THEME = BUILDER
-            .comment("Colors of the overlay: dark, light, vanilla (like a tooltip), clear (a faint backdrop) or modern (flat with a colored line on top).")
+            .comment("Colors of the overlay: dark, light, vanilla (like a tooltip), clear (a faint backdrop) or modern (flat and square with an orange line on top).")
             .defineEnum("theme", Theme.DARK);
 
     private static final ForgeConfigSpec.DoubleValue OPACITY = BUILDER
