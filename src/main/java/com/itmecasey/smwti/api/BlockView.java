@@ -14,8 +14,11 @@ import org.jetbrains.annotations.Nullable;
  * @param pos         the block's position
  * @param state       the block's state
  * @param entity      the block entity as the client has it, or {@code null} when the block has none
+ * @param detailed    whether the player asked for the long form (sneaking, by default); a provider may
+ *                    keep its longer lines for then
  * @param serverLines what the server-side providers said about this block (see {@link ServerBlockProvider}),
  *                    empty until the first answer arrives
  */
-public record BlockView(Level level, BlockPos pos, BlockState state, @Nullable BlockEntity entity, List<Line> serverLines) {
+public record BlockView(Level level, BlockPos pos, BlockState state, @Nullable BlockEntity entity, boolean detailed,
+                        List<Line> serverLines) {
 }

@@ -4,36 +4,63 @@ A look-at overlay for Minecraft Forge 26.1.2. Point at a block or an entity and 
 
 It exists because the usual overlay mods (Jade, The One Probe) have no Forge build for this Minecraft version, and WTHIT is the only other choice. SMWTI is inspired by them but shares no code with them.
 
-Status: version 0.1, in development. See `PLAN.md`.
+Status: in development (version 0.2). See `PLAN.md`.
 
 ## For players
 
-- Install it on the client. It also works on a server that has it, and shows more there: mods can send live data about a block, such as a machine's progress.
-- Settings are in `config/smwti-client.toml`: switch the overlay off, move it to the left, center or right, scale it, hide the mod name, hide it while sneaking.
+- Install it on the client. It also works on a server that has it, and shows more there: the server sends live data about a block or entity, such as what is in a chest or how full a tank is.
+- The overlay shows the target's icon, name and mod, then lines from mods and from SMWTI itself: a crop's growth, a creature's health, the tool that breaks a block (green when you already hold it), inventories, fluid tanks and stored energy on blocks that expose them. Looking at water or lava shows it too.
+- Sneak for the long form, which lists more (the default; change it in the settings).
+- Numpad 0 opens the settings screen and numpad 1 switches the overlay on and off; both keys can be changed in Controls. Settings are also in `config/smwti-client.toml`.
+
+### Resource pack rules
+
+A resource pack can tune the overlay with files at `assets/<namespace>/smwti/rules/<name>.json`:
+
+```json
+{
+  "hide": ["minecraft:barrier", "#minecraft:beds"],
+  "rename": {"minecraft:stone": "Plain Rock"},
+  "extra_lines": {"minecraft:furnace": ["Burns what you feed it"]}
+}
+```
+
+`hide` lists blocks and entity types (ids or `#tags`) the overlay ignores. `rename` gives a block or entity another name, as text or a translation key. `extra_lines` adds lines of text. Ids that name nothing are skipped, so packs can list mods that are not installed.
 
 ## For mod authors
 
-Add lines to the overlay through `com.itmecasey.smwti.api.SmwtiApi`. Call it while your mod loads, from a class that is only loaded when `smwti` is present.
+Add to the overlay through `com.itmecasey.smwti.api.SmwtiApi`. Call it while your mod loads, from a class that is only loaded when `smwti` is present.
 
 ```java
-// On the client: lines worked out from what the client can see.
+// Client: lines worked out from what the client can see. view.detailed() is true for the long form.
 SmwtiApi.registerBlock((tooltip, view) -> {
     if (view.state().is(MyBlocks.BATTERY.get())) {
-        tooltip.add(Component.literal("Charged"));
+        tooltip.add(Position.HEAD, Component.literal("Charged"));
     }
 });
 
-// On the server: lines worked out where the real state lives. They reach the client in view.serverLines().
-SmwtiApi.registerServerBlock((tooltip, level, pos, entity) -> {
+// Server: lines worked out where the real state lives. They reach the client in view.serverLines().
+SmwtiApi.registerServerBlock((tooltip, level, pos, entity, detailed) -> {
     if (entity instanceof BatteryBlockEntity battery) {
         tooltip.bar(Component.literal(battery.energy() + " FE"), battery.fill(), 0xE8963A);
+        tooltip.item(new ItemStack(Items.REDSTONE), Component.literal("Signal " + battery.signal()));
     }
 });
 
-SmwtiApi.registerEntity((tooltip, entity) -> { /* ... */ });
+// The same for entities (registerEntity, registerServerEntity), and overrides for a name or an icon:
+SmwtiApi.overrideBlock(new TargetOverride<BlockView>() {
+    @Override
+    public Component name(BlockView view) {
+        return view.state().is(MyBlocks.BATTERY.get()) ? Component.literal("Flux Battery") : null;
+    }
+});
+
+// An on-off option for your own lines, listed in the settings screen. Name it with the translation
+// key smwti.option.<namespace>.<path>.
+Option showRecipe = SmwtiApi.registerOption(Identifier.fromNamespaceAndPath("mymod", "show_recipe"), true);
 ```
 
-A provider that throws is logged and skipped. Server providers run only for block entities within 12 blocks of the player, a few times a second while they look.
+Lines go to the head (right under the name), the body or the tail. A provider that throws is logged and skipped. Server providers run only for targets within 12 blocks of the player, a few times a second while they look, and only if the server has SMWTI.
 
 ## Building
 

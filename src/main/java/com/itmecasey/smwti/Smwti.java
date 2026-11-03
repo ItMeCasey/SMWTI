@@ -1,6 +1,6 @@
 package com.itmecasey.smwti;
 
-import com.itmecasey.smwti.compat.DefaultProviders;
+import com.itmecasey.smwti.compat.ServerProviders;
 import com.itmecasey.smwti.net.LookChannel;
 import com.mojang.logging.LogUtils;
 import net.minecraft.resources.Identifier;
@@ -25,7 +25,7 @@ public final class Smwti {
     public Smwti(FMLJavaModLoadingContext context) {
         context.registerConfig(ModConfig.Type.CLIENT, SmwtiConfig.SPEC);
         LookChannel.register();
-        DefaultProviders.register();
+        ServerProviders.register();
         LOGGER.info("Show Me What This Is loaded (Forge 26.1.2)");
     }
 
