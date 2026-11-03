@@ -52,6 +52,8 @@ public final class OverlayLayer {
     private static final int ICON = 16;
     /** Side of the small icon before an item line; the item is drawn at 16 and scaled to this. */
     private static final int SMALL_ICON = 12;
+    /** Side of the badge beside the name, in pixels; the 16 pixel icon scaled down. */
+    private static final int BADGE_ICON = 11;
     /** A grid cell for a listed item stack: the 16 pixel icon and a pixel of air. */
     private static final int SLOT = 18;
     /** Stacks listed side by side per row. */
@@ -333,9 +335,9 @@ public final class OverlayLayer {
             return Math.max(widest, 60) + 2 * PADDING;
         }
 
-        /** A badge that is only an item stack is drawn at full size, like the target's own icon. */
+        /** A badge that is only an item stack is drawn small, so it stays a mark beside the name. */
         private static int badgeWidth(Font font, Line badge) {
-            return badge.isStack() ? ICON : lineWidth(font, badge);
+            return badge.isStack() ? BADGE_ICON : lineWidth(font, badge);
         }
 
         /** The height of the top line, which holds the icon, the name and the badge side by side. */
@@ -373,7 +375,12 @@ public final class OverlayLayer {
                 // Flush with the right edge of the panel.
                 int badgeX = x + innerWidth - badgeWidth(font, badge);
                 if (badge.isStack()) {
-                    drawStack(graphics, font, badge, badgeX, y + (top - ICON) / 2);
+                    // Drawn at the small size: the icon and its corner mark are scaled down together.
+                    graphics.pose().pushMatrix();
+                    graphics.pose().translate(badgeX, y + (top - BADGE_ICON) / 2.0F);
+                    graphics.pose().scale(BADGE_ICON / (float) ICON, BADGE_ICON / (float) ICON);
+                    drawStack(graphics, font, badge, 0, 0);
+                    graphics.pose().popMatrix();
                 } else {
                     drawLine(graphics, font, badge, badgeX, y + (top - Math.max(font.lineHeight, SMALL_ICON)) / 2, 0);
                 }

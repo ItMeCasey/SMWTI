@@ -66,7 +66,7 @@
     background: var(--p); color: var(--t); position: relative; }
   .tpanel.edge { box-shadow: inset 0 0 0 3px var(--e); }
   .tpanel.rounded { border-radius: 5px; }
-  .tpanel.accent::before { content: ""; position: absolute; left: 3px; right: 3px; top: 0; height: 4px; background: var(--a); }
+  .tpanel.accent::before { content: ""; position: absolute; left: 0; right: 0; top: 0; height: 4px; background: var(--a); }
   .tpanel.shadow .name, .tpanel.shadow .line { text-shadow: 2px 2px 0 rgba(0,0,0,.55); }
   .tpanel .name { color: var(--t); }
   .tpanel .tmod { font-size: 19px; color: var(--s); line-height: 1; margin-top: 4px; }
@@ -217,12 +217,13 @@ const PANELS = {
 
 
 // ---------- themes ----------
+// Colors from client/Palette.java at the default opacity (80%). Modern is the default theme.
 const THEMES = [
-  ["Dark",    {p:"rgba(16,16,24,.75)",  e:"#3a3a4c", t:"#ffffff", s:"#8e8ea6", b:"#2a2a34"}, "edge shadow"],
-  ["Light",   {p:"rgba(240,240,244,.88)", e:"#9a9aaa", t:"#202028", s:"#6a6a7a", b:"#c8c8d4"}, "edge"],
-  ["Vanilla", {p:"rgba(16,0,16,.94)",   e:"rgba(80,0,255,.94)", t:"#ffffff", s:"#aaaaaa", b:"#2a1a3a"}, "edge shadow"],
-  ["Clear",   {p:"rgba(0,0,0,.31)",     e:"transparent", t:"#ffffff", s:"#cccccc", b:"rgba(0,0,0,.5)"}, "shadow"],
-  ["Modern",  {p:"rgba(20,24,33,.91)",  e:"transparent", t:"#eaf0fa", s:"#7c8aa5", b:"#222a38", a:"#4da3ff"}, "shadow accent rounded"],
+  ["Modern",  {p:"rgba(20,24,33,.73)",  e:"transparent", t:"#eaf0fa", s:"#7c8aa5", b:"#222a38", a:"#ff8a1f"}, "shadow accent", true],
+  ["Dark",    {p:"rgba(16,16,24,.6)",   e:"rgba(58,58,76,.8)", t:"#ffffff", s:"#8e8ea6", b:"#2a2a34"}, "edge shadow"],
+  ["Light",   {p:"rgba(240,240,244,.7)", e:"rgba(154,154,170,.8)", t:"#202028", s:"#6a6a7a", b:"#c8c8d4"}, "edge"],
+  ["Vanilla", {p:"rgba(16,0,16,.75)",   e:"rgba(80,0,255,.75)", t:"#ffffff", s:"#aaaaaa", b:"#2a1a3a"}, "edge shadow"],
+  ["Clear",   {p:"rgba(0,0,0,.25)",     e:"transparent", t:"#ffffff", s:"#cccccc", b:"rgba(0,0,0,.5)"}, "shadow"],
 ];
 function themePanel([label, c, flags]) {
   const vars = Object.entries(c).map(([k, v]) => `--${k}:${v}`).join(";");
@@ -278,7 +279,7 @@ const ASSETS = {
     const row = el("div", {style: "position:absolute;left:0;right:0;top:12px;display:flex;justify-content:center;gap:8px"});
     for (const t of THEMES) {
       const p = themePanel(t); p.style.cssText += ";zoom:.46";
-      row.append(el("div", {}, p, el("div", {class: "tlabel", style: "margin-top:7px"}, half(pixelText(t[0], 4, WHITE)))));
+      row.append(el("div", {}, p, el("div", {class: "tlabel", style: "margin-top:7px"}, half(pixelText(t[0], 4, t[3] ? BEVEL : WHITE)))));
     }
     r.append(row);
   }],
@@ -292,12 +293,12 @@ const ASSETS = {
     r.style.cssText += "display:flex;flex-direction:column";
     r.append(el("div", {style: "height:230px;display:flex;align-items:center;justify-content:center;gap:36px"}, iconImg(130),
       el("div", {style: "display:flex;flex-direction:column;align-items:flex-start;gap:16px"}, pixelText("Five themes", 7),
-        el("div", {class: "tag"}, "Pick one in the settings, then set how see-through the backdrop is"))));
+        el("div", {class: "tag"}, "Modern is the default. Pick another in the settings and set how see-through it is"))));
     const world = el("div", {style: "position:relative;flex:1"});
     const bg = scene(1920, 850, 64); bg.style.cssText = "position:absolute;inset:0";
     world.append(bg);
     const row = el("div", {style: "position:absolute;left:0;right:0;top:340px;display:flex;justify-content:center;gap:40px"});
-    for (const t of THEMES) row.append(el("div", {}, themePanel(t), el("div", {class: "tlabel"}, pixelText(t[0], 5, WHITE))));
+    for (const t of THEMES) row.append(el("div", {}, themePanel(t), el("div", {class: "tlabel"}, pixelText(t[0], 5, t[3] ? BEVEL : WHITE))));
     world.append(row);
     r.append(world);
   }],
@@ -316,7 +317,7 @@ const ASSETS = {
     const grid = el("div", {style: "zoom:1.18;display:grid;grid-template-columns:repeat(3,auto);gap:50px 70px;justify-content:center;align-items:start"});
     for (const [k, t, d] of items) grid.append(el("div", {}, PANELS[k](), el("div", {class: "cap"}, el("b", {}, t), d)));
     grid.append(el("div", {style: "align-self:center"}, el("div", {class: "meta", style: "flex-direction:column;align-items:flex-start"},
-      el("span", {class: "pill on"}, "Forge 26.1.2"), el("span", {class: "pill"}, "Five themes, from vanilla to modern"),
+      el("span", {class: "pill on"}, "Forge 26.1.2"), el("span", {class: "pill"}, "Five themes, Modern by default"),
       el("span", {class: "pill"}, "Resource pack rules"), el("span", {class: "pill"}, "MIT license"))));
     r.append(grid);
   }],

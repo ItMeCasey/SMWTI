@@ -31,5 +31,5 @@ for name, (w, h, scale) in ASSETS.items():
         CHROME, "--headless=new", "--disable-gpu", "--hide-scrollbars", f"--force-device-scale-factor={scale}",
         "--allow-file-access-from-files", f"--user-data-dir={PROFILE}", "--virtual-time-budget=2000",
         f"--window-size={w},{h}", f"--screenshot={target}", f"{page}#{name}",
-    ], check=True, capture_output=True)
+    ], check=True, capture_output=True, timeout=90)
     print("wrote", target.name)

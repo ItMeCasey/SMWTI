@@ -36,8 +36,9 @@ CurseForge (keep it short; it shows on cards):
 | `banners/features.png` (1920x1080) | Featured gallery image on Modrinth, first image on CurseForge |
 | `banners/themes.png` (1920x1080) | The five themes side by side, second gallery image |
 | `banners/social.png` (1280x640) | GitHub social preview (repo Settings > Social preview), third gallery image |
-| `banners/banner.png` (1600x400) | Top of both descriptions |
-| `banners/h_*.png` (1200x110) | Section headers inside the descriptions |
+| `banners/banner.png` (800x150, saved at 2x) | Top of both descriptions |
+| `banners/themes_strip.png` (800x150, saved at 2x) | Themes row inside the descriptions |
+| `banners/h_*.png` (800x46, saved at 2x) | Section headers inside the descriptions |
 
 The panels in these images are illustrations drawn for the branding, not game screenshots. Add real in-game screenshots to the gallery once the overlay has been checked in a client.
 
@@ -69,13 +70,14 @@ It is inspired by Jade and The One Probe, which have no Forge build for this Min
 
 - Install it on the client. It works on any server; a server that also has SMWTI sends extra live data (chest contents, tank levels, machine progress).
 - **Numpad 0** opens the settings, **Numpad 1** turns the overlay on and off. Both can be rebound in Controls.
+- Drag the overlay anywhere on the screen from the settings (**Move overlay...**). The spot is kept when the window size changes.
 - Resource packs can hide, rename or add lines to any block or entity with a small JSON file.
 
 ![Themes](https://raw.githubusercontent.com/ItMeCasey/SMWTI/main/branding/banners/h_themes.png)
 
-Five themes: dark, light, vanilla, clear and modern. Pick one in the settings and set how see-through the backdrop is.
+Five themes: modern (the default), dark, light, vanilla and clear. Pick one in the settings and set how see-through the backdrop is.
 
-![The five themes](https://raw.githubusercontent.com/ItMeCasey/SMWTI/main/branding/banners/themes.png)
+![The five themes](https://raw.githubusercontent.com/ItMeCasey/SMWTI/main/branding/banners/themes_strip.png)
 
 ![For mod authors](https://raw.githubusercontent.com/ItMeCasey/SMWTI/main/branding/banners/h_authors.png)
 
