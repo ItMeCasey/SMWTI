@@ -1,0 +1,149 @@
+name: Build and publish
+
+# Builds every loader and Minecraft version, runs the unit tests and uploads the jars.
+# Builds run on every push to a tag like v2026.11.1 and on manual runs. Uploads happen only
+# for tag pushes and for manual runs with publish set to true.
+on:
+  push:
+    tags:
+      - 'v*'
+  workflow_dispatch:
+    inputs:
+      publish:
+        description: 'Upload the jars to CurseForge and Modrinth'
+        type: boolean
+        default: false
+
+permissions:
+  contents: read
+
+jobs:
+  build:
+    name: ${{ matrix.name }}
+    runs-on: ubuntu-latest
+    strategy:
+      fail-fast: false
+      matrix:
+        include:
+          - name: Forge 1.20.1
+            dir: versions/mc1.20.1/forge
+            java: '17'
+            mc: '1.20.1'
+            loader: forge
+            cf_game_versions: '9990,7498,9638,9639'
+          - name: NeoForge 1.20.1
+            dir: versions/mc1.20.1/neoforge
+            java: '17'
+            mc: '1.20.1'
+            loader: neoforge
+            cf_game_versions: '9990,10150,9638,9639'
+          - name: Forge 1.21.1
+            dir: versions/mc1.21.1/forge
+            java: '21'
+            mc: '1.21.1'
+            loader: forge
+            cf_game_versions: '11779,7498,9638,9639'
+          - name: NeoForge 1.21.1
+            dir: versions/mc1.21.1/neoforge
+            java: '21'
+            mc: '1.21.1'
+            loader: neoforge
+            cf_game_versions: '11779,10150,9638,9639'
+          - name: Forge 26.1.2
+            dir: versions/mc26.1.2/forge
+            java: '25'
+            mc: '26.1.2'
+            loader: forge
+            cf_game_versions: '16082,7498,9638,9639'
+          - name: NeoForge 26.1.2
+            dir: versions/mc26.1.2/neoforge
+            java: '25'
+            mc: '26.1.2'
+            loader: neoforge
+            cf_game_versions: '16082,10150,9638,9639'
+    defaults:
+      run:
+        working-directory: ${{ matrix.dir }}
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: ${{ matrix.java }}
+
+      - name: Build and test
+        run: |
+          chmod +x ./gradlew
+          ./gradlew --no-daemon build
+
+      - name: Check the tag matches the mod version
+        if: startsWith(github.ref, 'refs/tags/v')
+        run: |
+          version=$(grep '^mod_version=' gradle.properties | cut -d= -f2)
+          if [ "v$version" != "${GITHUB_REF_NAME}" ]; then
+            echo "Tag ${GITHUB_REF_NAME} does not match mod_version $version"
+            exit 1
+          fi
+
+      - name: Find the jar
+        id: jar
+        run: |
+          jar=$(ls build/libs/smwti-${{ matrix.loader }}-${{ matrix.mc }}-*.jar | grep -v -- '-api' | head -1)
+          echo "path=$jar" >> "$GITHUB_OUTPUT"
+          echo "name=$(basename "$jar")" >> "$GITHUB_OUTPUT"
+          echo "version=$(grep '^mod_version=' gradle.properties | cut -d= -f2)" >> "$GITHUB_OUTPUT"
+
+      - uses: actions/upload-artifact@v4
+        with:
+          name: ${{ steps.jar.outputs.name }}
+          path: ${{ matrix.dir }}/${{ steps.jar.outputs.path }}
+
+      - name: Changelog for this version
+        id: changelog
+        if: github.event_name == 'push' || inputs.publish
+        run: |
+          notes=$(awk -v v="${{ steps.jar.outputs.version }}" '
+            $0 ~ "^## " v { on=1; next }
+            on && /^## / { exit }
+            on { print }' "$GITHUB_WORKSPACE/CHANGELOG.md" | sed -e :a -e '/^\n*$/{$d;N;ba' -e '}')
+          if [ -z "$notes" ]; then notes="SMWTI ${{ steps.jar.outputs.version }}."; fi
+          { echo "text<<EOF"; echo "$notes"; echo "EOF"; } >> "$GITHUB_OUTPUT"
+
+      - name: Upload to CurseForge
+        if: startsWith(github.ref, 'refs/tags/v') || inputs.publish
+        env:
+          CURSEFORGE_TOKEN: ${{ secrets.CURSEFORGE_TOKEN }}
+          CHANGELOG: ${{ steps.changelog.outputs.text }}
+        run: |
+          meta=$(jq -n \
+            --arg changelog "$CHANGELOG" \
+            --arg name "SMWTI ${{ steps.jar.outputs.version }} for ${{ matrix.name }}" \
+            --argjson gv "[${{ matrix.cf_game_versions }}]" \
+            '{changelog: $changelog, changelogType: "text", displayName: $name, gameVersions: $gv, releaseType: "beta"}')
+          echo "$meta" > "$RUNNER_TEMP/meta.json"
+          curl -sf -H "X-Api-Token: $CURSEFORGE_TOKEN" \
+            -F "metadata=<$RUNNER_TEMP/meta.json" \
+            -F "file=@${{ matrix.dir }}/${{ steps.jar.outputs.path }}" \
+            https://minecraft.curseforge.com/api/projects/1781438/upload-file
+
+      - name: Upload to Modrinth
+        if: startsWith(github.ref, 'refs/tags/v') || inputs.publish
+        env:
+          MODRINTH_TOKEN: ${{ secrets.MODRINTH_TOKEN }}
+          CHANGELOG: ${{ steps.changelog.outputs.text }}
+        run: |
+          number="${{ steps.jar.outputs.version }}+${{ matrix.loader }}-${{ matrix.mc }}"
+          data=$(jq -n \
+            --arg number "$number" \
+            --arg name "SMWTI ${{ steps.jar.outputs.version }} for ${{ matrix.name }}" \
+            --arg file "${{ steps.jar.outputs.name }}" \
+            --arg changelog "$CHANGELOG" \
+            --arg mc "${{ matrix.mc }}" \
+            --arg loader "${{ matrix.loader }}" \
+            '{project_id: "CQb1zQ86", file_parts: [$file], version_number: $number, name: $name, version_type: "beta", loaders: [$loader], game_versions: [$mc], featured: false, dependencies: [], changelog: $changelog}')
+          echo "$data" > "$RUNNER_TEMP/data.json"
+          curl -sf -H "Authorization: $MODRINTH_TOKEN" -H "User-Agent: ItMeCasey/SMWTI" \
+            -F "data=<$RUNNER_TEMP/data.json" \
+            -F "${{ steps.jar.outputs.name }}=@${{ matrix.dir }}/${{ steps.jar.outputs.path }}" \
+            https://api.modrinth.com/v2/version
