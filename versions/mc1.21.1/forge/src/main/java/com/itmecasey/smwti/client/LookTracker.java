@@ -8,12 +8,15 @@ import com.itmecasey.smwti.api.SmwtiApi;
 import com.itmecasey.smwti.net.LookChannel;
 import com.itmecasey.smwti.net.LookTarget;
 import java.util.List;
+import java.util.Optional;
 import net.minecraft.client.Minecraft;
 import net.minecraft.core.BlockPos;
 import net.minecraft.world.entity.Entity;
+import net.minecraft.world.entity.item.ItemEntity;
 import net.minecraft.world.phys.BlockHitResult;
 import net.minecraft.world.phys.EntityHitResult;
 import net.minecraft.world.phys.HitResult;
+import net.minecraft.world.phys.Vec3;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.client.event.ClientPlayerNetworkEvent;
 import net.minecraftforge.event.TickEvent;
@@ -32,6 +35,8 @@ import org.jetbrains.annotations.Nullable;
 public final class LookTracker {
     /** Ticks between two questions to the server about the same target. */
     private static final int ASK_INTERVAL = 10;
+    /** Blocks added around a dropped item's box when testing the look ray: the box is tiny next to the drawn item. */
+    private static final double ITEM_PICK_MARGIN = 0.3;
 
     private static @Nullable BlockPos blockPos;
     private static @Nullable Entity entity;
@@ -73,10 +78,28 @@ public final class LookTracker {
     }
 
     private static @Nullable LookTarget current() {
-        if (blockPos != null) {
-            return LookTarget.block(blockPos);
+        if (entity != null) {
+            return LookTarget.entity(entity.getId());
         }
-        return entity != null ? LookTarget.entity(entity.getId()) : null;
+        return blockPos != null ? LookTarget.block(blockPos) : null;
+    }
+
+    /** The dropped item the crosshair is on. The game never picks them, so this tests their boxes along the look ray. */
+    @Nullable
+    private static Entity droppedItemOnLook(Minecraft game, HitResult hit) {
+        Vec3 eye = game.player.getEyePosition();
+        double reach = game.player.blockInteractionRange();
+        Vec3 end = eye.add(game.player.getLookAngle().scale(reach));
+        double nearestSqr = hit.getType() == HitResult.Type.BLOCK ? hit.getLocation().distanceToSqr(eye) : Double.MAX_VALUE;
+        ItemEntity nearest = null;
+        for (ItemEntity item : game.level.getEntitiesOfClass(ItemEntity.class, game.player.getBoundingBox().inflate(reach))) {
+            Optional<Vec3> at = item.getBoundingBox().inflate(ITEM_PICK_MARGIN).clip(eye, end);
+            if (at.isPresent() && at.get().distanceToSqr(eye) < nearestSqr) {
+                nearest = item;
+                nearestSqr = at.get().distanceToSqr(eye);
+            }
+        }
+        return nearest;
     }
 
     @SubscribeEvent
@@ -107,6 +130,13 @@ public final class LookTracker {
             }
         }
 
+        if (entity == null) {
+            entity = droppedItemOnLook(game, hit);
+            if (entity != null) {
+                // The item is in front of the block behind it, so the block is not the target.
+                blockPos = null;
+            }
+        }
         LookTarget target = current();
         boolean worthAsking = entity != null || (blockPos != null && game.level.getBlockEntity(blockPos) != null);
         if (target == null || !worthAsking) {

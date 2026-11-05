@@ -81,9 +81,8 @@ public final class VanillaProviders {
         SmwtiApi.registerEntity(VanillaProviders::horse);
         SmwtiApi.registerEntity(VanillaProviders::heldItems);
         SmwtiApi.registerEntity((tooltip, view) -> {
-            if (view.detailed() && view.entity() instanceof ItemEntity dropped) {
-                enchantments(tooltip, dropped.getItem());
-            } else if (view.detailed() && view.entity() instanceof ItemFrame frame) {
+            // A dropped item's enchantments come with its own tooltip lines (see VanillaMoreProviders.droppedItem).
+            if (view.detailed() && view.entity() instanceof ItemFrame frame) {
                 enchantments(tooltip, frame.getItem());
             }
         });
