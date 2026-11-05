@@ -277,6 +277,9 @@ public final class ShotTour {
         player.snapTo(eye.x, eye.y - 1.62, eye.z, yaw, pitch);
         player.setYHeadRot(yaw);
         player.setDeltaMovement(Vec3.ZERO);
+        // Fly, so the camera does not sink onto the ground after the teleport and miss its target.
+        player.getAbilities().flying = true;
+        player.onUpdateAbilities();
     }
 
     /** A command with the position of a block on the ground line at this x filled in; {@code up} raises it. */
