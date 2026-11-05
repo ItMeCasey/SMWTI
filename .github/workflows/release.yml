@@ -124,7 +124,7 @@ jobs:
           echo "$meta" > "$RUNNER_TEMP/meta.json"
           curl -s --fail-with-body -H "X-Api-Token: $CURSEFORGE_TOKEN" \
             -F "metadata=<$RUNNER_TEMP/meta.json" \
-            -F "file=@${{ matrix.dir }}/${{ steps.jar.outputs.path }}" \
+            -F "file=@${{ steps.jar.outputs.path }}" \
             https://minecraft.curseforge.com/api/projects/1781438/upload-file
 
       # Modrinth is on hold: this step runs only when the repository variable UPLOAD_TO_MODRINTH is set to true.
@@ -146,5 +146,5 @@ jobs:
           echo "$data" > "$RUNNER_TEMP/data.json"
           curl -sf -H "Authorization: $MODRINTH_TOKEN" -H "User-Agent: ItMeCasey/SMWTI" \
             -F "data=<$RUNNER_TEMP/data.json" \
-            -F "${{ steps.jar.outputs.name }}=@${{ matrix.dir }}/${{ steps.jar.outputs.path }}" \
+            -F "${{ steps.jar.outputs.name }}=@${{ steps.jar.outputs.path }}" \
             https://api.modrinth.com/v2/version
