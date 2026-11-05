@@ -89,7 +89,7 @@ public final class ServerProviders {
                         0.0, FLUID_BLUE);
             } else {
                 // The overlay fills this bar with the fluid's own texture and tint.
-                tooltip.fluidBar(Position.BODY, Component.translatable("smwti.fluid", stored.getDisplayName(), stored.getAmount(), capacity),
+                tooltip.fluidBar(Position.BODY, Component.translatable("smwti.fluid", stored.getHoverName(), stored.getAmount(), capacity),
                         (double) stored.getAmount() / capacity, stored.getFluid());
             }
         }
