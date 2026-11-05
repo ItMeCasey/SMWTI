@@ -284,6 +284,17 @@ public final class ShotTour {
         return String.format(Locale.ROOT, command, x, ground + up, 0);
     }
 
+    /** What the crosshair is on, as a block position or an entity id and its position. */
+    private static String describeHit(net.minecraft.world.phys.HitResult hit) {
+        if (hit instanceof net.minecraft.world.phys.BlockHitResult block) {
+            return "block " + block.getBlockPos();
+        }
+        if (hit instanceof net.minecraft.world.phys.EntityHitResult entity) {
+            return "entity " + entity.getEntity().getType() + " at " + entity.getEntity().position();
+        }
+        return String.valueOf(hit);
+    }
+
     private static void shoot(String name, int delay) {
         then(delay, () -> {
             Minecraft minecraft = Minecraft.getInstance();
@@ -295,7 +306,7 @@ public final class ShotTour {
             Minecraft minecraft = Minecraft.getInstance();
             LocalPlayer self = minecraft.player;
             Smwti.LOGGER.info("SMWTI-SHOTS {} eye={} feet={},{},{} pitch={} yaw={} hit={}", name, self.getEyePosition(),
-                    self.getX(), self.getY(), self.getZ(), self.getXRot(), self.getYRot(), minecraft.hitResult);
+                    self.getX(), self.getY(), self.getZ(), self.getXRot(), self.getYRot(), describeHit(minecraft.hitResult));
             Screenshot.grab(minecraft.gameDirectory, "smwti_" + name + ".png", minecraft.getMainRenderTarget(), 1,
                     message -> Smwti.LOGGER.info("SMWTI-SHOTS saved {}", name));
         });
