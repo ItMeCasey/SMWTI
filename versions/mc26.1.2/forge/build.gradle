@@ -87,3 +87,9 @@ tasks.register('apiJar', Jar) {
         include 'com/itmecasey/smwti/api/**'
     }
 }
+
+// A test plugin for dev runs only: ./gradlew runClient -PdevPlugin compiles src/devtest into the mod. A release
+// build never passes the property, so nothing from src/devtest is ever in the jar.
+if (project.hasProperty('devPlugin')) {
+    sourceSets.main.java.srcDir 'src/devtest/java'
+}

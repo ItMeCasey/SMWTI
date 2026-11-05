@@ -253,6 +253,10 @@ public final class ShotTour {
         lookDownAt(44);
         shoot("spawner", SETTLE);
 
+        // The test plugin's redirect: looking at the stone behind the item frame should show the beacon.
+        then(4, () -> moveTo(new Vec3(40.5, ground + 4.0, 1.5), new Vec3(40.5, ground + 0.5, 1.5)));
+        shoot("redirect_stone", SETTLE);
+
         // The server config: each setting is changed in turn and the chest is looked at again.
         then(2, () -> SmwtiConfig.setDetail(SmwtiConfig.Detail.ALWAYS));
         configShot("cfg_baseline", () -> { });
