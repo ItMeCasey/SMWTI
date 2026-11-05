@@ -214,7 +214,7 @@ public final class ShotTour {
                 at("setblock %d %d %d minecraft:campfire[lit=true]", 20, 0),
                 at("setblock %d %d %d minecraft:beacon", 24, 0),
                 at("summon minecraft:armor_stand %d.5 %d %d.5 {ArmorItems:[{},{},{},{id:\"minecraft:diamond_helmet\",Count:1b}],HandItems:[{id:\"minecraft:iron_sword\",Count:1b},{}]}", 28, 0),
-                at("summon minecraft:item %d.5 %d %d.5 {Item:{id:\"minecraft:diamond_sword\",Count:1b,tag:{Enchantments:[{id:\"minecraft:sharpness\",lvl:5s}]}}}", 32, 1),
+                at("summon minecraft:item %d.5 %d %d.5 {Item:{id:\"minecraft:diamond_sword\",count:1,components:{\"minecraft:enchantments\":{\"minecraft:sharpness\":5}}}}", 32, 1),
                 at("setblock %d %d %d minecraft:iron_ore", 36, 0)));
         then(2, () -> SmwtiConfig.setDetail(SmwtiConfig.Detail.ALWAYS));
         lookDownAt(20);
@@ -223,7 +223,7 @@ public final class ShotTour {
         shoot("beacon", SETTLE);
         lookBodyAt(28, 1.0);
         shoot("armor_stand", SETTLE);
-        lookBodyAt(32, 1.3);
+        lookBodyAt(32, 0.2);
         shoot("enchanted_sword", SETTLE);
         lookDownAt(36);
         shoot("iron_ore", SETTLE);
@@ -255,7 +255,7 @@ public final class ShotTour {
 
     /** Straight down onto the top of the block at this x, so the crosshair lands on that block. */
     private static void lookDownAt(int x) {
-        then(4, () -> moveTo(new Vec3(x + 0.5, ground + 2.5, 0.5), new Vec3(x + 0.5, ground + 0.5, 0.5)));
+        then(4, () -> moveTo(new Vec3(x + 0.5, ground + 4.0, 0.5), new Vec3(x + 0.5, ground + 0.5, 0.5)));
     }
 
     /** Side-on at a height above the ground line, so the crosshair lands on a body at that height. */
