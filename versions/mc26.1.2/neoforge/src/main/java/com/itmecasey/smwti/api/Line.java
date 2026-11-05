@@ -35,7 +35,7 @@ public record Line(Component text, float fraction, int color, Position position,
             ComponentSerialization.CODEC.fieldOf("text").forGetter(Line::text),
             Codec.FLOAT.optionalFieldOf("fraction", NO_BAR).forGetter(Line::fraction),
             Codec.INT.optionalFieldOf("color", 0xFFFFFF).forGetter(Line::color),
-            Codec.STRING.xmap(Position::valueOf, Position::name).optionalFieldOf("position", Position.BODY)
+            Codec.STRING.xmap(Line::positionNamed, Position::name).optionalFieldOf("position", Position.BODY)
                     .forGetter(Line::position),
             Codec.STRING.optionalFieldOf("item", "").forGetter(Line::item),
             Codec.INT.optionalFieldOf("count", 1).forGetter(Line::count),
@@ -43,6 +43,16 @@ public record Line(Component text, float fraction, int color, Position position,
             Codec.INT.optionalFieldOf("mark_color", 0xFFFFFF).forGetter(Line::markColor),
             Codec.STRING.optionalFieldOf("fluid", "").forGetter(Line::fluid)
     ).apply(instance, Line::new));
+
+    /** The position with this name; one this version does not know, from a newer mod, is the body, so a line is never lost to it. */
+    private static Position positionNamed(String name) {
+        for (Position position : Position.values()) {
+            if (position.name().equals(name)) {
+                return position;
+            }
+        }
+        return Position.BODY;
+    }
 
     /** A line without a mark or a fluid; the shorter way to build most lines. */
     public Line(Component text, float fraction, int color, Position position, String item, int count) {
