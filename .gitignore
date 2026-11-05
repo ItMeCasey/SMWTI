@@ -47,3 +47,7 @@ server.out
 server.err
 *.out
 *.err
+logs/
+*.log.gz
+logs/
+*.log.gz
