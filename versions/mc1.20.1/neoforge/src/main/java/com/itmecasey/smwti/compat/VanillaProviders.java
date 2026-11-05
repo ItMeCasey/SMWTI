@@ -180,7 +180,7 @@ public final class VanillaProviders {
                 break;
             }
             tooltip.add(Position.TAIL, Component.literal(property.getName() + ": " + view.state().getValue(property))
-                    .withStyle(ChatFormatting.DARK_GRAY));
+                    .withStyle(ChatFormatting.GRAY));
         }
     }
 
@@ -327,7 +327,7 @@ public final class VanillaProviders {
     private static void entityDetails(Tooltip tooltip, EntityView view) {
         if (view.detailed()) {
             tooltip.add(Position.TAIL, Component.literal(BuiltInRegistries.ENTITY_TYPE.getKey(view.entity().getType()).toString())
-                    .withStyle(ChatFormatting.DARK_GRAY));
+                    .withStyle(ChatFormatting.GRAY));
         }
     }
 }

@@ -213,9 +213,11 @@ public final class ShotTour {
         then(2, () -> server(
                 at("setblock %d %d %d minecraft:campfire[lit=true]", 20, 0),
                 at("setblock %d %d %d minecraft:beacon", 24, 0),
-                at("summon minecraft:armor_stand %d.5 %d %d.5 {ArmorItems:[{},{},{},{id:\"minecraft:diamond_helmet\",Count:1b}],HandItems:[{id:\"minecraft:iron_sword\",Count:1b},{}]}", 28, 0),
+                at("summon minecraft:armor_stand %d.5 %d %d.5 {equipment:{head:{id:\"minecraft:diamond_helmet\",count:1},mainhand:{id:\"minecraft:iron_sword\",count:1}}}", 28, 0),
                 at("summon minecraft:item %d.5 %d %d.5 {Item:{id:\"minecraft:diamond_sword\",count:1,components:{\"minecraft:enchantments\":{\"minecraft:sharpness\":5}}}}", 32, 1),
-                at("setblock %d %d %d minecraft:iron_ore", 36, 0)));
+                at("setblock %d %d %d minecraft:iron_ore", 36, 0),
+                String.format(Locale.ROOT, "setblock 40 %d 1 minecraft:stone", ground),
+                at("summon minecraft:item_frame %d.5 %d %d.5 {facing:\"north\",Item:{id:\"minecraft:diamond_sword\",count:1,components:{\"minecraft:enchantments\":{\"minecraft:sharpness\":5}}}}", 40, 0)));
         then(2, () -> SmwtiConfig.setDetail(SmwtiConfig.Detail.ALWAYS));
         lookDownAt(20);
         shoot("campfire", SETTLE);
@@ -227,6 +229,8 @@ public final class ShotTour {
         shoot("enchanted_sword", SETTLE);
         lookDownAt(36);
         shoot("iron_ore", SETTLE);
+        lookBodyAt(40, 0.5);
+        shoot("item_frame", SETTLE);
         then(2, () -> SmwtiConfig.setDetail(SmwtiConfig.Detail.WHILE_SNEAKING));
 
         // The settings screen.
