@@ -3,6 +3,7 @@ package com.itmecasey.smwti.devtest;
 import com.itmecasey.smwti.Smwti;
 import com.itmecasey.smwti.SmwtiConfig;
 import com.itmecasey.smwti.client.SettingsScreen;
+import com.itmecasey.smwti.client.UserHidden;
 import java.io.IOException;
 import java.util.ArrayDeque;
 import java.util.Deque;
@@ -174,15 +175,39 @@ public final class ShotTour {
         lookAt(8);
         shoot("wheat", SETTLE);
 
-        // Water, which the game's own crosshair looks through.
+        // Water, looked at straight down so the crosshair goes into the surface.
         then(2, () -> server(at("setblock %d %d %d minecraft:water", 12, -1)));
-        lookAtDown(12);
+        then(4, () -> moveTo(new Vec3(12.5, ground + 2.5, 0.5), new Vec3(12.5, ground - 0.5, 0.5)));
         shoot("water", SETTLE);
 
-        // A cow, and a villager for the entity lines.
-        then(2, () -> server(at("summon minecraft:cow %d.5 %d %d.5 {NoAI:1b}", 16, 0)));
-        lookAt(16);
+        // A cow, looked at from the side at its body. Long form, so the entity id shows.
+        then(2, () -> {
+            SmwtiConfig.setDetail(SmwtiConfig.Detail.ALWAYS);
+            server(at("summon minecraft:cow %d.5 %d %d.5 {NoAI:1b}", 16, 0));
+        });
+        then(4, () -> moveTo(new Vec3(16.5, ground + 1.3, -2.0), new Vec3(16.5, ground + 0.9, 0.5)));
         shoot("cow", SETTLE);
+
+        // The test resource pack: its theme and its rules (a rename and an extra line).
+        then(2, () -> SmwtiConfig.setTheme("smwti:neon"));
+        shoot("pack_theme_cow", SETTLE);
+        then(2, () -> SmwtiConfig.setTheme("modern"));
+
+        // The overlay switched off with the toggle key's handler, then back on.
+        then(2, () -> SmwtiConfig.setEnabled(false));
+        shoot("toggled_off", SETTLE);
+        then(2, () -> SmwtiConfig.setEnabled(true));
+
+        // Hold to show with no key held: the overlay must stay away.
+        then(2, () -> SmwtiConfig.setHoldToShow(true));
+        shoot("hold_not_held", SETTLE);
+        then(2, () -> SmwtiConfig.setHoldToShow(false));
+
+        // Hidden with the hide key's handler, on the chest.
+        lookAt(0);
+        then(2, () -> UserHidden.add("minecraft:chest"));
+        shoot("hidden_chest", SETTLE);
+        then(2, () -> UserHidden.remove("minecraft:chest"));
 
         // The settings screen.
         then(2, () -> {

@@ -174,7 +174,7 @@ public final class VanillaProviders {
             return;
         }
         tooltip.add(Position.TAIL, Component.literal(BuiltInRegistries.BLOCK.getKey(view.state().getBlock()).toString())
-                .withStyle(ChatFormatting.DARK_GRAY));
+                .withStyle(ChatFormatting.GRAY));
         int shown = 0;
         for (Property<?> property : view.state().getProperties()) {
             if (shown++ == MAX_PROPERTIES) {
