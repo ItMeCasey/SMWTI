@@ -1,10 +1,10 @@
 # Show Me What This Is (SMWTI)
 
-A look-at overlay for Minecraft Forge, for 26.1.2 and 1.21.1. Point at a block or an entity and a small panel at the top of the screen tells you what it is, which mod it comes from and, where a mod says so, what state it is in: a crop's growth, a creature's health, a machine's progress.
+A look-at overlay for Minecraft Forge and NeoForge, for 26.1.2, 1.21.1 and 1.20.1. Point at a block or an entity and a small panel at the top of the screen tells you what it is, which mod it comes from and, where a mod says so, what state it is in: a crop's growth, a creature's health, a machine's progress.
 
-It exists because the usual overlay mods (Jade, The One Probe) have no Forge build for these Minecraft versions, and WTHIT is the only other choice on 26.1.2. SMWTI is inspired by them but shares no code with them.
+It exists because the usual overlay mods (Jade, The One Probe) do not cover every loader and Minecraft version SMWTI does, and WTHIT is the only other choice on 26.1.2. SMWTI is inspired by them but shares no code with them.
 
-Status: in development (version 2026.11.1). See `PLAN.md`.
+Status: in development (version 2026.11.2). See `PLAN.md`.
 
 ## For players
 
@@ -45,7 +45,7 @@ Compile against the API jar (`gradlew apiJar` in this repository builds it; it h
 
 ```groovy
 dependencies {
-    compileOnly files('libs/smwti-forge-<minecraft version>-2026.11.1-api.jar')
+    compileOnly files('libs/smwti-<loader>-<minecraft version>-2026.11.2-api.jar')
 }
 ```
 
@@ -106,11 +106,11 @@ See `TRANSLATING.md`.
 ## Building
 
 ```
-cd versions/mc26.1.2/forge    (or versions/mc1.21.1/forge)
+cd versions/mc26.1.2/forge    (or any folder under versions/mc<version>/forge or neoforge)
 gradlew.bat build
 ```
 
-Needs JDK 21 to run Gradle; the 26.1.2 build uses a Java 25 toolchain, the 1.21.1 build Java 21. The jar lands in `build/libs`.
+Needs a JDK to run Gradle (17 for the 1.20.1 builds, 21 or newer for the others); the 26.1.2 builds use a Java 25 toolchain, the 1.21.1 builds Java 21 and the 1.20.1 builds Java 17. The jar lands in `build/libs`.
 
 ## License
 

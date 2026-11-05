@@ -1,5 +1,15 @@
 # Changelog
 
+## 2026.11.2
+
+Adds NeoForge builds and Forge 1.20.1 and NeoForge 1.20.1, so SMWTI now comes for Forge and NeoForge on 26.1.2, 1.21.1 and 1.20.1. Every build was run in a client and checked on a block, an entity, a fluid and a dropped item.
+
+- Dropped items now show in the overlay (name, enchantments, attack lines); the game never lets the crosshair pick them, so SMWTI looks for them along the look ray. Item frames show their item's enchantments too.
+- The block id, block state and entity id lines are readable now (they were dark gray on the dark panel and the colon in `minecraft:stone` disappeared).
+- A line position this version does not know (from a mod built for a newer SMWTI) falls back to the body instead of breaking the whole reply.
+- NeoForge 1.21.1: the fluid name now comes from the supported call.
+- Unit tests for the line codec and the tooltip API.
+
 ## 2026.11.1
 
 First version, for Forge 26.1.2 and 1.21.1 (the 1.21.1 build has no shelf lines, and paintings take their title and artist from the game's language file).

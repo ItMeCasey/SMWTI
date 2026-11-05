@@ -10,7 +10,7 @@ on:
   workflow_dispatch:
     inputs:
       publish:
-        description: 'Upload the jars to CurseForge and Modrinth'
+        description: 'Upload the jars to CurseForge (and to Modrinth when UPLOAD_TO_MODRINTH is true)'
         type: boolean
         default: false
 
@@ -127,8 +127,9 @@ jobs:
             -F "file=@${{ matrix.dir }}/${{ steps.jar.outputs.path }}" \
             https://minecraft.curseforge.com/api/projects/1781438/upload-file
 
+      # Modrinth is on hold: this step runs only when the repository variable UPLOAD_TO_MODRINTH is set to true.
       - name: Upload to Modrinth
-        if: startsWith(github.ref, 'refs/tags/v') || inputs.publish
+        if: (startsWith(github.ref, 'refs/tags/v') || inputs.publish) && vars.UPLOAD_TO_MODRINTH == 'true'
         env:
           MODRINTH_TOKEN: ${{ secrets.MODRINTH_TOKEN }}
           CHANGELOG: ${{ steps.changelog.outputs.text }}
