@@ -122,7 +122,7 @@ jobs:
             --argjson gv "[${{ matrix.cf_game_versions }}]" \
             '{changelog: $changelog, changelogType: "text", displayName: $name, gameVersions: $gv, releaseType: "beta"}')
           echo "$meta" > "$RUNNER_TEMP/meta.json"
-          curl -sf -H "X-Api-Token: $CURSEFORGE_TOKEN" \
+          curl -s --fail-with-body -H "X-Api-Token: $CURSEFORGE_TOKEN" \
             -F "metadata=<$RUNNER_TEMP/meta.json" \
             -F "file=@${{ matrix.dir }}/${{ steps.jar.outputs.path }}" \
             https://minecraft.curseforge.com/api/projects/1781438/upload-file
