@@ -91,27 +91,42 @@ jobs:
     steps:
       - uses: actions/checkout@v4
 
+      # A tag push (and a manual run with publish set) releases only the builds whose own mod_version
+      # is the release version, so unchanged builds are neither rebuilt nor uploaded again. The release
+      # version is the tag without the v, or the newest CHANGELOG heading for a manual run. Pushes of
+      # other refs and dry runs without publish build everything.
+      - name: Decide whether this build is part of the release
+        id: gate
+        run: |
+          version=$(grep '^mod_version=' gradle.properties | cut -d= -f2)
+          release=""
+          if [[ "$GITHUB_REF" == refs/tags/v* ]]; then
+            release="${GITHUB_REF_NAME#v}"
+          elif [ "${{ inputs.publish }}" == "true" ]; then
+            release=$(grep -m1 '^## ' "$GITHUB_WORKSPACE/CHANGELOG.md" | sed 's/^## //')
+          fi
+          if [ -n "$release" ] && [ "$version" != "$release" ]; then
+            echo "skipping ${{ matrix.name }}: version $version is not v$release"
+            echo "skip=true" >> "$GITHUB_OUTPUT"
+          else
+            echo "skip=false" >> "$GITHUB_OUTPUT"
+          fi
+
       - uses: actions/setup-java@v4
+        if: steps.gate.outputs.skip != 'true'
         with:
           distribution: temurin
           java-version: ${{ matrix.java }}
 
       - name: Build and test
+        if: steps.gate.outputs.skip != 'true'
         run: |
           chmod +x ./gradlew
           ./gradlew --no-daemon build
 
-      - name: Check the tag matches the mod version
-        if: startsWith(github.ref, 'refs/tags/v')
-        run: |
-          version=$(grep '^mod_version=' gradle.properties | cut -d= -f2)
-          if [ "v$version" != "${GITHUB_REF_NAME}" ]; then
-            echo "Tag ${GITHUB_REF_NAME} does not match mod_version $version"
-            exit 1
-          fi
-
       - name: Find the jar
         id: jar
+        if: steps.gate.outputs.skip != 'true'
         run: |
           jar=$(ls build/libs/smwti-${{ matrix.loader }}-${{ matrix.mc }}-*.jar | grep -v -- '-api' | head -1)
           echo "path=$jar" >> "$GITHUB_OUTPUT"
@@ -119,13 +134,14 @@ jobs:
           echo "version=$(grep '^mod_version=' gradle.properties | cut -d= -f2)" >> "$GITHUB_OUTPUT"
 
       - uses: actions/upload-artifact@v4
+        if: steps.gate.outputs.skip != 'true'
         with:
           name: ${{ steps.jar.outputs.name }}
           path: ${{ matrix.dir }}/${{ steps.jar.outputs.path }}
 
       - name: Changelog for this version
         id: changelog
-        if: github.event_name == 'push' || inputs.publish
+        if: steps.gate.outputs.skip != 'true' && (github.event_name == 'push' || inputs.publish)
         run: |
           notes=$(awk -v v="${{ steps.jar.outputs.version }}" '
             $0 ~ "^## " v { on=1; next }
@@ -135,7 +151,7 @@ jobs:
           { echo "text<<EOF"; echo "$notes"; echo "EOF"; } >> "$GITHUB_OUTPUT"
 
       - name: Upload to CurseForge
-        if: startsWith(github.ref, 'refs/tags/v') || inputs.publish
+        if: steps.gate.outputs.skip != 'true' && (startsWith(github.ref, 'refs/tags/v') || inputs.publish)
         env:
           CURSEFORGE_TOKEN: ${{ secrets.CURSEFORGE_TOKEN }}
           CHANGELOG: ${{ steps.changelog.outputs.text }}
@@ -154,7 +170,7 @@ jobs:
 
       # Modrinth is on hold: this step runs only when the repository variable UPLOAD_TO_MODRINTH is set to true.
       - name: Upload to Modrinth
-        if: (startsWith(github.ref, 'refs/tags/v') || inputs.publish) && vars.UPLOAD_TO_MODRINTH == 'true'
+        if: steps.gate.outputs.skip != 'true' && ((startsWith(github.ref, 'refs/tags/v') || inputs.publish) && vars.UPLOAD_TO_MODRINTH == 'true')
         env:
           MODRINTH_TOKEN: ${{ secrets.MODRINTH_TOKEN }}
           CHANGELOG: ${{ steps.changelog.outputs.text }}
@@ -173,3 +189,27 @@ jobs:
             -F "data=<$RUNNER_TEMP/data.json" \
             -F "${{ steps.jar.outputs.name }}=@${{ steps.jar.outputs.path }}" \
             https://api.modrinth.com/v2/version
+
+  # A release tag must match at least one build, or nothing would be uploaded.
+  verify:
+    name: A build matches the release version
+    if: startsWith(github.ref, 'refs/tags/v') || inputs.publish
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Check that some build has the release version
+        run: |
+          if [[ "$GITHUB_REF" == refs/tags/v* ]]; then
+            release="${GITHUB_REF_NAME#v}"
+          else
+            release=$(grep -m1 '^## ' CHANGELOG.md | sed 's/^## //')
+          fi
+          found=0
+          for f in versions/*/*/gradle.properties; do
+            if [ "$(grep '^mod_version=' "$f" | cut -d= -f2)" == "$release" ]; then found=$((found+1)); fi
+          done
+          echo "$found build(s) have version $release"
+          if [ "$found" -eq 0 ]; then
+            echo "No build has mod_version $release, so there is nothing to release"
+            exit 1
+          fi
