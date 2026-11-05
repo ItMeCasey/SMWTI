@@ -1,6 +1,6 @@
 # Show Me What This Is (SMWTI)
 
-A look-at overlay for Minecraft Forge and NeoForge, for 26.1.2, 1.21.1 and 1.20.1. Point at a block or an entity and a small panel at the top of the screen tells you what it is, which mod it comes from and, where a mod says so, what state it is in: a crop's growth, a creature's health, a machine's progress.
+A look-at overlay for Minecraft Forge and NeoForge, for 26.3, 26.2, 26.1.2, 1.21.1 and 1.20.1. Point at a block or an entity and a small panel at the top of the screen tells you what it is, which mod it comes from and, where a mod says so, what state it is in: a crop's growth, a creature's health, a machine's progress.
 
 It exists because the usual overlay mods (Jade, The One Probe) do not cover every loader and Minecraft version SMWTI does, and WTHIT is the only other choice on 26.1.2. SMWTI is inspired by them but shares no code with them.
 
@@ -11,7 +11,7 @@ Status: in development (version 2026.11.2). See `PLAN.md`.
 - Install it on the client. It also works on a server that has it, and shows more there: the server sends live data about a block or entity, such as what is in a chest or how full a tank is.
 - The overlay shows the target's icon, name and mod, then lines from mods and from SMWTI itself: a crop's growth, a creature's health, the tool that breaks a block, to the right of the name (a green check when you hold the right one, a red cross when the block gives no drops without it), inventories shown as icons with counts, fluid tanks and stored energy on blocks that expose them. Looking at water or lava shows it too.
 - Blocks: crop and plant growth, redstone power, a note block's note, composter, cauldron, honey and respawn anchor levels, furnace and brewing stand progress, a spawner's mob, a beacon's level, a hive's bees, a jukebox's disc, a flower pot's plant. Entities: armor, active effects with their time left, riders and mounts, a horse's speed and jump, what an item frame or a dropped item holds, a pet's owner, and how long a young animal takes to grow up or an adult to breed again.
-- Also: enchanting power around an enchanting table, locked hoppers, unstable TNT, waxed blocks and signs, shelves (26.1.2 only), player heads, signs' text, command block commands (a server setting, off by default), a spawner's countdown, the next egg a chicken lays, paintings' title and artist, a zombie villager being cured, pet armor, falling blocks and display entities by what they show, and a dropped item's tooltip in the long form.
+- Also: enchanting power around an enchanting table, locked hoppers, unstable TNT, waxed blocks and signs, shelves (26.x only), player heads, signs' text, command block commands (a server setting, off by default), a spawner's countdown, the next egg a chicken lays, paintings' title and artist, a zombie villager being cured, pet armor, falling blocks and display entities by what they show, and a dropped item's tooltip in the long form.
 - Sneak for the long form, which lists more (the default; change it in the settings): the registry id, the block's state, more items.
 - Hold-to-show (Left Alt, switched on in the settings), a compact mode, and Shift+F10 to hide what you are looking at, with a list in the settings to show things again.
 - Themes (dark, light, vanilla, clear, modern; modern is the default) and the backdrop's opacity (80% by default) are in the settings. "Move overlay..." there lets you drag the panel anywhere on the screen; the panel clings softly to the centers and corners, keeps clear of the screen's edges and stays off the hotbar, and the spot is remembered as a fraction of the screen, so it survives window and size changes.
@@ -110,7 +110,7 @@ cd versions/mc26.1.2/forge    (or any folder under versions/mc<version>/forge or
 gradlew.bat build
 ```
 
-Needs a JDK to run Gradle (17 for the 1.20.1 builds, 21 or newer for the others); the 26.1.2 builds use a Java 25 toolchain, the 1.21.1 builds Java 21 and the 1.20.1 builds Java 17. The jar lands in `build/libs`.
+Needs a JDK to run Gradle (17 for the 1.20.1 builds, 21 or newer for the others); the 26.x builds use a Java 25 toolchain, the 1.21.1 builds Java 21 and the 1.20.1 builds Java 17. The jar lands in `build/libs`.
 
 ## License
 

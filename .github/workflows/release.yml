@@ -61,6 +61,30 @@ jobs:
             mc: '26.1.2'
             loader: neoforge
             cf_game_versions: '16082,10150,9638,9639'
+          - name: Forge 26.2
+            dir: versions/mc26.2/forge
+            java: '25'
+            mc: '26.2'
+            loader: forge
+            cf_game_versions: '16498,7498,9638,9639'
+          - name: NeoForge 26.2
+            dir: versions/mc26.2/neoforge
+            java: '25'
+            mc: '26.2'
+            loader: neoforge
+            cf_game_versions: '16498,10150,9638,9639'
+          - name: Forge 26.3
+            dir: versions/mc26.3/forge
+            java: '25'
+            mc: '26.3'
+            loader: forge
+            cf_game_versions: '17045,7498,9638,9639'
+          - name: NeoForge 26.3
+            dir: versions/mc26.3/neoforge
+            java: '25'
+            mc: '26.3'
+            loader: neoforge
+            cf_game_versions: '17045,10150,9638,9639'
     defaults:
       run:
         working-directory: ${{ matrix.dir }}

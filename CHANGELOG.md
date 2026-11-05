@@ -1,5 +1,11 @@
 # Changelog
 
+## 2026.11.3
+
+Adds Forge and NeoForge builds for Minecraft 26.2 and 26.3. Each was run in a client and checked on a block, an entity, a fluid and a dropped item.
+
+- 26.2 and 26.3 renamed several client calls (screen, toasts, chat, HUD hiding, flat world presets); 26.3 also changed key types, sign text access and the NeoForge config types. SMWTI follows them.
+
 ## 2026.11.2
 
 Adds NeoForge builds and Forge 1.20.1 and NeoForge 1.20.1, so SMWTI now comes for Forge and NeoForge on 26.1.2, 1.21.1 and 1.20.1. Every build was run in a client and checked on a block, an entity, a fluid and a dropped item.
