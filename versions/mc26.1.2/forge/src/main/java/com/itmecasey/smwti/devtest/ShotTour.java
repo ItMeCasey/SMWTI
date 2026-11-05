@@ -2,12 +2,15 @@ package com.itmecasey.smwti.devtest;
 
 import com.itmecasey.smwti.Smwti;
 import com.itmecasey.smwti.SmwtiConfig;
+import com.itmecasey.smwti.SmwtiServerConfig;
 import com.itmecasey.smwti.client.SettingsScreen;
 import com.itmecasey.smwti.client.UserHidden;
 import java.io.IOException;
+import java.lang.reflect.Field;
 import java.util.ArrayDeque;
 import java.util.Deque;
 import java.util.Locale;
+import java.util.List;
 import java.util.function.Consumer;
 import net.minecraft.client.CameraType;
 import net.minecraft.client.Minecraft;
@@ -16,6 +19,7 @@ import net.minecraft.client.gui.screens.TitleScreen;
 import net.minecraft.client.player.LocalPlayer;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.util.Mth;
+import net.minecraftforge.common.ForgeConfigSpec;
 import net.minecraft.world.Difficulty;
 import net.minecraft.world.level.GameType;
 import net.minecraft.world.level.LevelSettings;
@@ -233,6 +237,41 @@ public final class ShotTour {
         shoot("item_frame", SETTLE);
         then(2, () -> SmwtiConfig.setDetail(SmwtiConfig.Detail.WHILE_SNEAKING));
 
+        // The beacon with a pyramid under it and effects chosen: the effect lines need the pyramid.
+        then(2, () -> server(
+                String.format(Locale.ROOT, "fill 23 %d -1 25 %d 1 minecraft:iron_block", ground - 1, ground - 1),
+                at("data merge block %d %d %d {primary_effect:\"minecraft:speed\",secondary_effect:\"minecraft:regeneration\"}", 24, 0)));
+        lookDownAt(24);
+        shoot("beacon_pyramid", 200);
+
+        // Server data lines: a furnace smelting with fuel, and a spawner with a mob.
+        then(2, () -> server(
+                at("item replace block %d %d %d container.1 with minecraft:coal 8", 4, 0),
+                at("setblock %d %d %d minecraft:spawner{SpawnData:{entity:{id:\"minecraft:zombie\"}}}", 44, 0)));
+        lookAt(4);
+        shoot("furnace_lit", 120);
+        lookDownAt(44);
+        shoot("spawner", SETTLE);
+
+        // The server config: each setting is changed in turn and the chest is looked at again.
+        then(2, () -> SmwtiConfig.setDetail(SmwtiConfig.Detail.ALWAYS));
+        configShot("cfg_baseline", () -> { });
+        configShot("cfg_no_inventories", () -> serverSetting("INVENTORIES", false));
+        configShot("cfg_blacklisted", () -> {
+            serverSetting("INVENTORIES", true);
+            serverSetting("BLACKLIST", List.of("minecraft:chest"));
+        });
+        configShot("cfg_no_answers", () -> {
+            serverSetting("BLACKLIST", List.of());
+            serverSetting("ANSWER", false);
+        });
+        configShot("cfg_short_reach", () -> {
+            serverSetting("ANSWER", true);
+            serverSetting("REACH", 2);
+        });
+        configShot("cfg_restored", () -> serverSetting("REACH", 12));
+        then(2, () -> SmwtiConfig.setDetail(SmwtiConfig.Detail.WHILE_SNEAKING));
+
         // The settings screen.
         then(2, () -> {
             SmwtiConfig.setDetail(SmwtiConfig.Detail.WHILE_SNEAKING);
@@ -289,6 +328,28 @@ public final class ShotTour {
     /** A command with the position of a block on the ground line at this x filled in; {@code up} raises it. */
     private static String at(String command, int x, int up) {
         return String.format(Locale.ROOT, command, x, ground + up, 0);
+    }
+
+    /** Changes a server setting, looks away and back at the chest so its lines are asked for again, and shoots. */
+    private static void configShot(String name, Runnable change) {
+        lookAt(8);
+        then(2, change);
+        lookAt(0);
+        shoot(name, SETTLE + 20);
+    }
+
+    /** Sets a value in the server config by its field name and saves the file, as editing smwti-server.toml would. */
+    @SuppressWarnings({"unchecked", "rawtypes"})
+    private static void serverSetting(String field, Object value) {
+        try {
+            Field spec = SmwtiServerConfig.class.getDeclaredField(field);
+            spec.setAccessible(true);
+            ((ForgeConfigSpec.ConfigValue) spec.get(null)).set(value);
+            SmwtiServerConfig.SPEC.save();
+            Smwti.LOGGER.info("SMWTI-SHOTS server setting {} = {}", field, value);
+        } catch (ReflectiveOperationException e) {
+            Smwti.LOGGER.warn("SMWTI-SHOTS could not set {}", field, e);
+        }
     }
 
     /** What the crosshair is on, as a block position or an entity id and its position. */
