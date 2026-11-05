@@ -3,6 +3,7 @@ package com.itmecasey.smwti.devtest;
 import com.itmecasey.smwti.Smwti;
 import com.itmecasey.smwti.SmwtiConfig;
 import com.itmecasey.smwti.client.SettingsScreen;
+import com.itmecasey.smwti.client.UserHidden;
 import java.io.IOException;
 import java.util.ArrayDeque;
 import java.util.Deque;
@@ -180,15 +181,63 @@ public final class ShotTour {
         lookAt(8);
         shoot("wheat", SETTLE);
 
-        // Water, which the game's own crosshair looks through.
+        // Water, looked at straight down so the crosshair goes into the surface.
         then(2, () -> server(at("setblock %d %d %d minecraft:water", 12, -1)));
-        lookAtDown(12);
+        then(4, () -> moveTo(new Vec3(12.5, ground + 2.5, 0.5), new Vec3(12.5, ground - 0.5, 0.5)));
         shoot("water", SETTLE);
 
-        // A cow, and a villager for the entity lines.
-        then(2, () -> server(at("summon minecraft:cow %d.5 %d %d.5 {NoAI:1b}", 16, 0)));
-        lookAt(16);
+        // A cow, looked at from the side at its body. Long form, so the entity id shows.
+        then(2, () -> {
+            SmwtiConfig.setDetail(SmwtiConfig.Detail.ALWAYS);
+            server(at("summon minecraft:cow %d.5 %d %d.5 {NoAI:1b}", 16, 0));
+        });
+        then(4, () -> moveTo(new Vec3(16.5, ground + 1.3, -2.0), new Vec3(16.5, ground + 0.9, 0.5)));
         shoot("cow", SETTLE);
+
+        // The test resource pack: its theme and its rules (a rename and an extra line).
+        then(2, () -> SmwtiConfig.setTheme("smwti:neon"));
+        shoot("pack_theme_cow", SETTLE);
+        then(2, () -> SmwtiConfig.setTheme("modern"));
+
+        // The overlay switched off with the toggle key's handler, then back on.
+        then(2, () -> SmwtiConfig.setEnabled(false));
+        shoot("toggled_off", SETTLE);
+        then(2, () -> SmwtiConfig.setEnabled(true));
+
+        // Hold to show with no key held: the overlay must stay away.
+        then(2, () -> SmwtiConfig.setHoldToShow(true));
+        shoot("hold_not_held", SETTLE);
+        then(2, () -> SmwtiConfig.setHoldToShow(false));
+
+        // Hidden with the hide key's handler, on the chest.
+        lookAt(0);
+        then(2, () -> UserHidden.add("minecraft:chest"));
+        shoot("hidden_chest", SETTLE);
+        then(2, () -> UserHidden.remove("minecraft:chest"));
+
+        // Vanilla lines still unseen: campfire, beacon, armor stand, a dropped enchanted sword and iron ore.
+        then(2, () -> server(
+                at("setblock %d %d %d minecraft:campfire[lit=true]", 20, 0),
+                at("setblock %d %d %d minecraft:beacon", 24, 0),
+                at("summon minecraft:armor_stand %d.5 %d %d.5 {ArmorItems:[{},{},{},{id:\"minecraft:diamond_helmet\",Count:1b}],HandItems:[{id:\"minecraft:iron_sword\",Count:1b},{}]}", 28, 0),
+                at("summon minecraft:item %d.5 %d %d.5 {Item:{id:\"minecraft:diamond_sword\",Count:1b,tag:{Enchantments:[{id:\"minecraft:sharpness\",lvl:5s}]}}}", 32, 1),
+                at("setblock %d %d %d minecraft:iron_ore", 36, 0),
+                String.format(Locale.ROOT, "setblock 40 %d 1 minecraft:stone", ground),
+                at("summon minecraft:item_frame %d.5 %d %d.5 {Facing:2b,Item:{id:\"minecraft:diamond_sword\",Count:1b,tag:{Enchantments:[{id:\"minecraft:sharpness\",lvl:5s}]}}}", 40, 0)));
+        then(2, () -> SmwtiConfig.setDetail(SmwtiConfig.Detail.ALWAYS));
+        lookDownAt(20);
+        shoot("campfire", SETTLE);
+        lookDownAt(24);
+        shoot("beacon", SETTLE);
+        lookBodyAt(28, 1.0);
+        shoot("armor_stand", SETTLE);
+        lookBodyAt(32, 0.2);
+        shoot("enchanted_sword", SETTLE);
+        lookDownAt(36);
+        shoot("iron_ore", SETTLE);
+        lookBodyAt(40, 0.5);
+        shoot("item_frame", SETTLE);
+        then(2, () -> SmwtiConfig.setDetail(SmwtiConfig.Detail.WHILE_SNEAKING));
 
         // The settings screen.
         then(2, () -> {
@@ -214,6 +263,16 @@ public final class ShotTour {
         });
     }
 
+    /** Straight down onto the top of the block at this x, so the crosshair lands on that block. */
+    private static void lookDownAt(int x) {
+        then(4, () -> moveTo(new Vec3(x + 0.5, ground + 4.0, 0.5), new Vec3(x + 0.5, ground + 0.5, 0.5)));
+    }
+
+    /** Side-on at a height above the ground line, so the crosshair lands on a body at that height. */
+    private static void lookBodyAt(int x, double height) {
+        then(4, () -> moveTo(new Vec3(x + 0.5, ground + 1.5, -2.0), new Vec3(x + 0.5, ground + height, 0.5)));
+    }
+
     /** Like {@link #lookAt} but from higher up, for something below the ground line. */
     private static void lookAtDown(int x) {
         then(4, () -> moveTo(new Vec3(x + 0.5, ground + 1.8, -1.2), new Vec3(x + 0.5, ground - 0.5, 0.5)));
@@ -228,11 +287,25 @@ public final class ShotTour {
         player.moveTo(eye.x, eye.y - 1.62, eye.z, yaw, pitch);
         player.setYHeadRot(yaw);
         player.setDeltaMovement(Vec3.ZERO);
+        // Fly, so the camera does not sink onto the ground after the teleport and miss its target.
+        player.getAbilities().flying = true;
+        player.onUpdateAbilities();
     }
 
     /** A command with the position of a block on the ground line at this x filled in; {@code up} raises it. */
     private static String at(String command, int x, int up) {
         return String.format(Locale.ROOT, command, x, ground + up, 0);
+    }
+
+    /** What the crosshair is on, as a block position or an entity id and its position. */
+    private static String describeHit(net.minecraft.world.phys.HitResult hit) {
+        if (hit instanceof net.minecraft.world.phys.BlockHitResult block) {
+            return "block " + block.getBlockPos();
+        }
+        if (hit instanceof net.minecraft.world.phys.EntityHitResult entity) {
+            return "entity " + entity.getEntity().getType() + " at " + entity.getEntity().position();
+        }
+        return String.valueOf(hit);
     }
 
     private static void shoot(String name, int delay) {
@@ -246,7 +319,7 @@ public final class ShotTour {
             Minecraft minecraft = Minecraft.getInstance();
             LocalPlayer self = minecraft.player;
             Smwti.LOGGER.info("SMWTI-SHOTS {} eye={} feet={},{},{} pitch={} yaw={} hit={}", name, self.getEyePosition(),
-                    self.getX(), self.getY(), self.getZ(), self.getXRot(), self.getYRot(), minecraft.hitResult);
+                    self.getX(), self.getY(), self.getZ(), self.getXRot(), self.getYRot(), describeHit(minecraft.hitResult));
             Screenshot.grab(minecraft.gameDirectory, "smwti_" + name + ".png", minecraft.getMainRenderTarget(),
                     message -> Smwti.LOGGER.info("SMWTI-SHOTS saved {}", name));
         });
