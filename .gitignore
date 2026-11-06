@@ -51,3 +51,10 @@ logs/
 *.log.gz
 logs/
 *.log.gz
+
+client.err
+client.out
+server.err
+server.out
+shots.err
+shots.out
