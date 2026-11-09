@@ -1,5 +1,12 @@
 # Changelog
 
+## 2026.11.4 (NeoForge 1.20.1 only)
+
+Fixes the NeoForge 1.20.1 jar, which crashed a real game. The other nine builds are unchanged (Forge 1.20.1 stays at 2026.11.2).
+
+- NeoForge 1.20.1: the jar was built with NeoGradle 7, which leaves Minecraft's development names in the jar. A development run hides that, but a real Forge or NeoForge 1.20.1 game only knows Forge's own names and would stop with `NoSuchFieldError` or `NoSuchMethodError`. The module now builds with ForgeGradle against Forge 47.1.47 and reobfuscates the jar to those names (467 Forge-name references in the class files, none before). The mod class has the plain Forge 47 constructor.
+- Loaded in a real Forge 47.4.28 install and a real NeoForge 47.1.106 install: `Show Me What This Is loaded (Forge 1.20.1)` and the main menu was reached with no linkage errors.
+
 ## 2026.11.3
 
 Adds Minecraft 26.2 and 26.3 for Forge and NeoForge, so SMWTI now comes for 26.3, 26.2, 26.1.2, 1.21.1 and 1.20.1. The six older builds are unchanged and stay at 2026.11.2. Each new build was run in a client and checked on a block, an entity, a fluid and a dropped item.

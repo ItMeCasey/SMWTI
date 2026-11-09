@@ -110,7 +110,7 @@ cd versions/mc26.1.2/forge    (or any folder under versions/mc<version>/forge or
 gradlew.bat build
 ```
 
-Needs a JDK to run Gradle (17 for the 1.20.1 builds, 21 or newer for the others); the 26.x builds use a Java 25 toolchain, the 1.21.1 builds Java 21 and the 1.20.1 builds Java 17. The jar lands in `build/libs`.
+Needs a JDK to run Gradle (17 for the 1.20.1 builds, 21 or newer for the others); the 26.x builds use a Java 25 toolchain, the 1.21.1 builds Java 21 and the 1.20.1 builds Java 17. The jar lands in `build/libs`. The 1.20.1 builds (both loaders) use ForgeGradle and reobfuscate the jar to the names a real 1.20.1 game uses; a jar with development names only works in a development run.
 
 ## License
 

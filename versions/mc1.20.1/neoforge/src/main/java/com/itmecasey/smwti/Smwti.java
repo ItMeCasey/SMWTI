@@ -9,9 +9,9 @@ import net.minecraft.resources.ResourceLocation;
 import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.config.ModConfig;
 import net.minecraftforge.fml.event.lifecycle.FMLCommonSetupEvent;
-import net.minecraftforge.fml.ModContainer;
-import net.minecraftforge.fml.ModLoadingContext;
 import net.minecraftforge.eventbus.api.IEventBus;
+import net.minecraftforge.fml.ModLoadingContext;
+import net.minecraftforge.fml.javafmlmod.FMLJavaModLoadingContext;
 import org.slf4j.Logger;
 
 /**
@@ -27,7 +27,8 @@ public final class Smwti {
     /** Shared logger for the mod. */
     public static final Logger LOGGER = LogUtils.getLogger();
 
-    public Smwti(IEventBus modBus, ModContainer container) {
+    public Smwti() {
+        IEventBus modBus = FMLJavaModLoadingContext.get().getModEventBus();
         ModLoadingContext.get().registerConfig(ModConfig.Type.CLIENT, SmwtiConfig.SPEC);
         ModLoadingContext.get().registerConfig(ModConfig.Type.SERVER, SmwtiServerConfig.SPEC);
         LookChannel.register();
