@@ -77,7 +77,7 @@ public final class PositionScreen extends Screen {
 
     @Override
     public boolean mouseClicked(MouseButtonEvent event, boolean doubleClick) {
-        if (event.button() == 0 && onPanel(event.x(), event.y())) {
+        if (event.button() == com.mojang.blaze3d.platform.InputConstants.MOUSE_BUTTON_LEFT && onPanel(event.x(), event.y())) {
             dragging = true;
             grabX = event.x() - panel[0];
             grabY = event.y() - panel[1];

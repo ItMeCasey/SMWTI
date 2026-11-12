@@ -1,5 +1,9 @@
 # Changelog
 
+## 2026.11.5 (Forge and NeoForge 26.3 only)
+
+- Fixed: dragging the overlay panel in the position screen did nothing on Minecraft 26.3. Minecraft 26.3 renumbered the mouse buttons (left is now 1, middle 2, right 3), and the mod still compared clicks against 0 and 1. The other eight builds are unchanged.
+
 ## 2026.11.4 (NeoForge 1.20.1 only)
 
 Fixes the NeoForge 1.20.1 jar, which crashed a real game. The other nine builds are unchanged (Forge 1.20.1 stays at 2026.11.2).
