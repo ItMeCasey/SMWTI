@@ -1,7 +1,8 @@
 name: Build
 
-# Builds and tests every loader and Minecraft version on each push and pull request, and keeps the jars
-# as artifacts. Releases are made by release.yml on a tag.
+# Builds and tests only the loader and Minecraft versions whose files changed in the push or pull request, and
+# keeps the jars as artifacts. Docs, status and workflow changes build nothing (see .github/scripts/plan_matrix.py).
+# Releases are made by release.yml on a tag.
 on:
   push:
     branches:
@@ -12,63 +13,38 @@ permissions:
   contents: read
 
 jobs:
+  plan:
+    name: Pick the builds
+    runs-on: ubuntu-latest
+    outputs:
+      matrix: ${{ steps.plan.outputs.matrix }}
+      any: ${{ steps.plan.outputs.any }}
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+      - id: plan
+        env:
+          EVENT: ${{ github.event_name }}
+          BEFORE: ${{ github.event.before }}
+          PR_BASE: ${{ github.event.pull_request.base.sha }}
+          PR_HEAD: ${{ github.event.pull_request.head.sha }}
+          SHA: ${{ github.sha }}
+        run: |
+          if [ "$EVENT" = "pull_request" ]; then
+            python3 -I .github/scripts/plan_matrix.py build --before "$PR_BASE" --sha "$PR_HEAD"
+          else
+            python3 -I .github/scripts/plan_matrix.py build --before "$BEFORE" --sha "$SHA"
+          fi
+
   build:
     name: ${{ matrix.name }}
+    needs: plan
+    if: needs.plan.outputs.any == 'true'
     runs-on: ubuntu-latest
     strategy:
       fail-fast: false
-      matrix:
-        include:
-          - name: Forge 1.20.1
-            dir: versions/mc1.20.1/forge
-            java: '17'
-            mc: '1.20.1'
-            loader: forge
-          - name: NeoForge 1.20.1
-            dir: versions/mc1.20.1/neoforge
-            java: '17'
-            mc: '1.20.1'
-            loader: neoforge
-          - name: Forge 1.21.1
-            dir: versions/mc1.21.1/forge
-            java: '21'
-            mc: '1.21.1'
-            loader: forge
-          - name: NeoForge 1.21.1
-            dir: versions/mc1.21.1/neoforge
-            java: '21'
-            mc: '1.21.1'
-            loader: neoforge
-          - name: Forge 26.1.2
-            dir: versions/mc26.1.2/forge
-            java: '25'
-            mc: '26.1.2'
-            loader: forge
-          - name: NeoForge 26.1.2
-            dir: versions/mc26.1.2/neoforge
-            java: '25'
-            mc: '26.1.2'
-            loader: neoforge
-          - name: Forge 26.2
-            dir: versions/mc26.2/forge
-            java: '25'
-            mc: '26.2'
-            loader: forge
-          - name: NeoForge 26.2
-            dir: versions/mc26.2/neoforge
-            java: '25'
-            mc: '26.2'
-            loader: neoforge
-          - name: Forge 26.3
-            dir: versions/mc26.3/forge
-            java: '25'
-            mc: '26.3'
-            loader: forge
-          - name: NeoForge 26.3
-            dir: versions/mc26.3/neoforge
-            java: '25'
-            mc: '26.3'
-            loader: neoforge
+      matrix: ${{ fromJson(needs.plan.outputs.matrix) }}
     defaults:
       run:
         working-directory: ${{ matrix.dir }}

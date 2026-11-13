@@ -1,8 +1,9 @@
 name: Build and publish
 
-# Builds every loader and Minecraft version, runs the unit tests and uploads the jars.
-# Builds run on every push to a tag like v2026.11.1 and on manual runs. Uploads happen only
-# for tag pushes and for manual runs with publish set to true.
+# Builds the loader and Minecraft versions whose own mod_version is the release version, runs the unit tests and
+# uploads those jars. It runs on every push of a tag like v2026.11.1 and on manual runs. Uploads happen only
+# for tag pushes and for manual runs with publish set to true. Builds with another version are not built at all
+# (see .github/scripts/plan_matrix.py); the run fails only when no build has the release version.
 on:
   push:
     tags:
@@ -18,115 +19,60 @@ permissions:
   contents: read
 
 jobs:
+  # Picks the builds whose own mod_version equals the release version: the tag without the v, the newest
+  # CHANGELOG heading for a manual run with publish set, or the newest mod_version for a manual dry run.
+  plan:
+    name: Pick the builds
+    runs-on: ubuntu-latest
+    outputs:
+      matrix: ${{ steps.plan.outputs.matrix }}
+      any: ${{ steps.plan.outputs.any }}
+    steps:
+      - uses: actions/checkout@v4
+      - id: plan
+        env:
+          PUBLISH: ${{ inputs.publish }}
+        run: |
+          release=""
+          if [[ "$GITHUB_REF" == refs/tags/v* ]]; then
+            release="${GITHUB_REF_NAME#v}"
+          elif [ "$PUBLISH" == "true" ]; then
+            release=$(grep -m1 '^## ' CHANGELOG.md | sed 's/^## //')
+          fi
+          python3 -I .github/scripts/plan_matrix.py release --tag "$release"
+
   build:
     name: ${{ matrix.name }}
+    needs: plan
+    if: needs.plan.outputs.any == 'true'
     runs-on: ubuntu-latest
     strategy:
       fail-fast: false
-      matrix:
-        include:
-          - name: Forge 1.20.1
-            dir: versions/mc1.20.1/forge
-            java: '17'
-            mc: '1.20.1'
-            loader: forge
-            cf_game_versions: '9990,7498,9638,9639'
-          - name: NeoForge 1.20.1
-            dir: versions/mc1.20.1/neoforge
-            java: '17'
-            mc: '1.20.1'
-            loader: neoforge
-            cf_game_versions: '9990,10150,9638,9639'
-          - name: Forge 1.21.1
-            dir: versions/mc1.21.1/forge
-            java: '21'
-            mc: '1.21.1'
-            loader: forge
-            cf_game_versions: '11779,7498,9638,9639'
-          - name: NeoForge 1.21.1
-            dir: versions/mc1.21.1/neoforge
-            java: '21'
-            mc: '1.21.1'
-            loader: neoforge
-            cf_game_versions: '11779,10150,9638,9639'
-          - name: Forge 26.1.2
-            dir: versions/mc26.1.2/forge
-            java: '25'
-            mc: '26.1.2'
-            loader: forge
-            cf_game_versions: '16082,7498,9638,9639'
-          - name: NeoForge 26.1.2
-            dir: versions/mc26.1.2/neoforge
-            java: '25'
-            mc: '26.1.2'
-            loader: neoforge
-            cf_game_versions: '16082,10150,9638,9639'
-          - name: Forge 26.2
-            dir: versions/mc26.2/forge
-            java: '25'
-            mc: '26.2'
-            loader: forge
-            cf_game_versions: '16498,7498,9638,9639'
-          - name: NeoForge 26.2
-            dir: versions/mc26.2/neoforge
-            java: '25'
-            mc: '26.2'
-            loader: neoforge
-            cf_game_versions: '16498,10150,9638,9639'
-          - name: Forge 26.3
-            dir: versions/mc26.3/forge
-            java: '25'
-            mc: '26.3'
-            loader: forge
-            cf_game_versions: '17045,7498,9638,9639'
-          - name: NeoForge 26.3
-            dir: versions/mc26.3/neoforge
-            java: '25'
-            mc: '26.3'
-            loader: neoforge
-            cf_game_versions: '17045,10150,9638,9639'
+      matrix: ${{ fromJson(needs.plan.outputs.matrix) }}
     defaults:
       run:
         working-directory: ${{ matrix.dir }}
     steps:
       - uses: actions/checkout@v4
 
-      # A tag push (and a manual run with publish set) releases only the builds whose own mod_version
-      # is the release version, so unchanged builds are neither rebuilt nor uploaded again. The release
-      # version is the tag without the v, or the newest CHANGELOG heading for a manual run. Pushes of
-      # other refs and dry runs without publish build everything.
+      # The plan job already picked only the builds that belong to this release. This step is kept, always
+      # reporting skip=false, so the Modrinth step below (gated off) stays exactly as it was.
       - name: Decide whether this build is part of the release
         id: gate
-        run: |
-          version=$(grep '^mod_version=' gradle.properties | cut -d= -f2)
-          release=""
-          if [[ "$GITHUB_REF" == refs/tags/v* ]]; then
-            release="${GITHUB_REF_NAME#v}"
-          elif [ "${{ inputs.publish }}" == "true" ]; then
-            release=$(grep -m1 '^## ' "$GITHUB_WORKSPACE/CHANGELOG.md" | sed 's/^## //')
-          fi
-          if [ -n "$release" ] && [ "$version" != "$release" ]; then
-            echo "skipping ${{ matrix.name }}: version $version is not v$release"
-            echo "skip=true" >> "$GITHUB_OUTPUT"
-          else
-            echo "skip=false" >> "$GITHUB_OUTPUT"
-          fi
+        run: echo "skip=false" >> "$GITHUB_OUTPUT"
 
       - uses: actions/setup-java@v4
-        if: steps.gate.outputs.skip != 'true'
         with:
           distribution: temurin
           java-version: ${{ matrix.java }}
 
       - name: Build and test
-        if: steps.gate.outputs.skip != 'true'
         run: |
           chmod +x ./gradlew
           ./gradlew --no-daemon build
 
       - name: Find the jar
         id: jar
-        if: steps.gate.outputs.skip != 'true'
         run: |
           jar=$(ls build/libs/smwti-${{ matrix.loader }}-${{ matrix.mc }}-*.jar | grep -v -- '-api' | head -1)
           echo "path=$jar" >> "$GITHUB_OUTPUT"
@@ -134,14 +80,13 @@ jobs:
           echo "version=$(grep '^mod_version=' gradle.properties | cut -d= -f2)" >> "$GITHUB_OUTPUT"
 
       - uses: actions/upload-artifact@v4
-        if: steps.gate.outputs.skip != 'true'
         with:
           name: ${{ steps.jar.outputs.name }}
           path: ${{ matrix.dir }}/${{ steps.jar.outputs.path }}
 
       - name: Changelog for this version
         id: changelog
-        if: steps.gate.outputs.skip != 'true' && (github.event_name == 'push' || inputs.publish)
+        if: (github.event_name == 'push' || inputs.publish)
         run: |
           notes=$(awk -v v="${{ steps.jar.outputs.version }}" '
             $0 ~ "^## " v { on=1; next }
@@ -151,7 +96,7 @@ jobs:
           { echo "text<<EOF"; echo "$notes"; echo "EOF"; } >> "$GITHUB_OUTPUT"
 
       - name: Upload to CurseForge
-        if: steps.gate.outputs.skip != 'true' && (startsWith(github.ref, 'refs/tags/v') || inputs.publish)
+        if: (startsWith(github.ref, 'refs/tags/v') || inputs.publish)
         env:
           CURSEFORGE_TOKEN: ${{ secrets.CURSEFORGE_TOKEN }}
           CHANGELOG: ${{ steps.changelog.outputs.text }}
@@ -193,23 +138,17 @@ jobs:
   # A release tag must match at least one build, or nothing would be uploaded.
   verify:
     name: A build matches the release version
+    needs: plan
     if: startsWith(github.ref, 'refs/tags/v') || inputs.publish
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v4
       - name: Check that some build has the release version
+        env:
+          ANY: ${{ needs.plan.outputs.any }}
+          MATRIX: ${{ needs.plan.outputs.matrix }}
         run: |
-          if [[ "$GITHUB_REF" == refs/tags/v* ]]; then
-            release="${GITHUB_REF_NAME#v}"
-          else
-            release=$(grep -m1 '^## ' CHANGELOG.md | sed 's/^## //')
-          fi
-          found=0
-          for f in versions/*/*/gradle.properties; do
-            if [ "$(grep '^mod_version=' "$f" | cut -d= -f2)" == "$release" ]; then found=$((found+1)); fi
-          done
-          echo "$found build(s) have version $release"
-          if [ "$found" -eq 0 ]; then
-            echo "No build has mod_version $release, so there is nothing to release"
+          echo "builds with the release version: $MATRIX"
+          if [ "$ANY" != "true" ]; then
+            echo "No build has the release version (the tag, or the newest CHANGELOG heading), so there is nothing to release"
             exit 1
           fi
