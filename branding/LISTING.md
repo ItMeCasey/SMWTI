@@ -77,7 +77,7 @@ It is inspired by Jade and The One Probe and shares no code with them.
 
 ![For players](https://raw.githubusercontent.com/ItMeCasey/SMWTI/main/branding/banners/h_players.png)
 
-- Install it on the client. It works on any server; a server that also has SMWTI sends extra live data (chest contents, tank levels, machine progress).
+- Works from the client alone on any server; a server that also has SMWTI sends extra live data (chest contents, tank levels, machine progress).
 - **F10** turns the overlay on and off, **Ctrl+F10** opens the settings. Both can be rebound in Controls.
 - Drag the overlay anywhere on the screen from the settings (**Move overlay...**). It snaps to centers and corners and stays clear of the hotbar.
 - Resource packs can hide, rename or add lines to any block or entity with a small JSON file.
@@ -94,7 +94,7 @@ Add your own lines through `SmwtiApi`: client and server providers for blocks an
 
 ![FAQ](https://raw.githubusercontent.com/ItMeCasey/SMWTI/main/branding/banners/h_faq.png)
 
-**Does it need to be on the server?** No. On a server without it you still get names, mods, growth, health and everything the client can see. Install it on the server too for container contents and machine data.
+**Does it need to be on the server?** No. On a server without it you still get names, mods, growth, health and everything the client can see. With SMWTI on the server too, you also get container contents and machine data.
 
 **Does it load Jade or The One Probe plugins?** No. Mods add support through SMWTI's own API.
 

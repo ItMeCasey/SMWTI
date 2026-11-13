@@ -26,7 +26,7 @@ Five built-in themes (modern, dark, light, vanilla and clear), an adjustable bac
 - **Drag the panel anywhere.** It snaps to centers and corners and stays clear of your hotbar.
 - Compact mode, hold-to-show (Left Alt), size, and a long form that shows while sneaking, always or never.
 - Resource packs can hide, rename or add lines to any block or creature.
-- Install it on the client and it works on any server. Install it on the server too for container contents, tanks, energy and machine progress. Server owners can shorten the reach, keep inventories private and block things from being shown.
+- Works from the client alone on any server. With the mod on the server too, it also shows container contents, tanks, energy and machine progress. Server owners can shorten the reach, keep inventories private and block things from being shown.
 
 ![For mod authors](https://raw.githubusercontent.com/ItMeCasey/SMWTI/main/branding/banners/h_authors.png)
 
