@@ -1,5 +1,10 @@
 # Changelog
 
+## 2026.11.6 (all ten builds)
+
+- Removed the hint text. The position screen no longer draws "Drag the panel where you want it" (`smwti.position.hint`), and the hidden-things screen no longer draws "Nothing is hidden." when the list is empty (`smwti.hidden.none`). The code that drew them and the language keys are gone. Overlay lines, settings names and key names are unchanged.
+- ModJS client scripts get an optional `SMWTI` global: add a line to a block or entity (`addBlockLine`, `addEntityLine`), rename (`renameBlock`, `renameEntity`), hide (`hideBlock`, `hideEntity`) and read the lines for what the crosshair is on (`lookedAtLines`). Nothing loads without ModJS. See `docs/scripting.md`.
+
 ## 2026.11.5 (Forge and NeoForge 26.3 only)
 
 - Fixed: dragging the overlay panel in the position screen did nothing on Minecraft 26.3. Minecraft 26.3 renumbered the mouse buttons (left is now 1, middle 2, right 3), and the mod still compared clicks against 0 and 1. The other eight builds are unchanged.

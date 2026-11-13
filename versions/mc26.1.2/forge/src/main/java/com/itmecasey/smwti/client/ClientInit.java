@@ -54,6 +54,7 @@ public final class ClientInit {
         VanillaProviders.register();
         VanillaMoreProviders.register();
         PackRules.register();
+        com.itmecasey.smwti.script.ModJsBridge.install();
         // Plugins registered their common parts during common setup, which runs first on the client too.
         event.enqueueWork(PluginLoader::loadClient);
         // The mod list's config button opens the settings screen.

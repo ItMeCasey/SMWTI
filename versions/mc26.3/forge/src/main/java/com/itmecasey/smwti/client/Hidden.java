@@ -14,11 +14,13 @@ public final class Hidden {
 
     /** Whether the overlay stays away from this block. */
     public static boolean block(Block block) {
-        return PackRules.hides(block.builtInRegistryHolder()) || UserHidden.contains(BuiltInRegistries.BLOCK.getKey(block).toString());
+        return PackRules.hides(block.builtInRegistryHolder()) || UserHidden.contains(BuiltInRegistries.BLOCK.getKey(block).toString())
+                || com.itmecasey.smwti.script.ScriptRules.blockHidden(BuiltInRegistries.BLOCK.getKey(block).toString());
     }
 
     /** Whether the overlay stays away from this kind of entity. */
     public static boolean entity(EntityType<?> type) {
-        return PackRules.hides(type.builtInRegistryHolder()) || UserHidden.contains(BuiltInRegistries.ENTITY_TYPE.getKey(type).toString());
+        return PackRules.hides(type.builtInRegistryHolder()) || UserHidden.contains(BuiltInRegistries.ENTITY_TYPE.getKey(type).toString())
+                || com.itmecasey.smwti.script.ScriptRules.entityHidden(BuiltInRegistries.ENTITY_TYPE.getKey(type).toString());
     }
 }

@@ -58,8 +58,6 @@ public final class PositionScreen extends Screen {
     @Override
     public void extractRenderState(GuiGraphicsExtractor graphics, int mouseX, int mouseY, float partialTick) {
         super.extractRenderState(graphics, mouseX, mouseY, partialTick);
-        Component hint = Component.translatable("smwti.position.hint");
-        graphics.text(font, hint, (width - font.width(hint)) / 2, height - 46, 0xFFFFFFFF, true);
         // Where the hotbar will be in the game, which the panel keeps off.
         graphics.fill(width / 2 - 91, height - 22, width / 2 + 91, height, HOTBAR);
         if (centeredX) {

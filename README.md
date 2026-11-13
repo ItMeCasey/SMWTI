@@ -99,6 +99,10 @@ Lines go to the badge (right of the name, same row), the head (under the name), 
 
 You can also register without a plugin class, by calling the static methods of `SmwtiApi` while your mod loads.
 
+## Scripting
+
+With ModJS installed, client scripts get a `SMWTI` global to add, rename or hide overlay lines; see `docs/scripting.md`.
+
 ## Translating
 
 See `TRANSLATING.md`.

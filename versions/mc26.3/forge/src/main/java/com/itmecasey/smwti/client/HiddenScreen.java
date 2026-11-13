@@ -62,8 +62,6 @@ public final class HiddenScreen extends Screen {
         graphics.text(font, title, (width - font.width(title)) / 2, 16, 0xFFFFFFFF, true);
         List<String> hidden = UserHidden.all();
         if (hidden.isEmpty()) {
-            Component none = Component.translatable("smwti.hidden.none");
-            graphics.text(font, none, (width - font.width(none)) / 2, 60, 0xFFAAAAAA, false);
             return;
         }
         int left = (width - WIDTH) / 2;
