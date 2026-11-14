@@ -242,6 +242,23 @@ public final class ShotTour {
         });
         shoot("settings", 10);
 
+        // The position screen and the hidden-things screen, with an empty list and with one entry.
+        then(2, () -> Minecraft.getInstance().gui.setScreen(new com.itmecasey.smwti.client.PositionScreen(null)));
+        shoot("position", 10);
+        then(2, () -> {
+            for (String id : new java.util.ArrayList<>(UserHidden.all())) {
+                UserHidden.remove(id);
+            }
+            Minecraft.getInstance().gui.setScreen(new com.itmecasey.smwti.client.HiddenScreen(null));
+        });
+        shoot("hidden_empty", 10);
+        then(2, () -> {
+            UserHidden.add("minecraft:chest");
+            Minecraft.getInstance().gui.setScreen(new com.itmecasey.smwti.client.HiddenScreen(null));
+        });
+        shoot("hidden_list", 10);
+        then(2, () -> UserHidden.remove("minecraft:chest"));
+
         then(20, () -> {
             Minecraft minecraft = Minecraft.getInstance();
             minecraft.options.pauseOnLostFocus = pauseOnLostFocus;
